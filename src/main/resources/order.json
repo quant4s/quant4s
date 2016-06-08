@@ -1,0 +1,12 @@
+{
+  "orders": [
+    {
+      "symbol":"000001.XSHE"
+      "orderType": "limit|market|",
+      "price": 12.3,
+      "amount": -1000,
+      "orderStatus":"NEW"
+    }
+  ],
+  "strategyId": 1
+}
