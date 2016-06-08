@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: io.spray:spray-util_2.11:1.3.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/spray/spray-util_2.11/1.3.2/spray-util_2.11-1.3.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/io/spray/spray-util_2.11/1.3.2/spray-util_2.11-1.3.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/spray/spray-util_2.11/1.3.2/spray-util_2.11-1.3.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

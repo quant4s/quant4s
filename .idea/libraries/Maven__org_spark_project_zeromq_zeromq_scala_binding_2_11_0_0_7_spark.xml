@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.spark-project.zeromq:zeromq-scala-binding_2.11:0.0.7-spark">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spark-project/zeromq/zeromq-scala-binding_2.11/0.0.7-spark/zeromq-scala-binding_2.11-0.0.7-spark.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spark-project/zeromq/zeromq-scala-binding_2.11/0.0.7-spark/zeromq-scala-binding_2.11-0.0.7-spark-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spark-project/zeromq/zeromq-scala-binding_2.11/0.0.7-spark/zeromq-scala-binding_2.11-0.0.7-spark-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
