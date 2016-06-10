@@ -6,41 +6,53 @@ import spray.http.StatusCodes.Success
 import spray.routing.HttpService
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
-import quanter.orders.Order
+import quanter.actors.trade.TradeRouteActor
 
 /**
   *
   */
 trait OrderService extends HttpService {
+  val tradeRoute = actorRefFactory.actorSelection(TradeRouteActor.path)
+
   val orderServiceRoute = {
     post {
       path("order") {
-        entity(as[String]) { json =>
-          complete {
-            _createOrder(json)
-          }
+        requestInstance {
+          request =>
+            complete {
+              request.entity.data.asString
+            }
         }
       }
     }~
     put {
       path("order") {
-        complete("更新数据")
+        requestInstance {
+          request =>
+            complete {
+              request.entity.data.asString
+            }
+        }
+      }
+    }~
+    delete {
+      path("order" / IntNumber) {
+        id =>
+        complete("取消订单")
       }
     }
   }
 
   private def _createOrder(json: String): String = {
-    val jv = parse(json)
-    val v: JValue = (jv \ "orders")(0) \ "symbol"
+    // val jv = parse(json)
+    // val v: JValue = (jv \ "orders")(0) \ "symbol"
 
-    // 创建一个订单对象
-     val order = Order.createOrder(json)
-
-    // 保存订单对象
-
-    // 下单到交易路由
-
-    "ok"
+    // TODO: 根据json 创建多个订单对象
+   //  val order = v.extract[Order]
+    // 对每一个订单对象 下单路由
+    // val order = Order.createOrder(json)
+    //tradeRoute ! order
+    ""
   }
 
 }

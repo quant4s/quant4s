@@ -16,6 +16,11 @@
         <scala.compat.version>2.11</scala.compat.version>
         <akka.version>2.3.15</akka.version>
         <spray.version>1.3.2</spray.version>
+        <slick.version>3.1.1</slick.version>
+        <json4s.version>3.3.0</json4s.version>
+        <tototoshi.version>1.3.0</tototoshi.version>
+        <logback.version>1.1.6</logback.version>
+        <slf4s.version>1.7.13</slf4s.version>
     </properties>
 
     <dependencies>
@@ -40,19 +45,24 @@
             <version>${akka.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.typesafe.slick</groupId>
+            <artifactId>slick_${scala.compat.version}</artifactId>
+            <version>${slick.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.json4s</groupId>
             <artifactId>json4s-jackson_${scala.compat.version}</artifactId>
-            <version>3.3.0</version>
+            <version>${json4s.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.tototoshi</groupId>
             <artifactId>scala-csv_${scala.compat.version}</artifactId>
-            <version>1.3.0</version>
+            <version>${tototoshi.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.1.6</version>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -62,7 +72,7 @@
         <dependency>
             <groupId>org.slf4s</groupId>
             <artifactId>slf4s-api_${scala.compat.version}</artifactId>
-            <version>1.7.13</version>
+            <version>${slf4s.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -97,6 +107,11 @@
         <dependency>
             <groupId>io.spray</groupId>
             <artifactId>spray-servlet_${scala.compat.version}</artifactId>
+            <version>${spray.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.spray</groupId>
+            <artifactId>spray-testkit_${scala.compat.version}</artifactId>
             <version>${spray.version}</version>
         </dependency>
     </dependencies>

@@ -2,10 +2,13 @@ package quanter.orders
 
 import java.util.Date
 
-import quanter.orders.OrderType.OrderType
 import quanter.orders.OrderDirection._
+import quanter.orders.OrderType.OrderType
 import quanter.{Asserts, SecurityType}
 
+/**
+  *
+  */
 object Order {
   def createOrder(request : String) = {
     val orderType = "limit"
@@ -20,6 +23,13 @@ object Order {
   }
 }
 
+/**
+  * 订单抽象类
+  * @param symbol
+  * @param quantity
+  * @param time
+  * @param tag
+  */
 abstract class Order(val symbol: String, var quantity: Int, time: Date, var tag: String) {
   var id = 0
 //  var symbol : String = psymbol
@@ -35,7 +45,6 @@ abstract class Order(val symbol: String, var quantity: Int, time: Date, var tag:
   def value = quantity * price
   def tradeId = ""
 
-
   def this() {
     this(null, 0, null, "")
   }
@@ -48,8 +57,8 @@ abstract class Order(val symbol: String, var quantity: Int, time: Date, var tag:
     var ttag: String = null
     Asserts.assert(torderId == id)
 
-    if(quantity != None) quantity = tquantity.get
-    if(tag != null) tag = ttag
+    if(tquantity != None) quantity = tquantity.get
+    if(ttag != null) tag = ttag
   }
 }
 
@@ -67,10 +76,17 @@ abstract class Order(val symbol: String, var quantity: Int, time: Date, var tag:
 //  override def orderType = OrderType.StopMarket
 //}
 
-class LimitOrder(symbol: String, quantity: Int, var limitPrice:Double, time:Date, override var tag: String="") extends Order(symbol, quantity, time, tag) {
+/**
+  * 限价订单
+  * @param symbol
+  * @param quantity
+  * @param limitPrice
+  * @param time
+  */
+class LimitOrder(symbol: String, quantity: Int, var limitPrice:Double, time:Date) extends Order(symbol, quantity, time, "") {
 //  var _limitPrice : Double = plimitPrice
 //  def limitPrice = _limitPrice
-  if(tag == "") this.tag = "Limit Price: " + limitPrice
+  if(tag == "") tag = "Limit Price: " + limitPrice
   override def orderType: OrderType = OrderType.Limit
   override def applyUpdateOrderRequest(request : String) : Unit = {
     super.applyUpdateOrderRequest(request)

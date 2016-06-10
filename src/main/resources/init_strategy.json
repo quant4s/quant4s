@@ -1,21 +1,19 @@
 {
-  "strategy": {
-    "id": "000001",
-    "name": "实盘测试",
-    "mode": "live|backtest|mock",
-    "trade": 1,
-    "cash": 100000,
-    "securities": [
-      {
-        "symbol": "000001.XSHE",
-        "cost": 12.3,
-        "amount": 2000
-      },
-      {
-        "symbol": "000001.XSHE",
-        "cost": 12.3,
-        "amount": 2000
-      }
-    ]
-  }
+  "id": "000001",
+  "name": "实盘测试",
+  "mode": "live|backtest|mock",
+  "trade": 1,
+  "cash": 100000,
+  "securities": [
+    {
+      "symbol": "000001.XSHE",
+      "cost": 12.3,
+      "amount": 2000
+    },
+    {
+      "symbol": "000001.XSHE",
+      "cost": 12.3,
+      "amount": 2000
+    }
+  ]
 }

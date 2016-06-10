@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.scalaz:scalaz-effect_2.11:7.0.6">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/scalaz/scalaz-effect_2.11/7.0.6/scalaz-effect_2.11-7.0.6.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/scalaz/scalaz-effect_2.11/7.0.6/scalaz-effect_2.11-7.0.6-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/scalaz/scalaz-effect_2.11/7.0.6/scalaz-effect_2.11-7.0.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
