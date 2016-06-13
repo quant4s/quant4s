@@ -5,6 +5,7 @@ import java.io.{BufferedReader, InputStreamReader}
 import akka.actor.{Actor, ActorLogging, ActorSelection, Props}
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.DefaultHttpClient
+import quanter.actors.provider.{AskListenedSymbol, Execute, QuerySnapData}
 import quanter.actors.securities.SecuritiesManagerActor
 import quanter.data.market.SnapData
 
@@ -13,9 +14,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-case class AskListenedSymbol(symbol: String)
-case class QuerySnapData()
-case class Execute()
+
 /**
   *
   */

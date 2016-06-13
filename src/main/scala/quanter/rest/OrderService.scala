@@ -46,10 +46,13 @@ trait OrderService extends HttpService {
       val jv = parse(json)
       val orders = jv.extract[Transaction]
 
-      // TODO: 保存订单， 下单
-      for(order <- orders.orders) {
-        order.strategyId = orders.strategyId
-      }
+      tradeRoute ! orders
+
+//      for(order <- orders.orders) {
+//        order.strategyId = orders.strategyId
+//        tradeRoute ! order
+//      }
+
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
     }

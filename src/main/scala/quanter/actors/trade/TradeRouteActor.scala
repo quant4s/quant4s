@@ -35,6 +35,7 @@ class TradeRouteActor extends Actor {
   private def _handleOrder(tran: Transaction): Unit = {
     for(order <- tran.orders) {
       // TODO: 将订单保存到数据库
+
       traders.get(order.tradeId).get ! order
     }
   }

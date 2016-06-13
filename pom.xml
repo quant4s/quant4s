@@ -114,6 +114,11 @@
             <artifactId>spray-testkit_${scala.compat.version}</artifactId>
             <version>${spray.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.wandoulabs.akka</groupId>
+            <artifactId>spray-websocket_${scala.compat.version}</artifactId>
+            <version>0.1.4</version>
+        </dependency>
     </dependencies>
 
     <build>
