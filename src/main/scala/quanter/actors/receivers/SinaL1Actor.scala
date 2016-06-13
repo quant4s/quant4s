@@ -45,7 +45,7 @@ class SinaL1Actor extends Actor with ActorLogging {
   private def _addSymbol(symbol: String): Unit = {
     if (!symbolSelections.contains(symbol)) {
       log.debug(s"准备接受${symbol}的行情数据")
-      val ref = context.actorSelection(s"/usr/${SecuritiesManagerActor.Path}/${symbol}")
+      val ref = context.actorSelection(s"/usr/${SecuritiesManagerActor.path}/${symbol}")
       symbolSelections += (symbol -> ref)
       aliases += _symbol2Alias(symbol)
     }

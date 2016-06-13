@@ -11,7 +11,8 @@ case class CreateStrategy(strategy: Strategy)
 case class UpdateStrategy(strategy: Strategy)
 case class DeleteStrategy(id: Int)
 case class RunStrategy(id: Int)
-
+case class ListStrategies()
+case class GetStrategy(id: Int)
 /**
   *
   */
@@ -22,7 +23,15 @@ class StrategiesManagerActor extends Actor{
     case s: CreateStrategy => _saveStrategy(s.strategy)
     case s: UpdateStrategy => _updateStrategy(s.strategy)
     case s: DeleteStrategy => _deleteStrategy(s.id)
-    case s: RunStrategy => _runStrategy(id)
+    case s: RunStrategy => _runStrategy(s.id)
+    case s: ListStrategies => _listStrategies()
+    case s: GetStrategy => _getStrategy(s.id)
+  }
+
+  private def _getStrategy(id: Int): Unit = {
+   //  println ("长度为："+ managers.getAllStrategies().length)
+    val strategy = managers.getStrategy(id)
+    sender ! strategy
   }
 
   private def _saveStrategy(strategy: Strategy) = {
@@ -30,6 +39,9 @@ class StrategiesManagerActor extends Actor{
     managers.addStrategy(strategy)
   }
 
+  private def _listStrategies() = {
+    sender ! managers.getAllStrategies()
+  }
   private def _updateStrategy(strategy: Strategy) = {
     // TODO: 保存到数据库
     managers.modifyStrategy(strategy)
@@ -42,7 +54,7 @@ class StrategiesManagerActor extends Actor{
 
   private def _runStrategy(id: Int): Unit = {
     val strategy = managers.getStrategy(id)
-    strategy.status = 1
+    strategy.get.status = 1
 
     // TODO: 保存到数据库
   }

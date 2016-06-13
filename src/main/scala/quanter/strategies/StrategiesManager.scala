@@ -29,7 +29,7 @@ class StrategiesManager {
     strategies -= id
   }
 
-  def getStrategy(id: Int): Strategy = {
-    strategies.get(id).get
+  def getStrategy(id: Int): Option[Strategy] = {
+    strategies.get(id)
   }
 }

@@ -14,7 +14,7 @@ object SecuritiesManagerActor {
     Props(classOf[SecuritiesManagerActor])
   }
 
-  val Path = "SEC_MANAGER"
+  val path = "SEC_MANAGER"
 }
 
 class SecuritiesManagerActor extends Actor with ActorLogging {

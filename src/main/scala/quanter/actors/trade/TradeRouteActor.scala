@@ -1,7 +1,7 @@
 package quanter.actors.trade
 
 import akka.actor.{Actor, ActorRef, Props}
-import quanter.orders.Order
+import quanter.rest.Transaction
 
 import scala.collection.mutable
 
@@ -10,9 +10,9 @@ import scala.collection.mutable
   * 2、处理订单
   */
 class TradeRouteActor extends Actor {
-  var traders = new mutable.HashMap[String, ActorRef]()
+  var traders = new mutable.HashMap[Int, ActorRef]()
   override def receive: Receive = {
-    case order: Order => _handleOrder(order)
+    case tran: Transaction => _handleOrder(tran)
   }
 
   /**
@@ -20,7 +20,7 @@ class TradeRouteActor extends Actor {
  *
     * @param id
     */
-  private def _init(id: String): Unit = {
+  private def _init(id: Int): Unit = {
     val trader = null
     val ref = context.actorOf(TradeActor.props(trader))
 
@@ -30,10 +30,13 @@ class TradeRouteActor extends Actor {
   /**
     * 将订单发送给合适的交易通道
  *
-    * @param order
+    * @param tran
     */
-  private def _handleOrder(order: Order): Unit = {
-    traders.get(order.tradeId).get ! order
+  private def _handleOrder(tran: Transaction): Unit = {
+    for(order <- tran.orders) {
+      // TODO: 将订单保存到数据库
+      traders.get(order.tradeId).get ! order
+    }
   }
 }
 

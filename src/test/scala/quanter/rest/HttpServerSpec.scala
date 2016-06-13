@@ -11,6 +11,7 @@ import spray.util._
 import spray.http._
 import MediaTypes._
 import HttpCharsets._
+import quanter.actors.strategies.StrategiesManagerActor
 
 /**
   *
@@ -18,6 +19,7 @@ import HttpCharsets._
 class HttpServerSpec extends Specification {
   val system = ActorSystem(Utils.actorSystemNameFrom(getClass))
   val server = system.actorOf(HttpServer.props())
+  system.actorOf(StrategiesManagerActor.props, StrategiesManagerActor.path)
 
   "'strategyRoute' 指令" should {
     "POST /strategy 创建一个策略" in {
@@ -29,6 +31,13 @@ class HttpServerSpec extends Specification {
       success
     }
 
+    "GET /strategy/[id] 将获取一个策略的详细(资金，仓位)信息" in {
+      val probe = TestProbe()(system)
+      probe.send(server, Get("/strategy/1"))
+      probe.expectMsg(HttpResponse(entity = HttpEntity(ContentType(`text/plain`, `UTF-8`), """{"id":1,"name":"unnamed","cash":1000}""")))
+      success
+    }
+
     "GET /strategy/list 将获取策略列表" in {
       val probe = TestProbe()(system)
       probe.send(server, Post("/strategy", HttpEntity(MediaTypes.`application/json`,
@@ -36,13 +45,6 @@ class HttpServerSpec extends Specification {
       )))
       probe.send(server, Get("/strategy/list"))
       probe.expectMsg(HttpResponse(entity = HttpEntity(ContentType(`text/plain`, `UTF-8`), """[{"id":1,"name":"unnamed"},{"id":2,"name":"unnamed"}]""")))
-      success
-    }
-
-    "GET /strategy/[id] 将获取一个策略的详细(资金，仓位)信息" in {
-      val probe = TestProbe()(system)
-      probe.send(server, Get("/strategy/1"))
-      probe.expectMsg(HttpResponse(entity = HttpEntity(ContentType(`text/plain`, `UTF-8`), """{"id":1,"name":"unnamed","cash":1000}""")))
       success
     }
 
@@ -70,7 +72,6 @@ class HttpServerSpec extends Specification {
       val probe = TestProbe()(system)
       probe.send(server, Get("/strategy/real/history/1"))
       success
-
     }
 
   }
@@ -79,7 +80,16 @@ class HttpServerSpec extends Specification {
 
     "POST /order 用于创建一个订单" in {
       val probe = TestProbe()(system)
-      probe.send(server, Post("/order", HttpEntity(MediaTypes.`application/json`,"""{"id":123}""")))
+      probe.send(server, Post("/order", HttpEntity(MediaTypes.`application/json`,
+        """{"strategyId":1,
+          |"orders":[
+          |{"id":1,
+          |"symbol":"000001.XSHE",
+          |"quantity": 1000,
+          |"price": 11.3,
+          |"orderType": 0,
+          |"orderStatus": 0,
+          |"tradeId": 1}]}""".stripMargin)))
       probe.expectMsg(HttpResponse(entity = HttpEntity(ContentType(`text/plain`, `UTF-8`), "成功创建订单")))
       success
     }

@@ -21,4 +21,12 @@ class TradeActor(trade: TTrade) extends Actor{
   }
 
   override def receive: Receive = ???
+
+  private def _buy(): Unit = {
+
+  }
+
+  private def _sell(): Unit = {
+
+  }
 }

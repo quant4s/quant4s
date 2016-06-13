@@ -1,21 +1,23 @@
 package quanter.rest
 
-import java.text.SimpleDateFormat
-import javax.xml.soap.SOAPMessage
-
 import org.json4s.{DefaultFormats, Extraction, Formats}
 import spray.routing._
-import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 import quanter.actors.strategies._
 import quanter.strategies.StrategiesManager
+import akka.pattern.ask
+import akka.util.Timeout
+
+import scala.concurrent.{Await, ExecutionContext}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
 /**
   *
   */
 trait StrategyService extends HttpService {
   val strategiesManager = new StrategiesManager()
-  val manager = actorRefFactory.actorSelection(StrategiesManagerActor.path)
+  val manager = actorRefFactory.actorSelection("/user/" + StrategiesManagerActor.path)
 
   val strategyServiceRoute = {
     get {
@@ -95,19 +97,30 @@ trait StrategyService extends HttpService {
     * @return
     */
   private def _getAllStrategies(): String = {
-    val strategies = strategiesManager.getAllStrategies()
+    // val strategies = strategiesManager.getAllStrategies()
+    implicit val timeout = Timeout(5 seconds)
+    val future = manager ? ListStrategies
 
-    // TODO: 将strategyies 转换为 json
-    """[{"id":1,"name":"unnamed"},{"id":2,"name":"unnamed"}]"""
+    val result = Await.result(future, timeout.duration).asInstanceOf[Array[Strategy]]
+    implicit val formats: Formats = DefaultFormats
+    val json = Extraction.decompose(result)
+    compact(render(json))
   }
 
   private def _getStrategy(id: Int): String = {
     try {
-      val strategy = strategiesManager.getStrategy(id)
-      implicit val formats: Formats = DefaultFormats
-      // 将strategy转换为json
-      val json = Extraction.decompose(strategy)
-      compact(render(json))
+      implicit val timeout = Timeout(10 seconds)
+      val future = manager ? GetStrategy(id)
+      var  ret = ""
+      val result = Await.result(future, timeout.duration).asInstanceOf[Option[Strategy]]
+      if(result == None) ret = """{"code":1}"""
+      else {
+        implicit val formats: Formats = DefaultFormats
+        val json = Extraction.decompose(result.get)
+        ret = compact(render(json))
+      }
+
+      ret
     } catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
     }

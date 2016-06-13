@@ -4,7 +4,8 @@ import akka.actor.ActorSystem
 import akka.io.IO
 import quanter.actors.receivers.{AskListenedSymbol, Execute, SinaL1Actor}
 import quanter.actors.securities.SecuritiesManagerActor
-import quanter.rest.{HttpServer, HttpServer$}
+import quanter.actors.strategies.StrategiesManagerActor
+import quanter.rest.HttpServer
 import spray.can.Http
 import spray.routing.SimpleRoutingApp
 
@@ -17,6 +18,8 @@ object MainApp extends App {
   implicit val system = ActorSystem("server-system")
 
   val httpServer = system.actorOf(HttpServer.props())
+  // system.actorOf(SecuritiesManagerActor.props(), SecuritiesManagerActor.path)
+  system.actorOf(StrategiesManagerActor.props, StrategiesManagerActor.path)
 
   // 启动REST 服务
   IO(Http) ! Http.Bind(httpServer, "127.0.0.1", port = 888)

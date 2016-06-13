@@ -1,11 +1,8 @@
 package quanter.rest
 
-import akka.actor.{Actor, ActorLogging}
-import spray.http.StatusCode
-import spray.http.StatusCodes.Success
-import spray.routing.HttpService
-import org.json4s._
+import org.json4s.DefaultFormats
 import org.json4s.jackson.JsonMethods._
+import spray.routing.HttpService
 import quanter.actors.trade.TradeRouteActor
 
 /**
@@ -20,7 +17,7 @@ trait OrderService extends HttpService {
         requestInstance {
           request =>
             complete {
-              request.entity.data.asString
+              _createOrder(request.entity.data.asString)
             }
         }
       }
@@ -44,6 +41,18 @@ trait OrderService extends HttpService {
   }
 
   private def _createOrder(json: String): String = {
+    implicit val formats = DefaultFormats
+    try {
+      val jv = parse(json)
+      val orders = jv.extract[Transaction]
+
+      // TODO: 保存订单， 下单
+      for(order <- orders.orders) {
+        order.strategyId = orders.strategyId
+      }
+    }catch {
+      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
     // val jv = parse(json)
     // val v: JValue = (jv \ "orders")(0) \ "symbol"
 

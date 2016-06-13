@@ -38,3 +38,19 @@ case class SecurityHolding(symbol: String, quantity: Long, totalCost: Double) {
   def averageCost = totalCost / quantity
   def marketValue = quantity * lastPrice
 }
+
+/**
+  *
+  * @param id
+  * @param symbol
+  * @param quantity
+  * @param price
+  * @param orderType 0:限价单 1:市价单 2:...
+  * @param orderStatus 0: New
+  * @param tradeId 交易接口编号
+  */
+case class Order(id:Int, symbol: String, quantity: Int, price: Option[Double], orderType: Int, orderStatus: Int, tradeId: Int) {
+  var strategyId: Int = 0
+}
+
+case class Transaction(strategyId: Int, orders: List[Order])

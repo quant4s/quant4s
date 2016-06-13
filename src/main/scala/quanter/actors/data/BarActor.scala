@@ -19,7 +19,7 @@ object BarActor {
 
 class BarActor(symbol: String, duration: Int) extends Actor {
 
-  val securitiesManagerRef = context.actorSelection("/user/" + SecuritiesManagerActor.Path)
+  val securitiesManagerRef = context.actorSelection("/user/" + SecuritiesManagerActor.path)
   var consolidator: TradeBarConsolidator = null
   override def receive: Receive = {
     case _ =>   // TODO: 接收到Tick数据
