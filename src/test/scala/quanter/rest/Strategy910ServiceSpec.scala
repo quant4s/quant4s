@@ -6,11 +6,10 @@ package quanter.rest
 import org.json4s.DefaultFormats
 import org.json4s.jackson.JsonMethods._
 import quanter.actors.strategies.StrategiesManagerActor
-import spray.http.StatusCodes.Success
 import spray.http.{HttpEntity, MediaTypes}
 
 /**
-  *
+  * 策略 CRUD 的操作测试
   */
 class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
   def actorRefFactory = system
@@ -38,7 +37,7 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
       }
     }
 
-    "  读取策略910" in {
+    "  读取存在的策略910" in {
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
         """{"id": 910,"name": "实盘测试","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
       )) ~> strategyServiceRoute ~> check {
@@ -54,7 +53,7 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
       }
     }
 
-    "  读取策略918" in {
+    "  读取不存在的策略918" in {
       Get("/strategy/918") ~> strategyServiceRoute ~> check {
         responseAs[String] === """{"code":1}"""
       }
@@ -83,11 +82,37 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
     }
 
     "删除策略913" in {
+      Post("/strategy", HttpEntity(MediaTypes.`application/json`,
+        """{"id": 913,"name": "实盘测试","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
+      )) ~> strategyServiceRoute ~> check {
+        //status === Success
+        responseAs[String] === """{"code":0}"""
+      }
       Delete("/strategy/913") ~> strategyServiceRoute ~> check {
         responseAs[String] === """{"code":0, "message":"成功删除"}"""
       }
       Get("/strategy/913") ~> strategyServiceRoute ~> check {
         responseAs[String] === """{"code":1}"""
+      }
+    }
+
+    "运行一个策略910" in {
+      Post("/strategy", HttpEntity(MediaTypes.`application/json`,
+        """{"id": 910,"name": "实盘测试","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
+      )) ~> strategyServiceRoute ~> check {
+        //status === Success
+        responseAs[String] === """{"code":0}"""
+      }
+      Post("/strategy/run/910") ~> strategyServiceRoute ~> check {
+        responseAs[String] === """{"code":0}"""
+      }
+      Get("/strategy/910") ~> strategyServiceRoute ~> check {
+        val json = responseAs[String]
+        implicit val formats = DefaultFormats
+        val jv = parse(json)
+        val strategy = jv.extract[Strategy]
+        strategy.id === 910
+        strategy.status === 1
       }
     }
   }

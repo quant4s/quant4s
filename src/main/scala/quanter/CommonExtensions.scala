@@ -2,6 +2,8 @@ package quanter
 
 import java.util.{Calendar, Date}
 
+import org.apache.commons.math3.stat.correlation.{Covariance, PearsonsCorrelation}
+import org.apache.commons.math3.stat.descriptive.moment.Variance
 import quanter.Resolution._
 
 /**
@@ -28,8 +30,36 @@ object CommonExtensions {
     def - (x:Date) : TimeSpan = {
       new TimeSpan(time.getTime() - x.getTime())
     }
+
+    def >= (x: Date): Boolean = {
+      true
+    }
+    def <= (x:Date): Boolean = {
+      true
+    }
   }
 
+  implicit class IterableExt(left: Iterable[Double]) {
+    def variance(): Double = {
+      val variance = new Variance()
+      variance.evaluate(left.toArray)
+    }
+
+    def variance(period: Int): Double = {
+      val variance = new Variance()
+      variance.evaluate(left.toArray, period)
+    }
+
+    def covariance(yArray: Iterable[Double]): Double = {
+      val covariance = new Covariance()
+      covariance.covariance(left.toArray, yArray.toArray)
+    }
+
+    def pearsonsCorrelation(yArray: Iterable[Double]): Double = {
+      val pc = new PearsonsCorrelation()
+      pc.correlation(left.toArray, yArray.toArray)
+    }
+  }
   implicit class ResolutionExt(resoltion: Resolution) {
     def toTimeSpan(): TimeSpan= {
       resoltion match {

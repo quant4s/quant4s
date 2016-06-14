@@ -9,6 +9,7 @@ import spray.http.{ContentType, _}
 import StatusCodes._
 import akka.actor.ActorSystem
 import akka.testkit.TestProbe
+import quanter.actors.strategies.StrategiesManagerActor
 import spray.http.HttpCharsets._
 import spray.http.MediaTypes._
 import spray.httpx.RequestBuilding._
@@ -18,7 +19,10 @@ import spray.util.Utils
 /**
   *
   */
-class Strategy900ServiceSpec extends RoutingSpec{
+class Strategy900ServiceSpec extends Specification{
+  val system = ActorSystem(Utils.actorSystemNameFrom(getClass))
+  val server = system.actorOf(HttpServer.props())
+  system.actorOf(StrategiesManagerActor.props, StrategiesManagerActor.path)
 
 //  val system = ActorSystem(Utils.actorSystemNameFrom(getClass))
 //  val server = system.actorOf(HttpServer.props())

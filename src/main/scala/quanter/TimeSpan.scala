@@ -31,4 +31,8 @@ class TimeSpan(ptotalMilliSeconds: Long) {
   def >= (time: TimeSpan): Boolean = {
     this.milliSeconds >= time.milliSeconds
   }
+
+  def totalDays : Int = {
+    (this.milliSeconds / 3600000 * 24).toInt
+  }
 }

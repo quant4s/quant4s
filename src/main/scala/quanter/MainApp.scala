@@ -2,12 +2,9 @@ package quanter
 
 import akka.actor.ActorSystem
 import akka.io.IO
-import quanter.actors.receivers.{AskListenedSymbol, Execute, SinaL1Actor}
-import quanter.actors.securities.SecuritiesManagerActor
 import quanter.actors.strategies.StrategiesManagerActor
 import quanter.rest.HttpServer
 import spray.can.Http
-import spray.routing.SimpleRoutingApp
 
 import scala.io.StdIn
 

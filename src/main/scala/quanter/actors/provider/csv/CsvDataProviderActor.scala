@@ -5,12 +5,11 @@ package quanter.actors.provider.csv
 
 import java.io.File
 
-import akka.actor.Actor.Receive
-import akka.actor.{Actor, ActorSelection}
 import com.github.tototoshi.csv.CSVReader
 import quanter.actors.provider.{AskListenedSymbol, DataProviderActor, Execute, QuerySnapData}
 
 import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -42,5 +41,9 @@ class CsvDataProviderActor extends DataProviderActor {
       val line = reader.readNext()
       // 发送数据到关注的Actor
     }
+  }
+
+  private def _querySnapData(): Unit = {
+
   }
 }
