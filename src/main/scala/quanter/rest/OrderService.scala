@@ -47,12 +47,7 @@ trait OrderService extends HttpService {
       val orders = jv.extract[Transaction]
 
       tradeRoute ! orders
-
-//      for(order <- orders.orders) {
-//        order.strategyId = orders.strategyId
-//        tradeRoute ! order
-//      }
-
+"""{"code": 0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
     }

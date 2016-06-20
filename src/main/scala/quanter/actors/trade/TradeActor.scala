@@ -1,8 +1,12 @@
 package quanter.actors.trade
 
 import akka.actor.{Actor, Props}
+import quanter.strategies.StrategiesManager
 import quanter.trade.TTrade
 
+class TradersManager() {
+
+}
 /**
   *
   */
@@ -12,7 +16,7 @@ object TradeActor {
   }
 }
 class TradeActor(trade: TTrade) extends Actor{
-
+  val managers = new TradersManager()
 
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {

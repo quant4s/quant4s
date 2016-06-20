@@ -54,3 +54,5 @@ case class Order(id:Int, symbol: String, quantity: Int, price: Option[Double], o
 }
 
 case class Transaction(strategyId: Int, orders: List[Order])
+
+case class Trader(id: Int, name: String, username: String, password: String, servicePwd: String, status: Int)

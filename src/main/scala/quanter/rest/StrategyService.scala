@@ -4,19 +4,17 @@ import org.json4s.{DefaultFormats, Extraction, Formats}
 import spray.routing._
 import org.json4s.jackson.JsonMethods._
 import quanter.actors.strategies._
-import quanter.strategies.StrategiesManager
 import akka.pattern.ask
 import akka.util.Timeout
 
 import scala.concurrent.{Await, ExecutionContext}
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 /**
   *
   */
 trait StrategyService extends HttpService {
-  val strategiesManager = new StrategiesManager()
+//  val strategiesManager = new StrategiesManager()
   val manager = actorRefFactory.actorSelection("/user/" + StrategiesManagerActor.path)
 
   val strategyServiceRoute = {

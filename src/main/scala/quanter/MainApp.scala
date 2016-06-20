@@ -2,6 +2,7 @@ package quanter
 
 import akka.actor.ActorSystem
 import akka.io.IO
+import quanter.actors.persistence.PersistenceActor
 import quanter.actors.strategies.StrategiesManagerActor
 import quanter.rest.HttpServer
 import spray.can.Http
@@ -17,6 +18,7 @@ object MainApp extends App {
   val httpServer = system.actorOf(HttpServer.props())
   // system.actorOf(SecuritiesManagerActor.props(), SecuritiesManagerActor.path)
   system.actorOf(StrategiesManagerActor.props, StrategiesManagerActor.path)
+  system.actorOf(PersistenceActor.props, PersistenceActor.path)
 
   // 启动REST 服务
   IO(Http) ! Http.Bind(httpServer, "127.0.0.1", port = 888)

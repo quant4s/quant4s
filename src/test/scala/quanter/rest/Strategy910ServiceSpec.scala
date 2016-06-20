@@ -5,6 +5,7 @@ package quanter.rest
 
 import org.json4s.DefaultFormats
 import org.json4s.jackson.JsonMethods._
+import quanter.actors.persistence.PersistenceActor
 import quanter.actors.strategies.StrategiesManagerActor
 import spray.http.{HttpEntity, MediaTypes}
 
@@ -14,6 +15,8 @@ import spray.http.{HttpEntity, MediaTypes}
 class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
   def actorRefFactory = system
   system.actorOf(StrategiesManagerActor.props, StrategiesManagerActor.path)
+  system.actorOf(PersistenceActor.props, PersistenceActor.path)
+
 
   "策略管理全过程, ID: 910，911， 912" should {
     "  创建三个策略910, 911, 912" in {

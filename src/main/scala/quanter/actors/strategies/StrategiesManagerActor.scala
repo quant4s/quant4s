@@ -4,6 +4,8 @@
 package quanter.actors.strategies
 
 import akka.actor.{Actor, Props}
+import quanter.actors.persistence.{PersistenceActor, SaveStrategy}
+import quanter.persistence.{EStrategy, StrategyDao}
 import quanter.rest.Strategy
 import quanter.strategies.StrategiesManager
 
@@ -18,6 +20,7 @@ case class GetStrategy(id: Int)
   */
 class StrategiesManagerActor extends Actor{
   val managers = new StrategiesManager()
+  val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
 
   override def receive: Receive = {
     case s: CreateStrategy => _saveStrategy(s.strategy)
@@ -35,7 +38,10 @@ class StrategiesManagerActor extends Actor{
   }
 
   private def _saveStrategy(strategy: Strategy) = {
-    // TODO: 保存到数据库
+    // 保存到数据库
+    val es = EStrategy(None, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
+    persisRef ! SaveStrategy(es)
+
     managers.addStrategy(strategy)
   }
 
