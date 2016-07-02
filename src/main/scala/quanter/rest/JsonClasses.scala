@@ -23,7 +23,7 @@ case class Strategy(id: Int, var name: String, var runMode: Int, var status: Int
   * @param date 日期
   * @param holdings 持有股份
   */
-case class Portfolio(cash: Double, date: Date, holdings: List[SecurityHolding]) {
+case class Portfolio(cash: Double, date: Date, holdings: Option[List[SecurityHolding]]) {
 }
 
 /**

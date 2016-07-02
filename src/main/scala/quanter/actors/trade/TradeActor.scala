@@ -1,7 +1,7 @@
 package quanter.actors.trade
 
 import akka.actor.{Actor, Props}
-import quanter.strategies.StrategiesManager
+import quanter.strategies.StrategyCache
 import quanter.trade.TTrade
 
 class TradersManager() {

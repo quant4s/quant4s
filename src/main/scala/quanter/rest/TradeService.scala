@@ -18,7 +18,7 @@ trait TradeService extends HttpService{
     get {
       path("trade" / "list") {
         complete {
-""" """
+          _getAllTraders()
         }
       }
     }~

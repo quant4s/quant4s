@@ -2,7 +2,7 @@ package quanter.actors.trade
 
 import akka.actor.{Actor, ActorRef, Props}
 import quanter.rest.Transaction
-import quanter.trade.TraderManager
+import quanter.trade.TraderCache
 
 import scala.collection.mutable
 
@@ -12,7 +12,7 @@ import scala.collection.mutable
   */
 class TradeRouteActor extends Actor {
   var traders = new mutable.HashMap[Int, ActorRef]()
-  val manager = new TraderManager()
+  val cahche = new TraderCache()
 
   override def receive: Receive = {
     case tran: Transaction => _handleOrder(tran)
@@ -31,11 +31,12 @@ class TradeRouteActor extends Actor {
   }
 
   private def _getAllTraders(): Unit = {
-    sender ! manager.getAllTraders()
+    sender ! cahche.getAllTraders()
   }
 
   /**
     * 将订单发送给合适的交易通道
+ *
     * @param tran
     */
   private def _handleOrder(tran: Transaction): Unit = {

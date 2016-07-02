@@ -10,7 +10,7 @@ import scala.collection.mutable
 /**
   * 管理系统中所有的策略
   */
-class StrategiesManager {
+class StrategyCache {
   var strategies = new mutable.HashMap[Int, Strategy]()
 
   def addStrategy(strategy: Strategy): Unit = {

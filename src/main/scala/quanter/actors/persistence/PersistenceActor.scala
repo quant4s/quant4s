@@ -6,6 +6,7 @@ package quanter.actors.persistence
 import akka.actor.{Actor, Props}
 import quanter.persistence.EStrategy
 import quanter.persistence._
+import quanter.rest.Portfolio
 
 import scala.slick.driver.H2Driver.simple._
 
@@ -19,6 +20,10 @@ case class UpdateStrategy(id: Int, obj: EStrategy)
 case class DeleteStrategy(id: Int)
 case class GetStrategy(id: Int)
 case class ListStrategies()
+
+case class SavePortfolio(obj: EPortfolio)
+case class UpdatePortfolio(id: Int, obj: EPortfolio)
+case class GetPortfolio(id: Int)
 
 object PersistenceActor {
   def props = {
@@ -35,7 +40,7 @@ class PersistenceActor extends Actor {
   val db = Database.forURL(dbUrl, user, password, driver = jdbcDriver)
   implicit val session = db.createSession()
 
-  val ddl = strategies.ddl ++ portfolios.ddl ++ stockHoldings.ddl ++ transactions.ddl ++ orders.ddl ++ traders.ddl
+  val ddl = strategies.ddl ++ portfolios.ddl ++ stockHoldings.ddl ++ transactions.ddl ++ gOrders.ddl ++ traders.ddl
   ddl.create
 
   @scala.throws[Exception](classOf[Exception])
@@ -50,29 +55,35 @@ class PersistenceActor extends Actor {
     case action: UpdateStrategy => _updateStrategy(action.id, action.obj)
     case action: GetStrategy => _getStrategy(action.id)
     case actoin: ListStrategies => _listStrategies()
+
+    case action: SavePortfolio =>
+    case action: UpdatePortfolio =>
+    case action: GetPortfolio =>
     case _ =>
   }
 
-  val dao = new StrategyDao
+  val strategyDao = new StrategyDao
+  val portfolioDao = new PortfolioDao()
   private def _saveStrategy(strategy: EStrategy): Unit = {
-    dao.insert(strategy)
+    strategyDao.insert(strategy)
   }
 
   private def _getStrategy(id: Int): Unit = {
-    val strategy = dao.getById(id)
+    val strategy = strategyDao.getById(id)
+
     sender ! strategy
   }
 
   private def _updateStrategy(id: Int, strategy: EStrategy): Unit = {
-    dao.update(id, strategy)
+    val query = strategyDao.update(id, strategy)
   }
 
   private def _deleteStrategy(id: Int): Unit = {
-    dao.delete(id)
+    strategyDao.delete(id)
   }
 
   private def _listStrategies(): Unit = {
-    sender ! dao.list()
+    sender ! strategyDao.list()
   }
 
 }

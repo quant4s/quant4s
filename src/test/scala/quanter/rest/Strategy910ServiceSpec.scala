@@ -21,13 +21,13 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
   "策略管理全过程, ID: 910，911， 912" should {
     "  创建三个策略910, 911, 912" in {
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
-        """{"id": 910,"name": "实盘测试","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
+        """{"id": 910,"name": "不带资金组合","runMode":1, "status": 1"""
       )) ~> strategyServiceRoute ~> check {
         //status === Success
         responseAs[String] === """{"code":0}"""
       }
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
-        """{"id": 911,"name": "实盘测试","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
+        """{"id": 911,"name": "带资金组合","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
       )) ~> strategyServiceRoute ~> check {
         //status === Success
         responseAs[String] === """{"code":0}"""
@@ -53,6 +53,7 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
         val jv = parse(json)
         val strategy = jv.extract[Strategy]
         strategy.id === 910
+        strategy.portfolio.get.cash === 10000.0
       }
     }
 

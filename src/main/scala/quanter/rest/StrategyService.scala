@@ -118,6 +118,8 @@ trait StrategyService extends HttpService {
         ret = compact(render(json))
       }
 
+      val future1 = manager ? GetPortfolio(id)
+
       ret
     } catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
