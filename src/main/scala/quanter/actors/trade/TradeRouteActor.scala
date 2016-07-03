@@ -1,10 +1,17 @@
 package quanter.actors.trade
 
 import akka.actor.{Actor, ActorRef, Props}
-import quanter.rest.Transaction
+import quanter.rest.{Trader, Transaction}
 import quanter.trade.TraderCache
 
 import scala.collection.mutable
+
+case class ListTraders()
+case class CreateTrader(trader: Trader)
+case class UpdateTrader(trader: Trader)
+case class DeleteTrader(id: Int)
+case class GetTrader(id: Int)
+
 
 /**
   * 1、管理交易接口
@@ -12,9 +19,16 @@ import scala.collection.mutable
   */
 class TradeRouteActor extends Actor {
   var traders = new mutable.HashMap[Int, ActorRef]()
-  val cahche = new TraderCache()
+  val cache = new TraderCache()
 
   override def receive: Receive = {
+    case ListTraders => _getAllTraders()
+    case t: CreateTrader => _createTrader(t.trader)
+    case t: UpdateTrader => _updateTrader(t.trader)
+    case t: DeleteTrader => _deleteTrader(t.id)
+    case t: GetTrader => _getTrader(t.id)
+
+
     case tran: Transaction => _handleOrder(tran)
   }
 
@@ -30,8 +44,25 @@ class TradeRouteActor extends Actor {
     traders += (id -> ref)
   }
 
+  // CRUD 的操作
   private def _getAllTraders(): Unit = {
-    sender ! cahche.getAllTraders()
+    sender ! cache.getAllTraders()
+  }
+
+  private def _createTrader(trader: Trader): Unit = {
+    sender ! cache.addTrader(trader)
+  }
+
+  private def _updateTrader(trader: Trader): Unit = {
+    cache.modifyTrader(trader)
+  }
+
+  private def _deleteTrader(id: Int): Unit = {
+   cache.removeTrader(id)
+  }
+
+  private def _getTrader(id: Int): Unit = {
+    sender ! cache.getTrader(id)
   }
 
   /**
@@ -49,11 +80,10 @@ class TradeRouteActor extends Actor {
 }
 
 object TradeRouteActor {
-  def props(): Props = {
+  def props: Props = {
     Props(classOf[TradeRouteActor])
   }
 
   val path = "tradeManager"
 }
 
-case class ListTraders()

@@ -99,9 +99,10 @@ trait StrategyService extends HttpService {
     implicit val timeout = Timeout(5 seconds)
     val future = manager ? ListStrategies
 
-    val result = Await.result(future, timeout.duration).asInstanceOf[Array[Strategy]]
+    val result = Await.result(future, timeout.duration).asInstanceOf[Option[Array[Strategy]]]
     implicit val formats: Formats = DefaultFormats
-    val json = Extraction.decompose(result)
+    val retStrategyList = RetStrategyList(0, "成功", result)
+    val json = Extraction.decompose(retStrategyList)
     compact(render(json))
   }
 
@@ -114,11 +115,12 @@ trait StrategyService extends HttpService {
       if(result == None) ret = """{"code":1}"""
       else {
         implicit val formats: Formats = DefaultFormats
-        val json = Extraction.decompose(result.get)
+        val retStrategy = RetStrategy(0, "获取成功", result)
+        val json = Extraction.decompose(retStrategy)
         ret = compact(render(json))
       }
 
-      val future1 = manager ? GetPortfolio(id)
+      // val future1 = manager ? GetPortfolio(id)
 
       ret
     } catch {
@@ -149,7 +151,6 @@ trait StrategyService extends HttpService {
       val jv = parse(json)
       val strategy = jv.extract[Strategy]
 
-//      strategiesManager.addStrategy(strategy)
       manager ! CreateStrategy(strategy)
       """{"code":0}"""
     }catch {
