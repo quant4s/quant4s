@@ -56,11 +56,11 @@ case class Order(id:Int, symbol: String, quantity: Int, price: Option[Double], o
 
 case class Transaction(strategyId: Int, orders: List[Order])
 
-case class Trader(id: Int, name: String, username: String, password: String, servicePwd: String, status: Int)
+case class Trader(id: Int, name: String, username: String, password: String, servicePwd: Option[String], status: Int)
 
 
 // 返回的JSON CLASS
 case class RetStrategy(code: Int, message: String, strategy: Option[Strategy])
-case class RetStrategyList(code: Int, message: String, strategy: Option[Array[Strategy]])
+case class RetStrategyList(code: Int, message: String, strategies: Option[Array[Strategy]])
 case class RetTrader(code: Int, message: String, trader: Option[Trader])
-case class RetTraderList(code: Int, message: String, trader: Option[Array[Trader]])
+case class RetTraderList(code: Int, message: String, traders: Option[Array[Trader]])

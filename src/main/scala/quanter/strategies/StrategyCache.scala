@@ -3,7 +3,7 @@
   */
 package quanter.strategies
 
-import quanter.rest.Strategy
+import quanter.rest.{Trader, Strategy}
 
 import scala.collection.mutable
 
@@ -12,6 +12,8 @@ import scala.collection.mutable
   */
 class StrategyCache {
   var strategies = new mutable.HashMap[Int, Strategy]()
+
+  strategies += (1 -> Strategy(1, "demo 1", 1, 1, Some("C#"), None), 2 -> Strategy(2, "demo 2", 1, 1, Some("C#"), None))
 
   def addStrategy(strategy: Strategy): Unit = {
     strategies += (strategy.id -> strategy)

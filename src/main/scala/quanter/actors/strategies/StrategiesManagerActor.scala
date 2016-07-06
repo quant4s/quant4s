@@ -54,7 +54,7 @@ class StrategiesManagerActor extends Actor{
   }
 
   private def _listStrategies() = {
-    sender ! strategyCache.getAllStrategies()
+    sender ! Some(strategyCache.getAllStrategies())
   }
   private def _updateStrategy(strategy: Strategy) = {
     // TODO: 保存到数据库

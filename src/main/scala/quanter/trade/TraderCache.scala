@@ -13,7 +13,7 @@ import scala.collection.mutable
 class TraderCache {
   var traders = new mutable.HashMap[Int, Trader]()
 
-  traders += (1 -> Trader(1, "XSHE", "username", "password", "servicepwd", 0), 2 -> Trader(2, "XSHG", "username", "password", "servicepwd", 0))
+  traders += (1 -> Trader(1, "XSHE", "username", "password", Some("servicepwd"), 0), 2 -> Trader(2, "XSHG", "username", "password", Some("servicepwd"), 0))
 
   def addTrader(trader: Trader): Unit = {
     traders += (trader.id -> trader)

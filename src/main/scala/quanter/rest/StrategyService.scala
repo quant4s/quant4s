@@ -1,7 +1,7 @@
 package quanter.rest
 
 import org.json4s.{DefaultFormats, Extraction, Formats}
-import spray.routing._
+import spray.routing.HttpService
 import org.json4s.jackson.JsonMethods._
 import quanter.actors.strategies._
 import akka.pattern.ask
@@ -16,7 +16,24 @@ import scala.concurrent.duration._
 trait StrategyService extends HttpService {
 //  val strategiesManager = new StrategiesManager()
   val manager = actorRefFactory.actorSelection("/user/" + StrategiesManagerActor.path)
-
+//  val strategyServiceRoute = {
+//    post {
+//      path("/strategy") {
+//        requestInstance {
+//          request => {
+//            complete {
+//              "code: 0"
+//            }
+//          }
+//        }
+//      }
+//    } ~
+//    get {
+//      path("strategy") {
+//        complete("""{"code":404}""")
+//      }
+//    }
+//  }
   val strategyServiceRoute = {
     get {
       path("strategy") {
@@ -51,7 +68,7 @@ trait StrategyService extends HttpService {
             _getStrategy(id)
           }
       }
-    } ~
+    }  ~
     post {
       path("strategy") {
         requestInstance {
@@ -95,15 +112,18 @@ trait StrategyService extends HttpService {
     * @return
     */
   private def _getAllStrategies(): String = {
-    // val strategies = strategiesManager.getAllStrategies()
-    implicit val timeout = Timeout(5 seconds)
-    val future = manager ? ListStrategies
+    try {
+      implicit val timeout = Timeout(5 seconds)
+      val future = manager ? ListStrategies
 
-    val result = Await.result(future, timeout.duration).asInstanceOf[Option[Array[Strategy]]]
-    implicit val formats: Formats = DefaultFormats
-    val retStrategyList = RetStrategyList(0, "成功", result)
-    val json = Extraction.decompose(retStrategyList)
-    compact(render(json))
+      val result = Await.result(future, timeout.duration).asInstanceOf[Option[Array[Strategy]]]
+      implicit val formats: Formats = DefaultFormats
+      val retStrategyList = RetStrategyList(0, "成功", result)
+      val json = Extraction.decompose(retStrategyList)
+      compact(render(json))
+    }  catch {
+      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
   }
 
   private def _getStrategy(id: Int): String = {
@@ -119,8 +139,6 @@ trait StrategyService extends HttpService {
         val json = Extraction.decompose(retStrategy)
         ret = compact(render(json))
       }
-
-      // val future1 = manager ? GetPortfolio(id)
 
       ret
     } catch {

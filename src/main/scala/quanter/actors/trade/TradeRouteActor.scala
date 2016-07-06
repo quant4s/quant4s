@@ -46,7 +46,7 @@ class TradeRouteActor extends Actor {
 
   // CRUD 的操作
   private def _getAllTraders(): Unit = {
-    sender ! cache.getAllTraders()
+    sender ! Some(cache.getAllTraders())
   }
 
   private def _createTrader(trader: Trader): Unit = {

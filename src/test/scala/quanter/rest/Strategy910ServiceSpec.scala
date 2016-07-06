@@ -13,12 +13,9 @@ import spray.http.{HttpEntity, MediaTypes}
   * 策略 CRUD 的操作测试
   */
 class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
-  def actorRefFactory = system
-  system.actorOf(StrategiesManagerActor.props, StrategiesManagerActor.path)
-  system.actorOf(PersistenceActor.props, PersistenceActor.path)
+  implicit def actorRefFactory = system
 
-
-  "策略管理全过程, ID: 910，911， 912" should {
+  "策略管理全过程, ID: 910，911，912" should {
     "  创建三个策略910, 911, 912" in {
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
         """{"id": 910,"name": "不带资金组合","runMode":1, "status": 1}"""
@@ -38,6 +35,15 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
         //status === Success
         responseAs[String] === """{"code":0}"""
       }
+      Get("/strategy/list")~> strategyServiceRoute ~> check {
+        val json = responseAs[String]
+        println( json)
+        implicit val formats = DefaultFormats
+        val jv = parse(json)
+        val ret = jv.extract[RetStrategyList]
+        ret.code === 0
+        ret.strategies.getOrElse(new Array[Strategy](1)).length === 3
+      }
     }
 
     "  读取存在的策略910" in {
@@ -53,7 +59,7 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
         val jv = parse(json)
         val ret = jv.extract[RetStrategy]
         ret.code === 0
-        ret.strategy.get.portfolio.get.cash === 10000.0
+        ret.strategy.get.portfolio.get.cash === 100000.0
       }
     }
 
@@ -79,9 +85,10 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
         val json = responseAs[String]
         implicit val formats = DefaultFormats
         val jv = parse(json)
-        val strategy = jv.extract[Strategy]
-        strategy.id === 912
-        strategy.portfolio.get.cash === 90000
+        val ret = jv.extract[RetStrategy]
+        ret.code === 0
+        ret.strategy.get.id === 912
+        ret.strategy.get.portfolio.get.cash === 90000
       }
     }
 
@@ -114,9 +121,10 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
         val json = responseAs[String]
         implicit val formats = DefaultFormats
         val jv = parse(json)
-        val strategy = jv.extract[Strategy]
-        strategy.id === 910
-        strategy.status === 1
+        val ret = jv.extract[RetStrategy]
+        ret.code === 0
+        ret.strategy.get.id === 910
+        ret.strategy.get.status === 1
       }
     }
   }
