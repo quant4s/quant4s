@@ -1,7 +1,7 @@
 package quanter.mq
 
 import akka.actor.Actor
-import quanter.actors.data.{CreateBarActor, CreateIndicatorActor, CreateTickActor, DataManagerActor}
+import quanter.actors.data.{RequestBarData, RequestIndicatorData, RequestTickData, DataManagerActor}
 import org.json4s._
 import org.json4s.jackson.{Serialization, JsonMethods}
 
@@ -15,7 +15,7 @@ import org.json4s.jackson.{Serialization, JsonMethods}
   *  order.json
   */
 class Listener extends Actor{
-  val manager = context.actorSelection(DataManagerActor.PATH)
+  val manager = context.actorSelection(DataManagerActor.path)
 
   override def receive: Receive = {
     case _ =>
@@ -41,14 +41,14 @@ class Listener extends Actor{
 
   // TODO: 需要根据登录信息比对，
   private def _askIndicatorData(json: String): Unit = {
-    manager ! new CreateIndicatorActor(json)
+    manager ! new RequestIndicatorData(json)
   }
 
   private def _askBarData(json: String): Unit = {
-    manager ! new CreateBarActor(json)
+    manager ! new RequestBarData(json)
   }
 
   private def _askTickData(json: String): Unit = {
-    manager ! new CreateTickActor(json)
+    manager ! new RequestTickData(json)
   }
 }

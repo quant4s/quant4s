@@ -5,7 +5,7 @@ import quanter.orders.Order
 /**
   *
   */
-trait TTrade {
+trait TradeAccount {
 
   def onLogin()
 

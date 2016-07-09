@@ -8,11 +8,11 @@ import spray.routing.RejectionHandler.Default
 /**
   *
   */
-class HttpServer extends Actor with StrategyService with OrderService with TradeService with DataService with ActorLogging {
+class HttpServer extends Actor with StrategyService with OrderService with TradeAccountService with DataService with ActorLogging {
   def actorRefFactory = context
   implicit def executionContext = actorRefFactory.dispatcher
   def receive = runRoute( respondWithHeader(RawHeader("Access-Control-Allow-Origin", "*")){
-    strategyServiceRoute ~ orderServiceRoute ~ tradeServiceRoute ~ dataServiceRoute
+    strategyServiceRoute ~ orderServiceRoute ~ tradeAccountServiceRoute ~ dataServiceRoute
   })
 }
 

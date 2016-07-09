@@ -79,6 +79,8 @@ abstract class IndicatorBase[T <: BaseData] (pname: String) extends Comparable[I
     "%s - %s".format(name, this.toString())
   }
 
+  def toJson: String = ""  // TODO:
+
   // ================== override operator ===============================
   def +(right: IndicatorBase[IndicatorDataPoint]) = {
     this.current.value + right.current.value

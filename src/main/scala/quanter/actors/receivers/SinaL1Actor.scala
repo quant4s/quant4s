@@ -20,25 +20,34 @@ import scala.concurrent.ExecutionContext.Implicits.global
   */
 
 object SinaL1Actor {
-  def props(): Props = {
+  def props: Props = {
     Props(classOf[SinaL1Actor])
   }
+
+  def path = "sinafree"
 }
 
 class SinaL1Actor extends Actor with ActorLogging {
   var symbolSelections = new mutable.HashMap[String, ActorSelection]
   var aliases = new ArrayBuffer[String]()
-   context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
+  _addSymbol("000001.XSHG")
+  _addSymbol("000001.XSHE")
+
+  @scala.throws[Exception](classOf[Exception])
+  override def preStart(): Unit = {
+    super.preStart()
+    _run()
+  }
+
   override def receive: Receive =  {
     case ask: AskListenedSymbol => _addSymbol(ask.symbol)
     case query: QuerySnapData => _querySnapData()
-    case Execute => _run()
     case _ =>
   }
 
   private def _run(): Unit = {
-    // TODO: 每3秒钟发出一个查询股价请求
-     context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
+    // TODO: 9点以后定时执行
+    context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
   }
 
   private def _addSymbol(symbol: String): Unit = {
@@ -76,7 +85,6 @@ class SinaL1Actor extends Actor with ActorLogging {
     for(s <- aliasArr) {
       // 从sina查询快照数据， 获取到数据 转成SnapData
       val url = s"http://hq.sinajs.cn/list=${s}"
-      println(url)
       val client = new DefaultHttpClient()
       val request = new HttpGet(url)
 
@@ -85,7 +93,6 @@ class SinaL1Actor extends Actor with ActorLogging {
 
       var line = "";
       while ((line = rd.readLine()) != null) {
-        println(line)
         // 分析每行数据转为SnapData
         val data = _parseLine(line)
         _newDataArrived(data)
@@ -96,24 +103,35 @@ class SinaL1Actor extends Actor with ActorLogging {
   private def _preProcessAlias = {
     val n = 50
     var aliasArr = new ArrayBuffer[String]()
+    var i = 0
+    var tmps = "";
     for(x <- aliases) {
-      aliasArr += x
+      i += 1;
+      if( i >= 50) {
+        i = 0
+        aliasArr += tmps
+        tmps = ""
+      }
+      tmps += x + ","
     }
+
+    if(tmps != "")
+      aliasArr += tmps
     aliasArr.toArray
   }
 
   private def _parseLine(line: String): SnapData = {
     // TODO:
-
     val data = new SnapData()
     val symbol = line.substring(11, 19)
     data.symbol= _alias2Symbol(symbol)
+
 
     data
   }
 
   private def _newDataArrived(data: SnapData): Unit = {
-    symbolSelections(data.symbol) ! data
+     symbolSelections(data.symbol) ! data
   }
 
 }

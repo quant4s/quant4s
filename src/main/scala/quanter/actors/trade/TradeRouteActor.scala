@@ -2,7 +2,7 @@ package quanter.actors.trade
 
 import akka.actor.{Actor, ActorRef, Props}
 import quanter.rest.{Trader, Transaction}
-import quanter.trade.TraderCache
+import quanter.trade.TradeAccountCache
 
 import scala.collection.mutable
 
@@ -19,7 +19,7 @@ case class GetTrader(id: Int)
   */
 class TradeRouteActor extends Actor {
   var traders = new mutable.HashMap[Int, ActorRef]()
-  val cache = new TraderCache()
+  val cache = new TradeAccountCache()
 
   override def receive: Receive = {
     case ListTraders => _getAllTraders()
@@ -27,7 +27,6 @@ class TradeRouteActor extends Actor {
     case t: UpdateTrader => _updateTrader(t.trader)
     case t: DeleteTrader => _deleteTrader(t.id)
     case t: GetTrader => _getTrader(t.id)
-
 
     case tran: Transaction => _handleOrder(tran)
   }
@@ -74,7 +73,8 @@ class TradeRouteActor extends Actor {
     for(order <- tran.orders) {
       // TODO: 将订单保存到数据库
 
-      traders.get(order.tradeId).get ! order
+      // 发送到相应的交易接口
+      traders.get(order.tradeAccountId).get ! order
     }
   }
 }

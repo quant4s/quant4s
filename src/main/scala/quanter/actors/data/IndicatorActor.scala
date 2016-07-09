@@ -8,15 +8,15 @@ import quanter.indicators.{Indicator, IndicatorDataPoint}
 
 /**
   * 指标Actor
-  * 000001.XSHE,5,MACD,3|3|6
+  * 000001.XSHE,MACD,5,9|9|21
   */
 
 object IndicatorActor {
   def props (json: String): Props = {
     val arr = json.split(",")
     val symbol = arr(0)
-    val duration = arr(1).toInt
-    val name = arr(2)
+    val duration = arr(2).toInt
+    val name = arr(1)
     val param = arr(3)
 
     Props(classOf[BarActor], symbol, duration, name, param)
@@ -25,21 +25,24 @@ object IndicatorActor {
 
 class IndicatorActor(symbol: String, duration: Int, name: String, param: String) extends Actor {
   type SelectType = (BaseData) => Double
-  _initIndicator
+  val _consolidator = _initIndicator
 
   override def receive: Receive = {
-    case _ =>  // 计算指标
+    case data: BaseData => _consolidator.update(data)  // TODO:计算指标
+
   }
 
   /**
     * 初始化指标
     */
-  private def _initIndicator = {
+  private def _initIndicator : TDataConsolidator = {
 
     val indicator = new IndicatorFactory().createIndicator(name, param)
     val consolidator = _resolveConsolidators(symbol, duration)
 
     _registerIndicator(symbol, indicator, consolidator)
+
+    consolidator
   }
 
   private def _resolveConsolidators(symbol: String, duration: Int): TradeBarConsolidator = {
@@ -51,7 +54,7 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String)
     consolidator.dataConsolidated += {(sender, consolidated) => {
       val value = ts(consolidated)
       indicator.update(new IndicatorDataPoint(consolidated.symbol, consolidated.endTime, value))
-      // TODO: 将数据写入到MQ
+      // TODO: 将数据写入到MQ 或者WS
     }}
 
     //    subscriptionManager.addConsolidator(symbol, consolidator)

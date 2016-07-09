@@ -5,9 +5,9 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 
 import scala.collection.mutable
 
-case class CreateIndicatorActor(json: String)
-case class CreateBarActor(json: String)
-case class CreateTickActor(json: String)
+case class RequestIndicatorData(sub: String)
+case class RequestBarData(sub: String)
+case class RequestTickData(sub: String)
 
 class DataManagerActor extends Actor with ActorLogging {
 
@@ -16,16 +16,16 @@ class DataManagerActor extends Actor with ActorLogging {
   var indicatorRefs = new mutable.HashMap[String, ActorRef]()
 
   override def receive: Receive = {
-    case CreateBarActor(json) => _createBarActor(json)
-    case CreateTickActor(json) => _createTickActor(json)
-    case CreateIndicatorActor(json) => _createIndicatorActor(json)
+    case RequestBarData(json) => _createBarActor(json)
+    case RequestTickData(json) => _createTickActor(json)
+    case RequestIndicatorData(json) => _createIndicatorActor(json)
     case _ =>
   }
 
-  private def _createBarActor(json: String): Unit = {
-    if(!barRefs.contains(json)) {
-      val ref = context.actorOf(BarActor.props(json))
-      barRefs += (json -> ref)
+  private def _createBarActor(sub: String): Unit = {
+    if(!barRefs.contains(sub)) {
+      val ref = context.actorOf(BarActor.props(sub))
+      barRefs += (sub -> ref)
     }
   }
 
@@ -38,15 +38,17 @@ class DataManagerActor extends Actor with ActorLogging {
 
   private def _createIndicatorActor(json: String): Unit = {
     if(!barRefs.contains(json)) {
-      val ref = context.actorOf(IndicatorActor.props(json))
+      val ref = context.actorOf(IndicatorActor.props(json), json)
       barRefs += (json -> ref)
+
+      println("create indicator actor")
     }
   }
 
 }
 
 object DataManagerActor {
-  val PATH = "dataManager"
+  val path = "dataManager"
 
   def props =  {
     Props.create(classOf[DataManagerActor])

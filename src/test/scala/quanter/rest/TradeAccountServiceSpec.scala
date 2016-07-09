@@ -13,7 +13,7 @@ import spray.http.{HttpEntity, MediaTypes}
 /**
   *
   */
-class TradeServiceSpec  extends RoutingSpec with TradeService{
+class TradeAccountServiceSpec  extends RoutingSpec with TradeAccountService{
   implicit def actorRefFactory = system
 
 
@@ -21,23 +21,23 @@ class TradeServiceSpec  extends RoutingSpec with TradeService{
     "  创建三个交易节点1001，1002， 1003" in {
       Post("/account", HttpEntity(MediaTypes.`application/json`,
         """{"id": 1001,"name": "SHSE","username":"username", "password": "password", "status": 0}"""
-      )) ~> tradeServiceRoute ~> check {
+      )) ~> tradeAccountServiceRoute ~> check {
         //status === Success
         responseAs[String] === """{"code":0}"""
       }
       Post("/account", HttpEntity(MediaTypes.`application/json`,
         """ {"id": 1002, "name": "SHSE", "username": "username", "password": "password", "servicePwd": "servicepwd", "status": 0}"""
-      )) ~> tradeServiceRoute ~> check {
+      )) ~> tradeAccountServiceRoute ~> check {
         //status === Success
         responseAs[String] === """{"code":0}"""
       }
       Post("/account", HttpEntity(MediaTypes.`application/json`,
         """ {"id": 1003, "name": "SHSE", "username": "username", "password": "password", "servicePwd": "servicepwd", "status": 0}"""
-      )) ~> tradeServiceRoute ~> check {
+      )) ~> tradeAccountServiceRoute ~> check {
         //status === Success
         responseAs[String] === """{"code":0}"""
       }
-      Get("/account/list") ~> tradeServiceRoute ~> check {
+      Get("/account/list") ~> tradeAccountServiceRoute ~> check {
         val json = responseAs[String]
         println( json)
         implicit val formats = DefaultFormats
@@ -47,11 +47,11 @@ class TradeServiceSpec  extends RoutingSpec with TradeService{
         ret.traders.getOrElse(new Array[Trader](1)).length === 5
       }
 
-      Delete("/account/1001")~> tradeServiceRoute ~> check {
+      Delete("/account/1001")~> tradeAccountServiceRoute ~> check {
         responseAs[String] === """{"code":0, "message":"成功删除"}"""
       }
 
-      Get("/account/list") ~> tradeServiceRoute ~> check {
+      Get("/account/list") ~> tradeAccountServiceRoute ~> check {
         val json = responseAs[String]
         println( json)
         implicit val formats = DefaultFormats

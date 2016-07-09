@@ -22,16 +22,6 @@ trait OrderService extends HttpService {
         }
       }
     }~
-    put {
-      path("order") {
-        requestInstance {
-          request =>
-            complete {
-              request.entity.data.asString
-            }
-        }
-      }
-    }~
     delete {
       path("order" / IntNumber) {
         id =>
@@ -47,7 +37,7 @@ trait OrderService extends HttpService {
       val orders = jv.extract[Transaction]
 
       tradeRoute ! orders
-"""{"code": 0}"""
+      """{"code": 0, }"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
     }
@@ -60,6 +50,20 @@ trait OrderService extends HttpService {
     // val order = Order.createOrder(json)
     //tradeRoute ! order
     ""
+  }
+
+  private def _cancelOrder(json: String): String = {
+    implicit val formats = DefaultFormats
+    try {
+      val jv = parse(json)
+      val orders = jv.extract[Transaction]
+
+      tradeRoute ! orders
+      """{"code": 0, }"""
+    }catch {
+      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
+
   }
 
 }

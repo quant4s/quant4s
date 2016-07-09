@@ -5,7 +5,7 @@ import akka.util.Timeout
 import org.json4s.jackson.JsonMethods._
 import org.json4s.{DefaultFormats, Extraction, Formats}
 import quanter.actors.strategies.DeleteStrategy
-import quanter.actors.trade.{DeleteTrader, CreateTrader, ListTraders, TradeRouteActor}
+import quanter.actors.trade._
 import spray.http.HttpHeader
 import spray.http.HttpHeaders.RawHeader
 import spray.routing.HttpService
@@ -16,8 +16,8 @@ import scala.concurrent.{Await, ExecutionContext}
 /**
   *
   */
-trait TradeService extends HttpService{
-  val tradeServiceRoute = {
+trait TradeAccountService extends HttpService{
+  val tradeAccountServiceRoute = {
     get {
       path("account" / "list") {
         complete {
@@ -25,45 +25,46 @@ trait TradeService extends HttpService{
         }
       }
     } ~
-      post {
-        path("account") {
-          requestInstance {
-            request => {
-              complete {
-                _createTrader(request.entity.data.asString)
-              }
-            }
-          }
-        }
-      } ~
-      put {
-        path("account" / IntNumber) {
-          id => {
-            requestInstance {
-              request => {
-                complete("")
-              }
-            }
-          }
-        }
-        path("account" / "connect" / IntNumber) {
-          id => {
+    post {
+      path("account") {
+        requestInstance {
+          request => {
             complete {
-              _reconnect(id)
-            }
-          }
-        }
-      } ~
-      delete {
-        path("account" / IntNumber) {
-          id => {
-            complete {
-              _deleteTrader(id)
+              _createTrader(request.entity.data.asString)
             }
           }
         }
       }
-
+    } ~
+    put {
+      path("account" / IntNumber) {
+        id => {
+          requestInstance {
+            request => {
+              complete {
+                _updateTrader(request.entity.data.asString)
+              }
+            }
+          }
+        }
+      }
+      path("account" / "connect" / IntNumber) {
+        id => {
+          complete {
+            _reconnect(id)
+          }
+        }
+      }
+    } ~
+    delete {
+      path("account" / IntNumber) {
+        id => {
+          complete {
+            _deleteTrader(id)
+          }
+        }
+      }
+    }
   }
 
   val traderManager = actorRefFactory.actorSelection("/user/" + TradeRouteActor.path)
@@ -94,6 +95,20 @@ trait TradeService extends HttpService{
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
     }
+  }
+
+  private def _updateTrader(json: String): String = {
+    implicit val formats = DefaultFormats
+    try {
+      val jv = parse(json)
+      val trader = jv.extract[Trader]
+
+      traderManager ! UpdateTrader(trader)
+      """{"code":0}"""
+    }catch {
+      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
+
   }
 
   private def _deleteTrader(id: Int): String = {

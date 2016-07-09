@@ -37,7 +37,7 @@ class MovingAverageConvergenceDivergence(name: String, fastPeriod: Int, slowPeri
   }
 
   override def toJson = {
-    "macd: {fast: ${fast.current.value}, slow: ${slow.current.value}, signal: ${signal.current.value}}"
+    "{\"fast\": ${fast.current.value}, \"slow\": ${slow.current.value}, \"signal\": ${signal.current.value}}"
   }
 
 }

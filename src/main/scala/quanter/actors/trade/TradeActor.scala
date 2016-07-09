@@ -2,7 +2,7 @@ package quanter.actors.trade
 
 import akka.actor.{Actor, Props}
 import quanter.strategies.StrategyCache
-import quanter.trade.TTrade
+import quanter.trade.TradeAccount
 
 class TradersManager() {
 
@@ -11,11 +11,11 @@ class TradersManager() {
   *
   */
 object TradeActor {
-  def props(trade: TTrade): Props = {
+  def props(trade: TradeAccount): Props = {
     Props(classOf[TradeActor], trade)
   }
 }
-class TradeActor(trade: TTrade) extends Actor{
+class TradeActor(trade: TradeAccount) extends Actor{
   val managers = new TradersManager()
 
   @scala.throws[Exception](classOf[Exception])
