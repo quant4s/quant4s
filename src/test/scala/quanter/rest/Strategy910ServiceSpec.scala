@@ -43,6 +43,7 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
         val ret = jv.extract[RetStrategyList]
         ret.code === 0
         ret.strategies.getOrElse(new Array[Strategy](1)).length === 3
+        success
       }
     }
 

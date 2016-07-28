@@ -34,6 +34,14 @@ trait DataService extends HttpService {
       path("data" / "finance") {
         complete("")
       }~
+      path("data" / "finance"/"pe_ratio"/ "GT" /DoubleNumber) { // 静态市盈率 > DOUBLE
+        ratio =>
+          complete("")
+      }~
+      path("data" / "finance"/"pe_ratio"/ "LT" /DoubleNumber) { // 静态市盈率 < DOUBLE
+        ratio =>
+          complete("")
+      }~
       path("data" / "market") {
         complete("")
       }

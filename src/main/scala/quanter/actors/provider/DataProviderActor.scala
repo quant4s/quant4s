@@ -21,7 +21,7 @@ abstract class DataProviderActor extends Actor with ActorLogging {
   protected def addSymbol(symbol: String): Unit = {
     if (!symbolSelections.contains(symbol)) {
       log.debug(s"准备接受${symbol}的行情数据")
-      val ref = context.actorSelection(s"/usr/${SecuritiesManagerActor.path}/${symbol}")
+      val ref = context.actorSelection(s"/user/${SecuritiesManagerActor.path}/${symbol}")
       symbolSelections += (symbol -> ref)
     }
   }

@@ -13,7 +13,7 @@ import scala.collection.mutable
 class StrategyCache {
   var strategies = new mutable.HashMap[Int, Strategy]()
 
-  strategies += (1 -> Strategy(1, "demo 1", 1, 1, Some("C#"), None), 2 -> Strategy(2, "demo 2", 1, 1, Some("C#"), None))
+//  strategies += (1 -> Strategy(1, "demo 1", 1, 1, Some("C#"), None), 2 -> Strategy(2, "demo 2", 1, 1, Some("C#"), None))
 
   def addStrategy(strategy: Strategy): Unit = {
     strategies += (strategy.id -> strategy)
@@ -23,7 +23,7 @@ class StrategyCache {
     strategies.values.toArray
   }
 
-  def modifyStrategy(strategy: Strategy): Unit = {
+  def updateStrategy(strategy: Strategy): Unit = {
     strategies(strategy.id) = strategy
   }
 

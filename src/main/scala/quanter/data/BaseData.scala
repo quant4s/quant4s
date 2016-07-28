@@ -44,4 +44,5 @@ class BaseData extends  TBaseData{
     value = lastTrade
   }
 
+  def toJson = """{"symbol":"000001.XSHE"}"""
 }

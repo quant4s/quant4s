@@ -47,7 +47,7 @@ trait TradeAccountService extends HttpService{
             }
           }
         }
-      }
+      }~
       path("account" / "connect" / IntNumber) {
         id => {
           complete {
@@ -60,7 +60,7 @@ trait TradeAccountService extends HttpService{
       path("account" / IntNumber) {
         id => {
           complete {
-            _deleteTrader(id)
+             _deleteTrader(id)
           }
         }
       }

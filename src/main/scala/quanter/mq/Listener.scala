@@ -15,7 +15,7 @@ import org.json4s.jackson.{Serialization, JsonMethods}
   *  order.json
   */
 class Listener extends Actor{
-  val manager = context.actorSelection(DataManagerActor.path)
+  val manager = context.actorSelection("/user/" + DataManagerActor.path)
 
   override def receive: Receive = {
     case _ =>

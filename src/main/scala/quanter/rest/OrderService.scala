@@ -23,9 +23,11 @@ trait OrderService extends HttpService {
       }
     }~
     delete {
-      path("order" / IntNumber) {
-        id =>
-        complete("取消订单")
+      path("order" / Rest) {
+        param =>
+        complete{
+          _cancelOrder(param)
+        }
       }
     }
   }
@@ -34,32 +36,23 @@ trait OrderService extends HttpService {
     implicit val formats = DefaultFormats
     try {
       val jv = parse(json)
-      val orders = jv.extract[Transaction]
-
-      tradeRoute ! orders
-      """{"code": 0, }"""
+      val transaction = jv.extract[Transaction]
+      for(order <- transaction.orders.get) {
+        order.strategyId = transaction.strategyId
+      }
+      tradeRoute ! transaction
+      """{"code":0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
     }
-    // val jv = parse(json)
-    // val v: JValue = (jv \ "orders")(0) \ "symbol"
-
-    // TODO: 根据json 创建多个订单对象
-   //  val order = v.extract[Order]
-    // 对每一个订单对象 下单路由
-    // val order = Order.createOrder(json)
-    //tradeRoute ! order
-    ""
   }
 
-  private def _cancelOrder(json: String): String = {
-    implicit val formats = DefaultFormats
+  private def _cancelOrder(param: String): String = {
     try {
-      val jv = parse(json)
-      val orders = jv.extract[Transaction]
-
-      tradeRoute ! orders
-      """{"code": 0, }"""
+      val ids = param.split("-")
+      val trans = Transaction(ids(0).toInt, None, Some(CancelOrder(ids(1).toInt)))
+      tradeRoute ! trans
+      """{"code":0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
     }

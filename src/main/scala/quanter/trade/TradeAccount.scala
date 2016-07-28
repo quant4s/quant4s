@@ -7,24 +7,17 @@ import quanter.orders.Order
   */
 trait TradeAccount {
 
-  def onLogin()
+  def connect(account: String, password: String, servicePwd: Option[String] = None)
 
-  var id : String
+  var id : Int
   var name: String
 
-  protected def buy(symbol: String, quantity: Int, price: Double)
-  protected def sell(symbol: String, quantity: Int, price: Double)
+  def buy(symbol: String, quantity: Int, price: Double)
+  def sell(symbol: String, quantity: Int, price: Double)
+  def buy(symbol: String, quantity: Int)
+  def sell(symbol: String, quantity: Int)
 
   def keep()
   def executionReport()
-  def orderRejected()
 
-  def order(order: Order): Unit = {
-    if(order.quantity > 0) {
-      buy(order.symbol, order.quantity, order.price)
-    }
-    else {
-      sell(order.symbol, math.abs(order.quantity), order.price)
-    }
-  }
 }

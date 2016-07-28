@@ -8,8 +8,7 @@ package quanter.rest
   */
 class BackTestServiceSpec extends RoutingSpec with StrategyService{
   implicit def actorRefFactory = system
-
-
+  
   "获取回测报告是否正常" should {
     "策略测试 " in {
       // 创建一个策略

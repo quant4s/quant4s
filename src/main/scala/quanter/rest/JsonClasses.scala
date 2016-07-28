@@ -50,15 +50,17 @@ case class SecurityHolding(symbol: String, quantity: Long, totalCost: Double) {
   * @param orderStatus 0: New
   * @param tradeAccountId 交易接口编号
   */
-case class Order(id:Int, symbol: String, quantity: Int, price: Option[Double], orderType: Int, orderStatus: Int, tradeAccountId: Int, entrustNo: Option[Int], transNo: Option[Int]) {
+case class Order(orderNo:Int, symbol: String, quantity: Int, price: Option[Double], orderType: Int, orderStatus: Int, side: Int,
+                 openClose: String, tradeAccountId: Int, entrustNo: Option[Int], transNo: Option[Int]) {
   var strategyId: Int = 0
+  var securityExchange = "XSHE"
 }
 
-case class CancelOrder(id: Int, tradeAccountId: Int) { var strategyId: Int = 0}
+case class CancelOrder(id: Int)
 
-case class Transaction(strategyId: Int, orders: List[Order], cancelOrders:List[CancelOrder])
+case class Transaction(strategyId: Int, orders: Option[List[Order]], cancelOrder: Option[CancelOrder])
 
-case class Trader(id: Int, name: String, brokerType: Int, brokerName: String, brokerCode: String, brokerAccount: String, brokerPassword: String, brokerUri: String, brokerServicePwd: Option[String], status: Int)
+case class Trader(id: Option[Int], name: String, brokerType: String, brokerName: String, brokerCode: String, brokerAccount: String, brokerPassword: Option[String], brokerUri: String, brokerServicePwd: Option[String], status: Int = 0)
 
 
 // 返回的JSON CLASS

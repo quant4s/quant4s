@@ -1,8 +1,11 @@
 package quanter.actors.trade
 
 import akka.actor.{Actor, ActorRef, Props}
+import quanter.actors.persistence.PersistenceActor
+import quanter.persistence.EOrder
 import quanter.rest.{Trader, Transaction}
 import quanter.trade.TradeAccountCache
+import quanter.trade.simulate.SimulateTradeAccount
 
 import scala.collection.mutable
 
@@ -20,6 +23,7 @@ case class GetTrader(id: Int)
 class TradeRouteActor extends Actor {
   var traders = new mutable.HashMap[Int, ActorRef]()
   val cache = new TradeAccountCache()
+  val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
 
   override def receive: Receive = {
     case ListTraders => _getAllTraders()
@@ -33,14 +37,23 @@ class TradeRouteActor extends Actor {
 
   /**
     * 初始化指定的交易接口
- *
-    * @param id
     */
-  private def _init(id: Int): Unit = {
-    val trader = null
+  private def _init(): Unit = {
+    for(ta <- cache.traders.values) {
+      ta.brokerType match {
+        case "CTP" =>
+        case "LTS" =>
+        case "FIX" =>
+        case "T2" =>
+        case "THS" =>
+        case "SIM" =>
+      }
+    }
+    // 从数据库中读取所有的内容
+    val trader = new SimulateTradeAccount()
     val ref = context.actorOf(TradeActor.props(trader))
 
-    traders += (id -> ref)
+    traders += (trader.id -> ref)
   }
 
   // CRUD 的操作
@@ -70,11 +83,23 @@ class TradeRouteActor extends Actor {
     * @param tran
     */
   private def _handleOrder(tran: Transaction): Unit = {
-    for(order <- tran.orders) {
+    for(order <- tran.orders.get) {
       // TODO: 将订单保存到数据库
+      val o = EOrder(None, order.orderNo, order.strategyId, order.symbol, order.orderType, order.side,
+        "201606060000", order.quantity, order.openClose, order.price.get, "RMB", order.securityExchange)
+
 
       // 发送到相应的交易接口
       traders.get(order.tradeAccountId).get ! order
+    }
+
+    if(tran.cancelOrder != None) {
+      // TODO: 将取消订单保存到数据库
+
+      // TODO: 找到 订单对应的交易接口
+      val accountId = 0
+      val order = tran.cancelOrder.get
+      traders.get(accountId).get ! order
     }
   }
 }

@@ -67,6 +67,12 @@ trait StrategyService extends HttpService {
           complete {
             _getStrategy(id)
           }
+      }~
+      path("strategy"/ IntNumber / "portfolio") {
+        id =>
+          complete {
+            """{"code":0, "portfolio":{"cash":10000, "frozen":0, "available":10000,"assets":300000, "positions":[{"symbol":"000001.XSHE","price":13, "cost": 10.3},{"symbol":"000002.XSHE","price":13, "cost": 9.3}]}}"""
+          }
       }
     }  ~
     post {
@@ -114,7 +120,7 @@ trait StrategyService extends HttpService {
   private def _getAllStrategies(): String = {
     try {
       implicit val timeout = Timeout(5 seconds)
-      val future = manager ? ListStrategies
+      val future = manager ? ListStrategy
 
       val result = Await.result(future, timeout.duration).asInstanceOf[Option[Array[Strategy]]]
       implicit val formats: Formats = DefaultFormats

@@ -1,6 +1,7 @@
 package quanter.actors.receivers
 
 import java.io.{BufferedReader, InputStreamReader}
+import scala.util.control.Breaks._
 
 import akka.actor.{Actor, ActorLogging, ActorSelection, Props}
 import org.apache.http.client.methods.HttpGet
@@ -46,14 +47,24 @@ class SinaL1Actor extends Actor with ActorLogging {
   }
 
   private def _run(): Unit = {
-    // TODO: 9点以后定时执行
     context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
+    context.system.scheduler.schedule(0 seconds, 3 seconds, new Runnable {
+      override def run(): Unit =  {
+        if(_isOpened) {
+          _querySnapData()
+        }
+      }
+//      private def _isClosed = false
+//      private def _isNotOpened = false
+//      private def _isPause = false
+      private def _isOpened = true
+    });
   }
 
   private def _addSymbol(symbol: String): Unit = {
     if (!symbolSelections.contains(symbol)) {
       log.debug(s"准备接受${symbol}的行情数据")
-      val ref = context.actorSelection(s"/usr/${SecuritiesManagerActor.path}/${symbol}")
+      val ref = context.actorSelection(s"/user/${SecuritiesManagerActor.path}/${symbol}")
       symbolSelections += (symbol -> ref)
       aliases += _symbol2Alias(symbol)
     }
@@ -82,8 +93,9 @@ class SinaL1Actor extends Actor with ActorLogging {
   private def _querySnapData(): Unit = {
     val aliasArr = _preProcessAlias
 
-    for(s <- aliasArr) {
+    for(i <- 0 until aliasArr.length) {
       // 从sina查询快照数据， 获取到数据 转成SnapData
+      val s = aliasArr(i)
       val url = s"http://hq.sinajs.cn/list=${s}"
       val client = new DefaultHttpClient()
       val request = new HttpGet(url)
@@ -91,11 +103,14 @@ class SinaL1Actor extends Actor with ActorLogging {
       val response = client.execute(request)
       val rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
-      var line = "";
-      while ((line = rd.readLine()) != null) {
-        // 分析每行数据转为SnapData
-        val data = _parseLine(line)
-        _newDataArrived(data)
+      var line = ""
+      breakable {
+        while ((line = rd.readLine()) != null) {
+          if (line == null) break;
+          // 分析每行数据转为SnapData
+          val data = _parseLine(line)
+          _newDataArrived(data)
+        }
       }
     }
   }
@@ -117,14 +132,33 @@ class SinaL1Actor extends Actor with ActorLogging {
 
     if(tmps != "")
       aliasArr += tmps
-    aliasArr.toArray
+
+    aliasArr
   }
 
   private def _parseLine(line: String): SnapData = {
     // TODO:
     val data = new SnapData()
+    val items = line.split(",")
+
     val symbol = line.substring(11, 19)
     data.symbol= _alias2Symbol(symbol)
+
+    data.open = items(1).toDouble
+    data.close = items(3).toDouble
+    data.high = items(4).toDouble
+    data.low = items(5).toDouble
+
+//    data.volume = items(8).toLong
+//    data.turnover = items(9).toDouble
+    data.update(items(3).toDouble, items(7).toDouble, items(6).toDouble, items(8).toLong, 0, 0)
+
+    //bid.Name = items[0].Substring(21, items[0].Length - 21);    // var hq_str_sz150023="深成指B
+
+    //bid.Buy = decimal.Parse(items[6]);
+    //bid.Sell = decimal.Parse(items[7]);
+    //bid.Volume = long.Parse(items[8]);
+    //bid.Turnover = float.Parse(items[9]);
 
 
     data
@@ -133,5 +167,6 @@ class SinaL1Actor extends Actor with ActorLogging {
   private def _newDataArrived(data: SnapData): Unit = {
      symbolSelections(data.symbol) ! data
   }
+
 
 }

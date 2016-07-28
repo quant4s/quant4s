@@ -6,8 +6,10 @@ package quanter.actors.persistence
 import akka.actor.{Actor, Props}
 import quanter.persistence.EStrategy
 import quanter.persistence._
-import quanter.rest.Portfolio
+import quanter.rest.{Order, Portfolio, Strategy}
+import quanter.strategies.StrategyCache
 
+import scala.collection.mutable.ArrayBuffer
 import scala.slick.driver.H2Driver.simple._
 
 
@@ -15,15 +17,17 @@ import scala.slick.driver.H2Driver.simple._
   *
   */
 
-case class SaveStrategy(obj: EStrategy)
-case class UpdateStrategy(id: Int, obj: EStrategy)
+case class SaveStrategy(obj: Strategy)
+case class UpdateStrategy(id: Int, obj: Strategy)
 case class DeleteStrategy(id: Int)
 case class GetStrategy(id: Int)
 case class ListStrategies()
+case class SaveOrder(order: Order)
+case class CancelOrder(id: Int)
 
-case class SavePortfolio(obj: EPortfolio)
-case class UpdatePortfolio(id: Int, obj: EPortfolio)
-case class GetPortfolio(id: Int)
+//case class SavePortfolio(obj: EPortfolio)
+//case class UpdatePortfolio(id: Int, obj: EPortfolio)
+//case class GetPortfolio(id: Int)
 
 object PersistenceActor {
   def props = {
@@ -38,6 +42,9 @@ class PersistenceActor extends Actor {
   val user = "root"
   val password = ""
   val db = Database.forURL(dbUrl, user, password, driver = jdbcDriver)
+
+  val strategyCache = new StrategyCache()
+
   implicit val session = db.createSession()
 
   val ddl = strategies.ddl ++ portfolios.ddl ++ stockHoldings.ddl ++ transactions.ddl ++ gOrders.ddl ++ traders.ddl
@@ -54,28 +61,30 @@ class PersistenceActor extends Actor {
     case action: DeleteStrategy => _deleteStrategy(action.id)
     case action: UpdateStrategy => _updateStrategy(action.id, action.obj)
     case action: GetStrategy => _getStrategy(action.id)
-    case actoin: ListStrategies => _listStrategies()
+    case action: ListStrategies => _listStrategies()
 
-    case action: SavePortfolio =>
-    case action: UpdatePortfolio =>
-    case action: GetPortfolio =>
+    // 保存订单
+    // 撤销订单
+    case action: SaveOrder =>
+    case action: CancelOrder =>
     case _ =>
   }
 
   val strategyDao = new StrategyDao
   val portfolioDao = new PortfolioDao()
-  private def _saveStrategy(strategy: EStrategy): Unit = {
-    strategyDao.insert(strategy)
+  private def _saveStrategy(strategy: Strategy): Unit = {
+    val s = EStrategy(None, strategy.name, strategy.runMode, strategy.runMode, strategy.lang.getOrElse("C#"))
+    strategyDao.insert(s)
   }
 
   private def _getStrategy(id: Int): Unit = {
     val strategy = strategyDao.getById(id)
-
     sender ! strategy
   }
 
-  private def _updateStrategy(id: Int, strategy: EStrategy): Unit = {
-    val query = strategyDao.update(id, strategy)
+  private def _updateStrategy(id: Int, strategy: Strategy): Unit = {
+    val s = EStrategy(Some(id), strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
+    val query = strategyDao.update(id, s)
   }
 
   private def _deleteStrategy(id: Int): Unit = {
@@ -83,7 +92,12 @@ class PersistenceActor extends Actor {
   }
 
   private def _listStrategies(): Unit = {
-    sender ! strategyDao.list()
+    val strategyArr = new ArrayBuffer[Strategy]()
+    for(s <- strategyDao.list) {
+      val strategy = Strategy(s.id.getOrElse(0), s.name, s.runMode, s.status, Some(s.lang), None)
+      strategyArr += strategy
+    }
+    sender ! strategyArr
   }
 
 }

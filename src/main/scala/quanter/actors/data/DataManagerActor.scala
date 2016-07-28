@@ -9,6 +9,9 @@ case class RequestIndicatorData(sub: String)
 case class RequestBarData(sub: String)
 case class RequestTickData(sub: String)
 
+/**
+  * 订阅数据
+  */
 class DataManagerActor extends Actor with ActorLogging {
 
   var barRefs = new mutable.HashMap[String, ActorRef]()
@@ -24,15 +27,15 @@ class DataManagerActor extends Actor with ActorLogging {
 
   private def _createBarActor(sub: String): Unit = {
     if(!barRefs.contains(sub)) {
-      val ref = context.actorOf(BarActor.props(sub))
+      val ref = context.actorOf(BarActor.props(sub), sub)
       barRefs += (sub -> ref)
     }
   }
 
   private def _createTickActor(json: String): Unit = {
-    if(!barRefs.contains(json)) {
-      val ref = context.actorOf(TickActor.props(json))
-      barRefs += (json -> ref)
+    if(!tickRefs.contains(json)) {
+      val ref = context.actorOf(TickActor.props(json), json)
+      tickRefs += (json -> ref)
     }
   }
 

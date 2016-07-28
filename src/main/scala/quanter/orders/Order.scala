@@ -84,8 +84,6 @@ abstract class Order(val symbol: String, var quantity: Int, time: Date, var tag:
   * @param time
   */
 class LimitOrder(symbol: String, quantity: Int, var limitPrice:Double, time:Date) extends Order(symbol, quantity, time, "") {
-//  var _limitPrice : Double = plimitPrice
-//  def limitPrice = _limitPrice
   if(tag == "") tag = "Limit Price: " + limitPrice
   override def orderType: OrderType = OrderType.Limit
   override def applyUpdateOrderRequest(request : String) : Unit = {
@@ -99,6 +97,10 @@ class LimitOrder(symbol: String, quantity: Int, var limitPrice:Double, time:Date
   }
 }
 
+class MarketOrder(symbol: String, quantity: Int, time:Date) extends Order(symbol, quantity, time, "") {
+  if(tag == "") tag = "Market Price"
+  override def orderType: OrderType = OrderType.Market
+}
 //class StopLimitOrder(psymbol: String, pquantity: Int, pstopPrice: Double, plimitPrice:Double, ptime:Date, ptag: String="") extends Order(psymbol, pquantity, ptime, ptag)  {
 //  var stopPrice = pstopPrice
 //  var limitPrice = plimitPrice
