@@ -39,12 +39,12 @@ class SecuritiesManagerActor extends Actor with ActorLogging {
 
   private def _subscribe(symbol: SubscriptionSymbol) = {
     log.debug("forward subscription")
-    secActors(symbol.symbol).forward()
+    secActors(symbol.symbol) forward symbol
   }
 
   private def _unsubscribe(symbol: UnsubscriptionSymbol) = {
     log.debug("forward unsubscription")
-    secActors(symbol.symbol).forward()
+    secActors(symbol.symbol) forward symbol
   }
 
 

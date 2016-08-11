@@ -4,6 +4,8 @@ import akka.actor.{Actor, ActorLogging, Props}
 import akka.actor.Actor.Receive
 import quanter.actors.securities.{SecuritiesManagerActor, SubscriptionSymbol}
 import quanter.actors.ws.WebSocketActor
+import quanter.actors.zeromq.{PublishData, ZeroMQServerActor}
+import quanter.data.BaseData
 
 /**
   * 000001.XSHE,TICK
@@ -12,24 +14,20 @@ import quanter.actors.ws.WebSocketActor
 object TickActor {
   def props (json: String): Props = {
     val arr = json.split(",")
-    Props.create(classOf[TickActor], arr(0))
+    Props.create(classOf[TickActor], arr(0), json)
   }
 }
 
-class TickActor(symbol: String) extends Actor with ActorLogging {
+class TickActor(symbol: String, topic: String) extends Actor with ActorLogging {
   val securitiesManagerRef = context.actorSelection("/user/" + SecuritiesManagerActor.path)
-  val wsRef = context.actorSelection("/user/" + WebSocketActor.path)
+  val pubRef = context.actorSelection("/user/" + ZeroMQServerActor.path)
 
-  @scala.throws[Exception](classOf[Exception])
-  override def preStart(): Unit = {
-    super.preStart()
-    _init()
-  }
+  _init()
 
 
   override def receive: Receive = {
-    case  s: String => // 将数据写入MQ
-      wsRef ! s
+    case  s: BaseData => // 将数据写入MQ
+      pubRef ! PublishData(topic, s.toJson)
   }
 
   private def _init(): Unit = {

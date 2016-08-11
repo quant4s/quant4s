@@ -46,6 +46,11 @@
             <version>${akka.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-zeromq_${scala.compat.version}</artifactId>
+            <version>${akka.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.typesafe.slick</groupId>
             <artifactId>slick_${scala.compat.version}</artifactId>
             <version>${slick.version}</version>

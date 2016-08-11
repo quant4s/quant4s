@@ -31,7 +31,7 @@ object SinaL1Actor {
 class SinaL1Actor extends Actor with ActorLogging {
   var symbolSelections = new mutable.HashMap[String, ActorSelection]
   var aliases = new ArrayBuffer[String]()
-  _addSymbol("000001.XSHG")
+  _addSymbol("000002.XSHE")
   _addSymbol("000001.XSHE")
 
   @scala.throws[Exception](classOf[Exception])
