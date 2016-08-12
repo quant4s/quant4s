@@ -36,7 +36,6 @@ class ZeroMQServerActor extends Actor {
   override def receive: Receive = {
     case d: PublishData => {
       pubSocket ! ZMQMessage(ByteString(d.topic), ByteString(d.data))
-      println("publish data")
     }
   }
 }
