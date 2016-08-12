@@ -26,8 +26,8 @@ class IndicatorFactory {
 }
 
 object IndicatorFactory {
-  private val regex = "|"
+  private val regex = "~"
 
-  val MACD = "macd"
-  val MA = "ma"
+  val MACD = "MACD"
+  val MA = "MA"
 }

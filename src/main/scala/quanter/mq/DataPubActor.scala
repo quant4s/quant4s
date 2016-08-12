@@ -7,7 +7,8 @@ import akka.util.ByteString
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-case object Tick
+case class Tick(topic: String, body: String)
+case class PublishData(topic: String, data: String)
 
 object DataPubActor {
   def props() = Props(classOf[DataPubActor])
@@ -15,7 +16,7 @@ object DataPubActor {
 
 class DataPubActor extends Actor {
 
-  val pubSocket = ZeroMQExtension(context.system).newSocket(SocketType.Pub, Bind("tcp://172.16.240.143:1235"))
+  val pubSocket = ZeroMQExtension(context.system).newSocket(SocketType.Pub, Bind("tcp://*:8091"))
   override def preStart(): Unit = {
     context.system.scheduler.schedule(1 second, 1 second, self, Tick)
   }
@@ -25,7 +26,7 @@ class DataPubActor extends Actor {
   }
 
   def receive: Receive = {
-    case Tick => pubSocket ! ZMQMessage(ByteString("sid123"), ByteString("gedfgfd"))
+    case t: Tick => pubSocket ! ZMQMessage(ByteString(t.topic), ByteString(t.body))
     case _ =>
   }
 }

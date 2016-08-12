@@ -2,6 +2,8 @@ package quanter.actors.data
 
 import akka.actor.{Actor, ActorLogging, Props}
 import quanter.TimeSpan
+import quanter.actors.securities.{SecuritiesManagerActor, SubscriptionSymbol}
+import quanter.actors.zeromq.{PublishData, ZeroMQServerActor}
 import quanter.consolidators.{TDataConsolidator, TradeBarConsolidator}
 import quanter.data.BaseData
 import quanter.data.market.TradeBar
@@ -20,13 +22,16 @@ object IndicatorActor {
     val name = arr(1)
     val param = arr(3)
 
-    Props(classOf[BarActor], symbol, duration, name, param)
+    Props(classOf[IndicatorActor], symbol, duration, name, param, json)
   }
 }
 
-class IndicatorActor(symbol: String, duration: Int, name: String, param: String) extends Actor with ActorLogging {
+class IndicatorActor(symbol: String, duration: Int, name: String, param: String, topic: String) extends Actor with ActorLogging {
   type SelectType = (BaseData) => Double
+  val securitiesManagerRef = context.actorSelection("/user/" + SecuritiesManagerActor.path)
   val _consolidator = _initIndicator
+  val pubRef = context.actorSelection("/user/" + ZeroMQServerActor.path)
+
 
   override def receive: Receive = {
     case data: BaseData => _consolidator.update(data)  // TODO:计算指标
@@ -43,6 +48,7 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String)
 
     _registerIndicator(symbol, indicator, consolidator)
 
+    securitiesManagerRef ! new SubscriptionSymbol(symbol)
     consolidator
   }
 
@@ -56,7 +62,8 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String)
       val value = ts(consolidated)
       indicator.update(new IndicatorDataPoint(consolidated.symbol, consolidated.endTime, value))
       // TODO: 将数据写入到MQ 或者WS
-      log.debug("BAR数据整合,写入到WS")
+      log.debug("指标数据整合,写入到WS")
+      pubRef ! PublishData(topic, consolidated.toJson)
 
     }}
 

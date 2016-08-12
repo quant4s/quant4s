@@ -40,9 +40,9 @@ class DataManagerActor extends Actor with ActorLogging {
   }
 
   private def _createIndicatorActor(json: String): Unit = {
-    if(!barRefs.contains(json)) {
+    if(!indicatorRefs.contains(json)) {
       val ref = context.actorOf(IndicatorActor.props(json), json)
-      barRefs += (json -> ref)
+      indicatorRefs += (json -> ref)
 
       println("create indicator actor")
     }
