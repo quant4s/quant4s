@@ -3,7 +3,6 @@ package quanter.actors.data
 import akka.actor.{Actor, ActorLogging, Props}
 import quanter.TimeSpan
 import quanter.actors.securities.{SecuritiesManagerActor, SubscriptionSymbol}
-import quanter.actors.ws.WebSocketActor
 import quanter.actors.zeromq.{PublishData, ZeroMQServerActor}
 import quanter.consolidators.{DataConsolidator, TDataConsolidator, TradeBarConsolidator}
 import quanter.data.BaseData

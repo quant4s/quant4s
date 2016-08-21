@@ -22,6 +22,7 @@
         <logback.version>1.1.6</logback.version>
         <slf4s.version>1.7.13</slf4s.version>
         <slick.version>2.1.0</slick.version>
+        <scalatest.version>3.0.0</scalatest.version>
     </properties>
 
     <dependencies>
@@ -119,11 +120,7 @@
             <groupId>io.spray</groupId>
             <artifactId>spray-testkit_${scala.compat.version}</artifactId>
             <version>${spray.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.wandoulabs.akka</groupId>
-            <artifactId>spray-websocket_${scala.compat.version}</artifactId>
-            <version>0.1.4</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -144,6 +141,13 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.192</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_${scala.compat.version}</artifactId>
+            <version>${scalatest.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -207,10 +211,14 @@
                 <groupId>org.scalatest</groupId>
                 <artifactId>scalatest-maven-plugin</artifactId>
                 <version>1.0</version>
+                <configuration>
+                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                    <junitxml>.</junitxml>
+                    <filereports>WDF TestSuite.txt</filereports>
+                </configuration>
                 <executions>
                     <execution>
                         <id>test</id>
-                        <phase>test</phase>
                         <goals>
                             <goal>test</goal>
                         </goals>

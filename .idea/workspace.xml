@@ -1,47 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYSIS_IN_BACKGROUND" value="true" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="91c9ef5e-1566-4ae3-8997-c910cb74b158" name="Default" comment="init">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/TODO" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/order/OrderManagerActor.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/persistence/StrategyPersistorActor.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/ws/WebSocketActor.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/quanter/persistence/OrderDao.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/quanter/strategies/Portfolio.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/scala/quanter/persistence/StrategyDaoSpec.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/scala/quanter/rest/OrderServiceSpec.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/stock_list.csv" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/scala/quanter/strategies/PortfolioCache.scala" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_scalactic_scalactic_2_11_3_0_0.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_scalatest_scalatest_2_11_3_0_0.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_wandoulabs_akka_spray_websocket_2_11_0_1_4.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__io_spray_spray_routing_shapeless2_2_11_1_3_2.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/ws/MySslConfiguration.scala" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/ws/SimpleServer.scala" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/ws/WebSocketActor.scala" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/ws/WebSocketServer.scala" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/ws/WebSocketWorker.scala" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/scala/quanter/mq/DataPubActor.scala" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/scala/quanter/mq/Listener.scala" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/scala/quanter/mq/MainApp.scala" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/scala/quanter/rest/HttpServerSpec.scala" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/scala/quanter/rest/Strategy900ServiceSpec.scala" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_scala_lang_modules_scala_parser_combinators_2_11_1_0_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_scala_lang_modules_scala_parser_combinators_2_11_1_0_4.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_1_6.xml" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_1_6.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/quant4s.iml" afterPath="$PROJECT_DIR$/quant4s.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/MainApp.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/MainApp.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/data/BarActor.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/data/BarActor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/data/DataManagerActor.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/data/DataManagerActor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/data/IndicatorActor.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/data/IndicatorActor.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/data/TickActor.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/data/TickActor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/persistence/PersistenceActor.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/persistence/PersistenceActor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/provider/DataProviderActor.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/provider/DataProviderActor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/receivers/SinaL1Actor.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/receivers/SinaL1Actor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecuritiesManagerActor.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecuritiesManagerActor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecurityActor.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecurityActor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/strategies/StrategiesManagerActor.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/strategies/StrategiesManagerActor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/trade/TradeRouteActor.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/trade/TradeRouteActor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/data/BaseData.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/data/BaseData.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/data/market/TradeBar.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/data/market/TradeBar.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/mq/Listener.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/mq/Listener.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/orders/Order.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/orders/Order.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/persistence/StrategyDao.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/persistence/StrategyDao.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/persistence/package.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/persistence/package.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/rest/DataService.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/rest/DataService.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/rest/HttpServer.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/rest/HttpServer.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/rest/JsonClasses.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/rest/JsonClasses.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/actors/zeromq/ZeroMQServerActor.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/actors/zeromq/ZeroMQServerActor.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/rest/OrderService.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/rest/OrderService.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/rest/StrategyService.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/rest/StrategyService.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/rest/TradeAccountService.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/rest/TradeAccountService.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/strategies/StrategyCache.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/strategies/StrategyCache.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/trade/TradeAccount.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/trade/TradeAccount.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/trade/TradeAccountCache.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/trade/TradeAccountCache.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/quanter/trade/simulate/SimulateTradeAccount.scala" afterPath="$PROJECT_DIR$/src/main/scala/quanter/trade/simulate/SimulateTradeAccount.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/quanter/rest/BackTestServiceSpec.scala" afterPath="$PROJECT_DIR$/src/test/scala/quanter/rest/BackTestServiceSpec.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/quanter/rest/DataServiceSpec.scala" afterPath="$PROJECT_DIR$/src/test/scala/quanter/rest/DataServiceSpec.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/quanter/rest/OrderServiceSpec.scala" afterPath="$PROJECT_DIR$/src/test/scala/quanter/rest/OrderServiceSpec.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/quanter/rest/RoutingSpec.scala" afterPath="$PROJECT_DIR$/src/test/scala/quanter/rest/RoutingSpec.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/quanter/rest/Strategy910ServiceSpec.scala" afterPath="$PROJECT_DIR$/src/test/scala/quanter/rest/Strategy910ServiceSpec.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/quanter/rest/TradeAccountServiceSpec.scala" afterPath="$PROJECT_DIR$/src/test/scala/quanter/rest/TradeAccountServiceSpec.scala" />
     </list>
@@ -85,106 +76,77 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="TradeAccountService.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/rest/TradeAccountService.scala">
+      <file leaf-file-name="OrderServiceSpec.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/OrderServiceSpec.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="77" column="25" selection-start-line="77" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+            <state relative-caret-position="62">
+              <caret line="13" column="11" selection-start-line="13" selection-start-column="11" selection-end-line="13" selection-end-column="11" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Strategy910ServiceSpec.scala" pinned="false" current-in-tab="false">
+      <file leaf-file-name="BackTestServiceSpec.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/BackTestServiceSpec.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+              <folding>
+                <element signature="e#34#70#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DataServiceSpec.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/DataServiceSpec.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="152">
+              <caret line="16" column="11" selection-start-line="16" selection-start-column="11" selection-end-line="16" selection-end-column="11" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Strategy910ServiceSpec.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/Strategy910ServiceSpec.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="127">
-              <caret line="51" column="118" selection-start-line="51" selection-start-column="11" selection-end-line="51" selection-end-column="123" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/html/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="201">
-              <caret line="27" column="10" selection-start-line="27" selection-start-column="10" selection-end-line="27" selection-end-column="10" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="strategy.detail.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/html/views/strategy/strategy.detail.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="116">
-              <caret line="8" column="57" selection-start-line="8" selection-start-column="57" selection-end-line="8" selection-end-column="57" />
+            <state relative-caret-position="266">
+              <caret line="18" column="67" selection-start-line="18" selection-start-column="67" selection-end-line="18" selection-end-column="67" />
               <folding>
-                <element signature="n#div#1;n#div#0;n#!!top" expanded="false" />
+                <element signature="e#35#67#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="StrategyService.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/rest/StrategyService.scala">
+      <file leaf-file-name="RoutingSpec.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/RoutingSpec.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="277">
-              <caret line="191" column="28" selection-start-line="191" selection-start-column="28" selection-end-line="191" selection-end-column="28" />
+            <state relative-caret-position="323">
+              <caret line="21" column="10" selection-start-line="21" selection-start-column="10" selection-end-line="23" selection-end-column="77" />
               <folding>
-                <element signature="e#899#1930#0" expanded="false" />
-                <element signature="e#1943#2279#0" expanded="false" />
+                <element signature="e#35#76#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DataService.scala" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/rest/DataService.scala">
+      <file leaf-file-name="TradeAccountServiceSpec.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/TradeAccountServiceSpec.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="290">
-              <caret line="67" column="7" selection-start-line="67" selection-start-column="7" selection-end-line="67" selection-end-column="7" />
+            <state relative-caret-position="140">
+              <caret line="18" column="34" selection-start-line="18" selection-start-column="34" selection-end-line="18" selection-end-column="34" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="StrategiesManagerActor.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/strategies/StrategiesManagerActor.scala">
+      <file leaf-file-name="TickActor.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/TickActor.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="182">
-              <caret line="67" column="21" selection-start-line="67" selection-start-column="21" selection-end-line="67" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="StrategyCache.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/strategies/StrategyCache.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="163">
-              <caret line="26" column="4" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="strategy.list.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/html/views/strategy/strategy.list.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="124">
-              <caret line="19" column="60" selection-start-line="19" selection-start-column="60" selection-end-line="19" selection-end-column="60" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ActorSelection.scala" pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-actor_2.11/2.3.15/akka-actor_2.11-2.3.15-sources.jar!/akka/actor/ActorSelection.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="141" column="67" selection-start-line="141" selection-start-column="67" selection-end-line="141" selection-end-column="67" />
+            <state relative-caret-position="76">
+              <caret line="4" column="77" selection-start-line="4" selection-start-column="77" selection-end-line="4" selection-end-column="77" />
               <folding />
             </state>
           </provider>
@@ -213,43 +175,16 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/trade/simulate/SimulateTradeAccount.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/rest/DataService.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/order/OrderManagerActor.scala" />
-        <option value="$PROJECT_DIR$/src/main/html/views/strategy/strategy.detail.exceper.html" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/persistence/StrategyDao.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/persistence/package.scala" />
-        <option value="$PROJECT_DIR$/src/test/scala/quanter/persistence/StrategyDaoSpec.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/persistence/OrderDao.scala" />
-        <option value="$PROJECT_DIR$/src/test/scala/quanter/rest/OrderServiceSpec.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/trade/TradeRouteActor.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/rest/OrderService.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/strategies/PortfolioCache.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/strategies/Portfolio.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/persistence/PersistenceActor.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/orders/Order.scala" />
-        <option value="$PROJECT_DIR$/src/test/scala/quanter/rest/Strategy910ServiceSpec.scala" />
-        <option value="$PROJECT_DIR$/src/test/scala/quanter/rest/TradeAccountServiceSpec.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/strategies/StrategiesManagerActor.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/strategies/StrategyCache.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/rest/StrategyService.scala" />
         <option value="$PROJECT_DIR$/src/main/html/views/strategy/strategy.detail.positions.html" />
         <option value="$PROJECT_DIR$/src/main/html/js/strategy.js" />
         <option value="$PROJECT_DIR$/src/main/html/js/controllers.js" />
         <option value="$PROJECT_DIR$/TODO" />
         <option value="$PROJECT_DIR$/src/main/scala/quanter/data/market/TradeBar.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/data/IndicatorActor.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/persistence/StrategyPersistorActor.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/provider/DataProviderActor.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/receivers/SinaL1Actor.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/quanter/mq/Listener.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/quanter/websocket/WebSocketActor.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/ws/WebSocketActor.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/data/BaseData.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/data/BarActor.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/data/TickActor.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/data/DataManagerActor.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecuritiesManagerActor.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecurityActor.scala" />
         <option value="$PROJECT_DIR$/src/main/html/views/account/account.connect.confirm.html" />
         <option value="$PROJECT_DIR$/src/main/html/js/sample.js" />
@@ -259,11 +194,38 @@
         <option value="$PROJECT_DIR$/src/main/scala/quanter/rest/JsonClasses.scala" />
         <option value="$PROJECT_DIR$/src/main/html/views/account/account.setting.html" />
         <option value="$PROJECT_DIR$/src/main/scala/quanter/trade/TradeAccountCache.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/quanter/MainApp.scala" />
         <option value="$PROJECT_DIR$/src/main/html/js/account.js" />
         <option value="$PROJECT_DIR$/src/main/html/index.html" />
         <option value="$PROJECT_DIR$/src/main/html/views/strategy/strategy.detail.html" />
         <option value="$PROJECT_DIR$/src/main/html/views/strategy/strategy.list.html" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecuritiesManagerActor.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/ws/MySslConfiguration.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/ws/WebSocketWorker.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/ws/WebSocketServer.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/mq/MainApp.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/mq/DataPubActor.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/receivers/SinaL1Actor.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/data/BaseData.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/data/market/SnapData.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/data/DataManagerActor.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/data/IndicatorFactory.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/data/IndicatorActor.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/rest/OrderService.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/zeromq/ZeroMQServerActor.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/quanter/rest/Strategy900ServiceSpec.scala" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/ws/SimpleServer.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/MainApp.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/data/BarActor.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/quanter/actors/data/TickActor.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/quanter/rest/Order1ServiceSpec.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/quanter/rest/RoutingSpec.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/quanter/rest/OrderServiceSpec.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/quanter/rest/BackTestServiceSpec.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/quanter/rest/DataServiceSpec.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/quanter/rest/HttpServerSpec.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/quanter/rest/TradeAccountServiceSpec.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/quanter/rest/Strategy910ServiceSpec.scala" />
       </list>
     </option>
   </component>
@@ -327,12 +289,18 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="quant4s" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -347,15 +315,13 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/Scala_Slick" />
+    <property name="last_opened_file_path" value="C:/Program Files (x86)/ZeroMQ 2.2.0/bin" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="settings.editor.splitter.proportion" value="0.24975514" />
-    <property name="project.structure.last.edited" value="Problems" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
@@ -383,7 +349,7 @@
       <recent name="C:\Users\joe\IdeaProjects\quant4s\src\main\scala\quanter\orders" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.MainApp (1)">
+  <component name="RunManager" selected="ScalaTest.Strategy910ServiceSpec">
     <configuration default="false" name="MainApp (1)" type="Application" factoryName="Application" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -404,55 +370,55 @@
       <envs />
       <method />
     </configuration>
-    <configuration default="false" name="Strategy910ServiceSpec" type="Specs2RunConfiguration" factoryName="Specs2" temporary="true">
+    <configuration default="false" name="Order1ServiceSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="quant4s" />
+      <setting name="path" value="quanter.rest.Order1ServiceSpec" />
+      <setting name="package" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <setting name="searchForTest" value="Across module dependencies" />
+      <setting name="testName" value="" />
+      <setting name="testKind" value="Class" />
+      <setting name="showProgressMessages" value="true" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="ScalaTests in 'rest'" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="quant4s" />
+      <setting name="path" value="" />
+      <setting name="package" value="quanter.rest" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <setting name="searchForTest" value="Across module dependencies" />
+      <setting name="testName" value="" />
+      <setting name="testKind" value="All in package" />
+      <setting name="showProgressMessages" value="true" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="OrderServiceSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="quant4s" />
+      <setting name="path" value="quanter.rest.OrderServiceSpec" />
+      <setting name="package" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <setting name="searchForTest" value="Across module dependencies" />
+      <setting name="testName" value="" />
+      <setting name="testKind" value="Class" />
+      <setting name="showProgressMessages" value="true" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="Strategy910ServiceSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="quant4s" />
       <setting name="path" value="quanter.rest.Strategy910ServiceSpec" />
-      <setting name="package" value="" />
-      <setting name="vmparams" value="" />
-      <setting name="params" value="" />
-      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <setting name="searchForTest" value="Across module dependencies" />
-      <setting name="testName" value="" />
-      <setting name="testKind" value="Class" />
-      <setting name="showProgressMessages" value="true" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="false" name="TradeAccountServiceSpec" type="Specs2RunConfiguration" factoryName="Specs2" temporary="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="quant4s" />
-      <setting name="path" value="quanter.rest.TradeAccountServiceSpec" />
-      <setting name="package" value="" />
-      <setting name="vmparams" value="" />
-      <setting name="params" value="" />
-      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <setting name="searchForTest" value="Across module dependencies" />
-      <setting name="testName" value="" />
-      <setting name="testKind" value="Class" />
-      <setting name="showProgressMessages" value="true" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="false" name="Strategy900ServiceSpec" type="Specs2RunConfiguration" factoryName="Specs2" temporary="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="quant4s" />
-      <setting name="path" value="quanter.rest.Strategy900ServiceSpec" />
-      <setting name="package" value="" />
-      <setting name="vmparams" value="" />
-      <setting name="params" value="" />
-      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <setting name="searchForTest" value="Across module dependencies" />
-      <setting name="testName" value="" />
-      <setting name="testKind" value="Class" />
-      <setting name="showProgressMessages" value="true" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="false" name="DataServiceSpec" type="Specs2RunConfiguration" factoryName="Specs2" temporary="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="quant4s" />
-      <setting name="path" value="quanter.rest.DataServiceSpec" />
       <setting name="package" value="" />
       <setting name="vmparams" value="" />
       <setting name="params" value="" />
@@ -752,18 +718,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Application.MainApp (1)" />
-      <item index="1" class="java.lang.String" itemvalue="Specs2.Strategy910ServiceSpec" />
-      <item index="2" class="java.lang.String" itemvalue="Specs2.TradeAccountServiceSpec" />
-      <item index="3" class="java.lang.String" itemvalue="Specs2.Strategy900ServiceSpec" />
-      <item index="4" class="java.lang.String" itemvalue="Specs2.DataServiceSpec" />
+      <item index="1" class="java.lang.String" itemvalue="ScalaTest.Order1ServiceSpec" />
+      <item index="2" class="java.lang.String" itemvalue="ScalaTest.ScalaTests in 'rest'" />
+      <item index="3" class="java.lang.String" itemvalue="ScalaTest.OrderServiceSpec" />
+      <item index="4" class="java.lang.String" itemvalue="ScalaTest.Strategy910ServiceSpec" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Application.MainApp (1)" />
-        <item index="1" class="java.lang.String" itemvalue="Specs2.Strategy910ServiceSpec" />
-        <item index="2" class="java.lang.String" itemvalue="Specs2.DataServiceSpec" />
-        <item index="3" class="java.lang.String" itemvalue="Specs2.Strategy900ServiceSpec" />
-        <item index="4" class="java.lang.String" itemvalue="Specs2.TradeAccountServiceSpec" />
+        <item index="0" class="java.lang.String" itemvalue="ScalaTest.Strategy910ServiceSpec" />
+        <item index="1" class="java.lang.String" itemvalue="ScalaTest.OrderServiceSpec" />
+        <item index="2" class="java.lang.String" itemvalue="ScalaTest.ScalaTests in 'rest'" />
+        <item index="3" class="java.lang.String" itemvalue="ScalaTest.Order1ServiceSpec" />
+        <item index="4" class="java.lang.String" itemvalue="Application.MainApp (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -843,15 +809,26 @@
       <option name="project" value="LOCAL" />
       <updated>1467457606744</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="init">
+      <created>1469666353372</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1469666353372</updated>
+    </task>
+    <task id="LOCAL-00010" summary="init">
+      <created>1470877311758</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1470877311758</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Strategy910ServiceSpec - 2016.07.11 at 22h 18m 10s.xml">
-      <configuration name="Strategy910ServiceSpec" configurationId="Specs2RunConfiguration" />
-    </history-entry>
-    <history-entry file="Strategy910ServiceSpec - 2016.07.11 at 22h 20m 38s.xml">
-      <configuration name="Strategy910ServiceSpec" configurationId="Specs2RunConfiguration" />
+    <history-entry file="Order1ServiceSpec - 2016.08.21 at 19h 54m 34s.xml">
+      <configuration name="Order1ServiceSpec" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
     <history-entry file="Strategy910ServiceSpec - 2016.07.11 at 22h 22m 12s.xml">
       <configuration name="Strategy910ServiceSpec" configurationId="Specs2RunConfiguration" />
@@ -867,6 +844,9 @@
     </history-entry>
     <history-entry file="Strategy910ServiceSpec - 2016.07.27 at 21h 28m 15s.xml">
       <configuration name="Strategy910ServiceSpec" configurationId="Specs2RunConfiguration" />
+    </history-entry>
+    <history-entry file="Strategy910ServiceSpec - 2016.08.21 at 20h 17m 36s.xml">
+      <configuration name="Strategy910ServiceSpec" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
     <history-entry file="TradeAccountServiceSpec - 2016.07.11 at 22h 22m 31s.xml">
       <configuration name="TradeAccountServiceSpec" configurationId="Specs2RunConfiguration" />
@@ -894,27 +874,28 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.4969651" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="SBT Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2124183" sideWeight="0.42435703" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20588236" sideWeight="0.41981846" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36601308" sideWeight="0.36913767" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.5030257" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32828283" sideWeight="0.49386504" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36437908" sideWeight="0.5620272" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36437908" sideWeight="0.5559758" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.4908953" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27231467" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2753404" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36601308" sideWeight="0.63086236" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39215687" sideWeight="0.63086236" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.4969743" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
-      <window_info id="SBT" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="SBT" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41666666" sideWeight="0.48789713" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -941,93 +922,66 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="scala-line">
           <url>file://$PROJECT_DIR$/src/test/scala/quanter/rest/Strategy910ServiceSpec.scala</url>
-          <line>42</line>
+          <line>40</line>
           <properties />
           <option name="timeStamp" value="105" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/BarActor.scala</url>
-          <line>36</line>
-          <properties />
-          <option name="timeStamp" value="127" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecuritiesManagerActor.scala</url>
-          <line>40</line>
-          <properties />
-          <option name="timeStamp" value="128" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/BarActor.scala</url>
-          <line>40</line>
-          <properties />
-          <option name="timeStamp" value="129" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/ws/WebSocketActor.scala</url>
-          <line>13</line>
-          <properties />
-          <option name="timeStamp" value="130" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/TickActor.scala</url>
-          <line>31</line>
-          <properties />
-          <option name="timeStamp" value="132" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/TickActor.scala</url>
-          <line>35</line>
-          <properties />
-          <option name="timeStamp" value="138" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/DataManagerActor.scala</url>
-          <line>37</line>
-          <properties />
-          <option name="timeStamp" value="145" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecurityActor.scala</url>
-          <line>28</line>
-          <properties />
-          <option name="timeStamp" value="150" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/DataManagerActor.scala</url>
-          <line>35</line>
-          <properties />
-          <option name="timeStamp" value="151" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/TickActor.scala</url>
-          <line>19</line>
-          <properties />
-          <option name="timeStamp" value="154" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/TickActor.scala</url>
-          <line>13</line>
-          <properties />
-          <option name="timeStamp" value="155" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
           <url>file://$PROJECT_DIR$/src/test/scala/quanter/rest/Strategy910ServiceSpec.scala</url>
-          <line>62</line>
+          <line>59</line>
           <properties>
             <option name="lambda-ordinal" value="-1" />
           </properties>
           <option name="timeStamp" value="175" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecuritiesManagerActor.scala</url>
+          <line>46</line>
+          <properties />
+          <option name="timeStamp" value="183" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/ws/SimpleServer.scala</url>
+          <line>22</line>
+          <properties />
+          <option name="timeStamp" value="201" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>jar://$MAVEN_REPOSITORY$/com/wandoulabs/akka/spray-websocket_2.11/0.1.4/spray-websocket_2.11-0.1.4-sources.jar!/spray/can/websocket/WebSocketServerWorker.scala</url>
+          <line>32</line>
+          <properties>
+            <option name="lambda-ordinal" value="0" />
+          </properties>
+          <option name="timeStamp" value="204" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/ws/WebSocketServer.scala</url>
+          <line>27</line>
+          <properties />
+          <option name="timeStamp" value="206" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>file://$PROJECT_DIR$/src/main/scala/quanter/actors/ws/WebSocketServer.scala</url>
+          <line>23</line>
+          <properties />
+          <option name="timeStamp" value="207" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="scala-line">
+          <url>jar://$MAVEN_REPOSITORY$/com/wandoulabs/akka/spray-websocket_2.11/0.1.4/spray-websocket_2.11-0.1.4-sources.jar!/spray/can/websocket/WebSocketServerWorker.scala</url>
+          <line>29</line>
+          <properties />
+          <option name="timeStamp" value="208" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="178" />
+      <option name="time" value="239" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
         <watch expression="rd.readLine()" language="Scala" custom="" />
+        <watch expression="localAddress" />
       </configuration>
     </watches-manager>
   </component>
@@ -1036,405 +990,409 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/provider/DataProviderActor.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/ws/WebSocketActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="23" column="45" selection-start-line="23" selection-start-column="45" selection-end-line="23" selection-end-column="45" />
+        <state relative-caret-position="152">
+          <caret line="10" column="6" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/BarActor.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/CommonExtensions.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="17" column="44" selection-start-line="17" selection-start-column="6" selection-end-line="17" selection-end-column="44" />
-          <folding />
+        <state relative-caret-position="323">
+          <caret line="21" column="11" selection-start-line="21" selection-start-column="11" selection-end-line="21" selection-end-column="11" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-actor_2.11/2.3.15/akka-actor_2.11-2.3.15-sources.jar!/akka/dispatch/Mailbox.scala">
+    <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-zeromq_2.11/2.3.15/akka-zeromq_2.11-2.3.15.jar!/akka/zeromq/ZeroMQExtension.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="267" column="5" selection-start-line="267" selection-start-column="5" selection-end-line="267" selection-end-column="5" />
+        <state relative-caret-position="360">
+          <caret line="27" column="7" selection-start-line="27" selection-start-column="7" selection-end-line="27" selection-end-column="7" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/stock_list.csv">
+    <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-zeromq_2.11/2.3.15/akka-zeromq_2.11-2.3.15.jar!/akka/zeromq/ZMQMessage.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="171">
+          <caret line="9" column="64" selection-start-line="9" selection-start-column="55" selection-end-line="9" selection-end-column="64" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/securities/Security.scala">
+    <entry file="jar://$MAVEN_REPOSITORY$/org/spark-project/zeromq/zeromq-scala-binding_2.11/0.0.7-spark/zeromq-scala-binding_2.11-0.0.7-spark.jar!/org/zeromq/ZeroMQ.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-12">
-          <caret line="10" column="14" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
+        <state relative-caret-position="246">
+          <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/stock_list.csv">
+    <entry file="jar://$MAVEN_REPOSITORY$/org/spark-project/zeromq/zeromq-scala-binding_2.11/0.0.7-spark/zeromq-scala-binding_2.11-0.0.7-spark-sources.jar!/org/zeromq/ZeroMQLibrary.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="109">
+          <caret line="100" column="37" selection-start-line="100" selection-start-column="37" selection-end-line="100" selection-end-column="37" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/securities/SecurityManager.scala">
+    <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-zeromq_2.11/2.3.15/akka-zeromq_2.11-2.3.15-sources.jar!/akka/zeromq/ZeroMQExtension.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="33" column="52" selection-start-line="33" selection-start-column="52" selection-end-line="33" selection-end-column="52" />
+        <state relative-caret-position="-1496">
+          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-actor_2.11/2.3.15/akka-actor_2.11-2.3.15-sources.jar!/akka/dispatch/sysmsg/SystemMessage.scala">
+    <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-zeromq_2.11/2.3.15/akka-zeromq_2.11-2.3.15-sources.jar!/akka/zeromq/SocketOption.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="120" column="32" selection-start-line="120" selection-start-column="32" selection-end-line="120" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecuritiesManagerActor.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="988">
-          <caret line="55" column="37" selection-start-line="55" selection-start-column="37" selection-end-line="55" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/receivers/SinaL1Actor.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2888">
-          <caret line="167" column="0" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-actor_2.11/2.3.15/akka-actor_2.11-2.3.15-sources.jar!/akka/actor/ActorRefProvider.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4066">
-          <caret line="229" column="6" selection-start-line="229" selection-start-column="6" selection-end-line="229" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-actor_2.11/2.3.15/akka-actor_2.11-2.3.15-sources.jar!/akka/actor/ActorCell.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="488" column="4" selection-start-line="488" selection-start-column="4" selection-end-line="488" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/TickActor.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="15" column="3" selection-start-line="15" selection-start-column="3" selection-end-line="15" selection-end-column="3" />
-          <folding />
+        <state relative-caret-position="153">
+          <caret line="321" column="0" selection-start-line="321" selection-start-column="0" selection-end-line="321" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-actor_2.11/2.3.15/akka-actor_2.11-2.3.15-sources.jar!/akka/actor/Actor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
+        <state relative-caret-position="112">
           <caret line="466" column="78" selection-start-line="466" selection-start-column="78" selection-end-line="466" selection-end-column="78" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/DataManagerActor.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
-          <folding>
-            <element signature="e#29#60#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecurityActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="17" column="19" selection-start-line="17" selection-start-column="6" selection-end-line="17" selection-end-column="19" />
+        <state relative-caret-position="202">
+          <caret line="23" column="17" selection-start-line="23" selection-start-column="15" selection-end-line="23" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/securities/SecuritiesManagerActor.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="41" column="4" selection-start-line="41" selection-start-column="4" selection-end-line="41" selection-end-column="4" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/views/templates/account/connect.confirm.html">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/data/market/TradeBar.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="4" column="28" selection-start-line="4" selection-start-column="28" selection-end-line="4" selection-end-column="28" />
+        <state relative-caret-position="34">
+          <caret line="10" column="28" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="28" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/js/controllers.js">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/data/BaseData.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="94">
-          <caret line="106" column="55" selection-start-line="106" selection-start-column="48" selection-end-line="106" selection-end-column="55" />
+        <state relative-caret-position="241">
+          <caret line="36" column="3" selection-start-line="36" selection-start-column="3" selection-end-line="36" selection-end-column="3" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/views/account/account.connect.confirm.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-76">
-          <caret line="11" column="79" selection-start-line="11" selection-start-column="79" selection-end-line="11" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/views/templates/account/account.list.html">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/data/market/TBar.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="114">
-          <caret line="39" column="72" selection-start-line="39" selection-start-column="64" selection-end-line="39" selection-end-column="72" />
+          <caret line="6" column="6" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/views/account/account.list.html">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/receivers/SinaL1Actor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="44" column="77" selection-start-line="44" selection-start-column="64" selection-end-line="44" selection-end-column="77" />
+        <state relative-caret-position="-1801">
+          <caret line="25" column="3" selection-start-line="25" selection-start-column="3" selection-end-line="25" selection-end-column="3" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/views/account/account.remove.confirm.html">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/receivers/SnapDataActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="20" column="84" selection-start-line="20" selection-start-column="84" selection-end-line="20" selection-end-column="84" />
+        <state relative-caret-position="114">
+          <caret line="8" column="6" selection-start-line="8" selection-start-column="6" selection-end-line="8" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/spray/spray-routing_2.11/1.3.2/spray-routing_2.11-1.3.2-sources.jar!/spray/routing/directives/RespondWithDirectives.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/data/market/SnapData.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="97">
-          <caret line="35" column="6" selection-start-line="35" selection-start-column="6" selection-end-line="35" selection-end-column="6" />
+        <state relative-caret-position="171">
+          <caret line="9" column="128" selection-start-line="9" selection-start-column="128" selection-end-line="9" selection-end-column="128" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/spray/spray-routing_2.11/1.3.2/spray-routing_2.11-1.3.2-sources.jar!/spray/routing/HttpService.scala">
+    <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-actor_2.11/2.3.15/akka-actor_2.11-2.3.15-sources.jar!/akka/actor/ActorCell.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="97">
-          <caret line="30" column="6" selection-start-line="30" selection-start-column="6" selection-end-line="30" selection-end-column="6" />
+        <state relative-caret-position="169">
+          <caret line="492" column="4" selection-start-line="492" selection-start-column="4" selection-end-line="492" selection-end-column="4" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/spray/spray-http_2.11/1.3.2/spray-http_2.11-1.3.2-sources.jar!/spray/http/HttpOrigin.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/DataManagerActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
+        <state relative-caret-position="204">
+          <caret line="43" column="51" selection-start-line="43" selection-start-column="51" selection-end-line="43" selection-end-column="51" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/spray/spray-routing_2.11/1.3.2/spray-routing_2.11-1.3.2-sources.jar!/spray/routing/RequestContext.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/IndicatorFactory.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="97">
-          <caret line="129" column="4" selection-start-line="129" selection-start-column="4" selection-end-line="129" selection-end-column="4" />
-          <folding />
+        <state relative-caret-position="344">
+          <caret line="31" column="14" selection-start-line="31" selection-start-column="14" selection-end-line="31" selection-end-column="14" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/spray/spray-routing_2.11/1.3.2/spray-routing_2.11-1.3.2-sources.jar!/spray/routing/RouteConcatenation.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/consolidators/PeriodCountConsolidatorBase.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="97">
-          <caret line="31" column="10" selection-start-line="31" selection-start-column="10" selection-end-line="31" selection-end-column="10" />
-          <folding />
+        <state relative-caret-position="1425">
+          <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
+          <folding>
+            <element signature="e#31#66#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/spray/spray-routing_2.11/1.3.2/spray-routing_2.11-1.3.2-sources.jar!/spray/routing/directives/BasicDirectives.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/IndicatorActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="91" column="35" selection-start-line="91" selection-start-column="35" selection-end-line="91" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/io/spray/spray-routing_2.11/1.3.2/spray-routing_2.11-1.3.2-sources.jar!/spray/routing/directives/RouteDirectives.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="48" column="43" selection-start-line="48" selection-start-column="43" selection-end-line="48" selection-end-column="43" />
-          <folding />
+        <state relative-caret-position="1083">
+          <caret line="64" column="31" selection-start-line="64" selection-start-column="31" selection-end-line="64" selection-end-column="31" />
+          <folding>
+            <element signature="e#29#75#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/rest/JsonClasses.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1140">
-          <caret line="62" column="232" selection-start-line="62" selection-start-column="232" selection-end-line="62" selection-end-column="232" />
+        <state relative-caret-position="969">
+          <caret line="53" column="50" selection-start-line="53" selection-start-column="36" selection-end-line="53" selection-end-column="50" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/views/account/account.setting.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="11" column="98" selection-start-line="11" selection-start-column="80" selection-end-line="11" selection-end-column="98" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/rest/HttpServer.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="30" column="18" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-actor_2.11/2.3.15/akka-actor_2.11-2.3.15-sources.jar!/akka/pattern/AskSupport.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="261" column="83" selection-start-line="261" selection-start-column="83" selection-end-line="261" selection-end-column="83" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/trade/TradeAccountCache.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="24" column="40" selection-start-line="24" selection-start-column="40" selection-end-line="24" selection-end-column="40" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-            <element signature="e#36#62#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/trade/TradeRouteActor.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="703">
-          <caret line="44" column="21" selection-start-line="44" selection-start-column="21" selection-end-line="44" selection-end-column="21" />
+        <state relative-caret-position="1881">
+          <caret line="106" column="7" selection-start-line="106" selection-start-column="7" selection-end-line="106" selection-end-column="7" />
           <folding>
             <element signature="e#30#72#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/MainApp.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/rest/OrderService.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="37" column="63" selection-start-line="37" selection-start-column="63" selection-end-line="37" selection-end-column="63" />
+        <state relative-caret-position="266">
+          <caret line="43" column="19" selection-start-line="43" selection-start-column="19" selection-end-line="43" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TODO">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="4" column="2" selection-start-line="4" selection-start-column="2" selection-end-line="4" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/mq/Listener.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="546">
+          <caret line="44" column="3" selection-start-line="44" selection-start-column="3" selection-end-line="44" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/mq/MainApp.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="15" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/mq/DataPubActor.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="12" column="7" selection-start-line="12" selection-start-column="7" selection-end-line="12" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/zeromq/ZeroMQServerActor.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="517">
+          <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
           <folding>
-            <element signature="e#17#46#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/js/account.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2983">
-          <caret line="157" column="23" selection-start-line="157" selection-start-column="23" selection-end-line="157" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/js/sample.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88730">
-          <caret line="4670" column="3411" selection-start-line="4670" selection-start-column="3398" selection-end-line="4670" selection-end-column="3411" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files (x86)/Java/jdk1.8.0_91/jre/lib/rt.jar!/sun/misc/Unsafe.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="494">
-          <caret line="364" column="20" selection-start-line="364" selection-start-column="20" selection-end-line="364" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
-          <caret line="27" column="10" selection-start-line="27" selection-start-column="10" selection-end-line="27" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/specs2/specs2_2.11/2.3.13/specs2_2.11-2.3.13.jar!/org/specs2/matcher/Expectable.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/Strategy910ServiceSpec.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
-          <caret line="51" column="118" selection-start-line="51" selection-start-column="11" selection-end-line="51" selection-end-column="123" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/rest/TradeAccountService.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="77" column="25" selection-start-line="77" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/strategies/StrategiesManagerActor.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="67" column="21" selection-start-line="67" selection-start-column="21" selection-end-line="67" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/com/typesafe/akka/akka-actor_2.11/2.3.15/akka-actor_2.11-2.3.15-sources.jar!/akka/actor/ActorSelection.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="141" column="67" selection-start-line="141" selection-start-column="67" selection-end-line="141" selection-end-column="67" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/strategies/StrategyCache.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="163">
-          <caret line="26" column="4" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/views/templates/strategy/strategy.detail.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="321">
-          <caret line="72" column="75" selection-start-line="72" selection-start-column="39" selection-end-line="72" selection-end-column="75" />
-          <folding>
-            <element signature="n#div#1;n#div#0;n#!!top" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/views/strategy/strategy.detail.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="116">
-          <caret line="8" column="57" selection-start-line="8" selection-start-column="57" selection-end-line="8" selection-end-column="57" />
-          <folding>
-            <element signature="n#div#1;n#div#0;n#!!top" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/html/views/strategy/strategy.list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="19" column="60" selection-start-line="19" selection-start-column="60" selection-end-line="19" selection-end-column="60" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/rest/StrategyService.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="191" column="28" selection-start-line="191" selection-start-column="28" selection-end-line="191" selection-end-column="28" />
-          <folding>
-            <element signature="e#899#1930#0" expanded="false" />
-            <element signature="e#1943#2279#0" expanded="false" />
+            <element signature="e#44#76#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/rest/DataService.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="67" column="7" selection-start-line="67" selection-start-column="7" selection-end-line="67" selection-end-column="7" />
+        <state relative-caret-position="151">
+          <caret line="13" column="6" selection-start-line="13" selection-start-column="6" selection-end-line="13" selection-end-column="6" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/io/spray/spray-testkit_2.11/1.3.2/spray-testkit_2.11-1.3.2-sources.jar!/spray/testkit/RouteTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="307">
+          <caret line="135" column="21" selection-start-line="135" selection-start-column="6" selection-end-line="135" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/specs2/specs2_2.11/2.3.13/specs2_2.11-2.3.13.jar!/org/specs2/matcher/Matchers.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/specs2/specs2_2.11/2.3.13/specs2_2.11-2.3.13-sources.jar!/org/specs2/matcher/Matchers.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="9" column="37" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/scalatest/scalatest_2.11/3.0.0-SNAP13/scalatest_2.11-3.0.0-SNAP13.jar!/org/scalatest/FreeSpec.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="24" column="32" selection-start-line="24" selection-start-column="32" selection-end-line="24" selection-end-column="32" />
+          <folding>
+            <element signature="n#plugin#0;n#plugins#0;n#build#0;n#project#0;n#!!top" expanded="false" />
+            <element signature="e#6438#7016#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/ws/SimpleServer.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="38" column="36" selection-start-line="38" selection-start-column="36" selection-end-line="38" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/MainApp.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/BarActor.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="4" column="77" selection-start-line="4" selection-start-column="77" selection-end-line="4" selection-end-column="77" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/scalactic/scalactic_2.11/3.0.0/scalactic_2.11-3.0.0.jar!/org/scalactic/TripleEqualsSupport.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="57">
+          <caret line="3" column="8" selection-start-line="3" selection-start-column="8" selection-end-line="3" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/scalactic/scalactic_2.11/3.0.0/scalactic_2.11-3.0.0-sources.jar!/org/scalactic/TripleEqualsSupport.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/quanter/actors/data/TickActor.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="4" column="77" selection-start-line="4" selection-start-column="77" selection-end-line="4" selection-end-column="77" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/OrderServiceSpec.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="62">
+          <caret line="13" column="11" selection-start-line="13" selection-start-column="11" selection-end-line="13" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/Strategy900ServiceSpec.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="151">
+          <caret line="23" column="46" selection-start-line="23" selection-start-column="46" selection-end-line="23" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/TradeAccountServiceSpec.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="18" column="34" selection-start-line="18" selection-start-column="34" selection-end-line="18" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/Order1ServiceSpec.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-105">
+          <caret line="20" column="94" selection-start-line="20" selection-start-column="32" selection-end-line="20" selection-end-column="94" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/DataServiceSpec.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="16" column="11" selection-start-line="16" selection-start-column="11" selection-end-line="16" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/HttpServerSpec.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="23" column="29" selection-start-line="23" selection-start-column="23" selection-end-line="23" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/BackTestServiceSpec.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding>
+            <element signature="e#34#70#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/RoutingSpec.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="21" column="10" selection-start-line="21" selection-start-column="10" selection-end-line="23" selection-end-column="77" />
+          <folding>
+            <element signature="e#35#76#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/quanter/rest/Strategy910ServiceSpec.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="18" column="67" selection-start-line="18" selection-start-column="67" selection-end-line="18" selection-end-column="67" />
+          <folding>
+            <element signature="e#35#67#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1507,7 +1465,7 @@
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.2" />
+                <option value="0.23563218" />
               </list>
             </option>
           </splitter-proportions>

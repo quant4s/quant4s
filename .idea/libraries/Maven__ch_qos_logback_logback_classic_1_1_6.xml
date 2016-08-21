@@ -6,6 +6,9 @@
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.1.6/logback-classic-1.1.6-javadoc.jar!/" />
     </JAVADOC>
+    <NATIVE>
+      <root url="file://C:/Program Files (x86)/ZeroMQ 2.2.0/bin" />
+    </NATIVE>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.1.6/logback-classic-1.1.6-sources.jar!/" />
     </SOURCES>

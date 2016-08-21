@@ -9,7 +9,7 @@ import quanter.actors.trade.TradeRouteActor
   *
   */
 trait OrderService extends HttpService {
-  val tradeRoute = actorRefFactory.actorSelection(TradeRouteActor.path)
+  val tradeRoute = actorRefFactory.actorSelection("/user/" + TradeRouteActor.path)
 
   val orderServiceRoute = {
     post {
@@ -56,7 +56,6 @@ trait OrderService extends HttpService {
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
     }
-
   }
 
 }

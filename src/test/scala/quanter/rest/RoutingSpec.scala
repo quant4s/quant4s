@@ -3,15 +3,14 @@
   */
 package quanter.rest
 
-import org.specs2.mutable.Specification
+import org.scalatest.{FreeSpec, Matchers}
 import quanter.actors.persistence.PersistenceActor
 import quanter.actors.strategies.StrategiesManagerActor
 import quanter.actors.trade.TradeRouteActor
-import spray.testkit.Specs2RouteTest
-import spray.http.HttpResponse
-import spray.routing.{Directives, Route}
+import spray.testkit.{ScalatestRouteTest}
+import spray.routing.{Directives}
 
-abstract class RoutingSpec extends Specification with Directives with Specs2RouteTest {
+abstract class RoutingSpec extends FreeSpec with Matchers with Directives with ScalatestRouteTest {
 
   system.actorOf(StrategiesManagerActor.props, StrategiesManagerActor.path)
   system.actorOf(PersistenceActor.props, PersistenceActor.path)
@@ -19,8 +18,8 @@ abstract class RoutingSpec extends Specification with Directives with Specs2Rout
 
 
 
-  val Ok = HttpResponse()
-  val completeOk = complete(Ok)
-  def echoComplete[T]: T ⇒ Route = { x ⇒ complete(x.toString) }
-  def echoComplete2[T, U]: (T, U) ⇒ Route = { (x, y) ⇒ complete(s"$x $y") }
+//  val Ok = HttpResponse()
+//  val completeOk = complete(Ok)
+//  def echoComplete[T]: T ⇒ Route = { x ⇒ complete(x.toString) }
+//  def echoComplete2[T, U]: (T, U) ⇒ Route = { (x, y) ⇒ complete(s"$x $y") }
 }

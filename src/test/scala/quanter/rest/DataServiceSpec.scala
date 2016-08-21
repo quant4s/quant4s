@@ -14,7 +14,7 @@ class DataServiceSpec  extends RoutingSpec with DataService{
   implicit def actorRefFactory = system
 
 
-  "数据管理," should {
+  "数据管理," - {
     " 提交数据订阅请求" in {
       Post("/data/000001.XSHE,BAR,5") ~> dataServiceRoute ~> check {
         responseAs[String] === """{"code":0}"""

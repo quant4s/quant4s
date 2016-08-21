@@ -10,7 +10,6 @@ import java.lang.management.ManagementFactory
 
 import akka.util.ByteString
 import akka.zeromq.ZeroMQExtension
-import quanter.mq.Tick
 
 import scala.concurrent.duration._
 
@@ -28,10 +27,6 @@ class ZeroMQServerActor extends Actor {
   val memory = ManagementFactory.getMemoryMXBean
   val os = ManagementFactory.getOperatingSystemMXBean
   val ser = SerializationExtension(context.system)
-  import context.dispatcher
-
-//  context.system.scheduler.schedule(1 second, 2 second, self, PublishData("000001.XSHE,BAR,5", "hello, 000001"))
-//  context.system.scheduler.schedule(1 second, 2 second, self, PublishData("000002.XSHE,TICK", "hello, 000002"))
 
   override def receive: Receive = {
     case d: PublishData => {

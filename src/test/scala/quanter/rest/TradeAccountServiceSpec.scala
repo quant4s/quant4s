@@ -16,7 +16,7 @@ import spray.http.{HttpEntity, MediaTypes}
 class TradeAccountServiceSpec  extends RoutingSpec with TradeAccountService{
   implicit def actorRefFactory = system
 
-  "交易节点 管理, ID: 1001，1002， 1003" should {
+  "交易节点 管理, ID: 1001，1002， 1003" - {
     "  创建三个交易节点1001，1002， 1003" in {
       Post("/account", HttpEntity(MediaTypes.`application/json`,
         """{"id": 1001,"name": "SHSE","brokerType":"CTP", "brokerName":"THS", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}"""

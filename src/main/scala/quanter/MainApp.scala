@@ -10,7 +10,7 @@ import quanter.actors.receivers.SinaL1Actor
 import quanter.actors.securities.SecuritiesManagerActor
 import quanter.actors.strategies.{CreateStrategy, StrategiesManagerActor}
 import quanter.actors.trade.{CreateTrader, TradeRouteActor}
-import quanter.actors.ws.WebSocketActor
+
 import quanter.actors.zeromq.ZeroMQServerActor
 import quanter.rest.{HttpServer, Strategy, Trader}
 import spray.can.Http

@@ -5,17 +5,15 @@ package quanter.rest
 
 import org.json4s.DefaultFormats
 import org.json4s.jackson.JsonMethods._
-import quanter.actors.persistence.PersistenceActor
-import quanter.actors.strategies.StrategiesManagerActor
 import spray.http.{HttpEntity, MediaTypes}
 
 /**
   * 策略 CRUD 的操作测试
   */
-class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
+class Strategy910ServiceSpec extends RoutingSpec with StrategyService {
   implicit def actorRefFactory = system
 
-  "策略管理全过程, ID: 910，911，912" should {
+  "策略管理全过程, ID: 910，911，912" - {
     "  创建三个策略910, 911, 912" in {
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
         """{"id": 910,"name": "不带资金组合","runMode":1, "status": 1}"""
@@ -43,8 +41,7 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService{
         val ret = jv.extract[RetStrategyList]
         ret.code === 0
         ret.strategies.getOrElse(new Array[Strategy](1)).length === 3
-        success
-      }
+              }
     }
 
     "  读取存在的策略910" in {
