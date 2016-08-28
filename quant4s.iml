@@ -82,6 +82,7 @@
     <orderEntry type="library" name="Maven: com.novocode:junit-interface:0.10-M4" level="project" />
     <orderEntry type="library" name="Maven: org.scala-tools.testing:test-interface:0.5" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.h2database:h2:1.4.192" level="project" />
+    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.39" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.scalatest:scalatest_2.11:3.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.scalactic:scalactic_2.11:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang.modules:scala-xml_2.11:1.0.5" level="project" />

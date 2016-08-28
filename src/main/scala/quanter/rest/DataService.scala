@@ -4,8 +4,7 @@
 package quanter.rest
 
 
-import quanter.actors.data.{RequestBarData, RequestIndicatorData, RequestTickData, DataManagerActor}
-import quanter.actors.strategies.{CreateStrategy, StrategiesManagerActor}
+import quanter.actors.data.{DataManagerActor, RequestBarData, RequestIndicatorData, RequestTickData}
 import spray.routing.HttpService
 
 /**

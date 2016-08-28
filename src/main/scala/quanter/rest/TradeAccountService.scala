@@ -4,10 +4,8 @@ import akka.pattern.ask
 import akka.util.Timeout
 import org.json4s.jackson.JsonMethods._
 import org.json4s.{DefaultFormats, Extraction, Formats}
-import quanter.actors.strategies.DeleteStrategy
 import quanter.actors.trade._
-import spray.http.HttpHeader
-import spray.http.HttpHeaders.RawHeader
+import quanter.actors._
 import spray.routing.HttpService
 
 import scala.concurrent.duration._
@@ -90,7 +88,7 @@ trait TradeAccountService extends HttpService{
       val jv = parse(json)
       val trader = jv.extract[Trader]
 
-      traderManager ! CreateTrader(trader)
+      traderManager ! NewTrader(trader)
       """{"code":0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)

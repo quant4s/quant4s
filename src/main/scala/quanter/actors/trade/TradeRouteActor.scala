@@ -1,19 +1,18 @@
 package quanter.actors.trade
 
+import scala.collection.mutable
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 import akka.actor.{Actor, ActorRef, Props}
+import akka.pattern.ask
+import akka.util.Timeout
+import quanter.actors._
 import quanter.actors.persistence.PersistenceActor
 import quanter.persistence.EOrder
 import quanter.rest.{Trader, Transaction}
 import quanter.trade.TradeAccountCache
 import quanter.trade.simulate.SimulateTradeAccount
-
-import scala.collection.mutable
-
-case class ListTraders()
-case class CreateTrader(trader: Trader)
-case class UpdateTrader(trader: Trader)
-case class DeleteTrader(id: Int)
-case class GetTrader(id: Int)
 
 
 /**
@@ -27,7 +26,7 @@ class TradeRouteActor extends Actor {
 
   override def receive: Receive = {
     case ListTraders => _getAllTraders()
-    case t: CreateTrader => _createTrader(t.trader)
+    case t: NewTrader => _createTrader(t.trader)
     case t: UpdateTrader => _updateTrader(t.trader)
     case t: DeleteTrader => _deleteTrader(t.id)
     case t: GetTrader => _getTrader(t.id)
@@ -58,11 +57,16 @@ class TradeRouteActor extends Actor {
 
   // CRUD 的操作
   private def _getAllTraders(): Unit = {
-    sender ! Some(cache.getAllTraders())
+    implicit val timeout = Timeout(5 seconds)
+    val future = persisRef ? ListTraders
+    val result = Await.result(future, timeout.duration).asInstanceOf[Option[Array[Trader]]]
+
+    sender ! Some(result)
   }
 
   private def _createTrader(trader: Trader): Unit = {
-    sender ! cache.addTrader(trader)
+    persisRef ! NewTrader(trader)
+    // sender ! cache.addTrader(trader)
   }
 
   private def _updateTrader(trader: Trader): Unit = {
@@ -87,7 +91,6 @@ class TradeRouteActor extends Actor {
       // TODO: 将订单保存到数据库
       val o = EOrder(None, order.orderNo, order.strategyId, order.symbol, order.orderType, order.side,
         "201606060000", order.quantity, order.openClose, order.price.get, "RMB", order.securityExchange)
-
 
       // 发送到相应的交易接口
       traders.get(order.tradeAccountId).get ! order

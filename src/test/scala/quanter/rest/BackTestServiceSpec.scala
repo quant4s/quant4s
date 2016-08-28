@@ -9,7 +9,6 @@ import org.junit.runner.RunWith
 /**
   * 回测报告测试
   */
-@RunWith(classOf[JUnitRunner])
 class BackTestServiceSpec extends RoutingSpec with StrategyService{
   implicit def actorRefFactory = system
   
@@ -18,11 +17,12 @@ class BackTestServiceSpec extends RoutingSpec with StrategyService{
       // 创建一个策略
       // 执行策略
       //
+      cancel()
 
     }
 
     "策略测试报告获取" in {
-
+      cancel()
     }
   }
 

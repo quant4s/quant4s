@@ -64,6 +64,7 @@ case class Trader(id: Option[Int], name: String, brokerType: String, brokerName:
 
 
 // 返回的JSON CLASS
+case class RetCode(code: Int, message: String)
 case class RetStrategy(code: Int, message: String, strategy: Option[Strategy])
 case class RetStrategyList(code: Int, message: String, strategies: Option[Array[Strategy]])
 case class RetTrader(code: Int, message: String, trader: Option[Trader])

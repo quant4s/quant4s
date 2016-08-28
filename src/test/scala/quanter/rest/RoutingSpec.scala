@@ -5,7 +5,7 @@ package quanter.rest
 
 import org.scalatest.{FreeSpec, Matchers}
 import quanter.actors.persistence.PersistenceActor
-import quanter.actors.strategies.StrategiesManagerActor
+import quanter.actors.strategy.StrategiesManagerActor
 import quanter.actors.trade.TradeRouteActor
 import spray.testkit.{ScalatestRouteTest}
 import spray.routing.{Directives}

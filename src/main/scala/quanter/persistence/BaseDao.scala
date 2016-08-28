@@ -13,7 +13,7 @@ trait BaseDao[T] {
 
   def update(id: Int, entity: T): Unit
 
-  def insert(entity: T): Unit
+  def insert(entity: T): T
 
   def delete(id: Int): Unit
 

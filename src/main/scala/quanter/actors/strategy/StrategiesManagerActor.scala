@@ -1,23 +1,15 @@
 /**
   *
   */
-package quanter.actors.strategies
+package quanter.actors.strategy
 
 import java.util.Date
 
 import akka.actor.{Actor, Props}
-import akka.pattern._
-import quanter.actors.persistence.{PersistenceActor, SaveStrategy}
-import quanter.persistence.{EStrategy, StrategyDao}
+import quanter.actors.{NewStrategy, UpdateStrategy, GetStrategy, DeleteStrategy, ListStrategies}
+import quanter.actors.persistence.PersistenceActor
 import quanter.rest.{CancelOrder, Portfolio, Strategy}
-import quanter.strategies.{Portfolio, StrategyCache}
-
-case class CreateStrategy(strategy: Strategy)
-case class UpdateStrategy(strategy: Strategy)
-case class DeleteStrategy(id: Int)
-case class RunStrategy(id: Int)
-case class ListStrategy()
-case class GetStrategy(id: Int)
+import quanter.strategies.StrategyCache
 
 case class UpdatePortfolio(strategy: Strategy)
 
@@ -33,11 +25,11 @@ class StrategiesManagerActor extends Actor{
   val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
 
   override def receive: Receive = {
-    case s: CreateStrategy => _saveStrategy(s.strategy)
+    case s: NewStrategy => _saveStrategy(s.strategy)
     case s: UpdateStrategy => _updateStrategy(s.strategy)
     case s: DeleteStrategy => _deleteStrategy(s.id)
 //    case s: RunStrategy => _runStrategy(s.id)
-    case ListStrategy => _listStrategies()
+    case ListStrategies => _listStrategies()
     case s: GetStrategy => _getStrategy(s.id)
 
     case s: UpdatePortfolio =>
@@ -56,7 +48,7 @@ class StrategiesManagerActor extends Actor{
     // 保存到数据库
 //    val es = EStrategy(None, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
     strategyCache.addStrategy(strategy)
-    persisRef ! SaveStrategy(strategy)
+    persisRef ! new NewStrategy(strategy)
   }
 
   private def _listStrategies() = {

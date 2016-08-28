@@ -3,27 +3,23 @@
   */
 package quanter.actors.persistence
 
-import akka.actor.{Actor, Props}
-import quanter.persistence.EStrategy
-import quanter.persistence._
-import quanter.rest.{Order, Portfolio, Strategy}
-import quanter.strategies.StrategyCache
+import java.sql.Timestamp
 
 import scala.collection.mutable.ArrayBuffer
-import scala.slick.driver.H2Driver.simple._
+import scala.slick.driver.MySQLDriver.simple._
+import akka.actor.{Actor, Props}
+import quanter.actors._
+import quanter.persistence._
+import quanter.rest.{Strategy, Trader}
+import quanter.strategies.StrategyCache
+
+// import scala.slick.driver.H2Driver.simple._
 
 
 /**
   *
   */
 
-case class SaveStrategy(obj: Strategy)
-case class UpdateStrategy(id: Int, obj: Strategy)
-case class DeleteStrategy(id: Int)
-case class GetStrategy(id: Int)
-case class ListStrategies()
-case class SaveOrder(order: Order)
-case class CancelOrder(id: Int)
 
 //case class SavePortfolio(obj: EPortfolio)
 //case class UpdatePortfolio(id: Int, obj: EPortfolio)
@@ -37,18 +33,22 @@ object PersistenceActor {
   def path = "persistence"
 }
 class PersistenceActor extends Actor {
-  val dbUrl = "jdbc:h2:mem:test"
-  val jdbcDriver = "org.h2.Driver"
-  val user = "root"
-  val password = ""
-  val db = Database.forURL(dbUrl, user, password, driver = jdbcDriver)
+//  val dbUrl = "jdbc:h2:mem:test"
+//  val jdbcDriver = "org.h2.Driver"
+  val dbUrl = "jdbc:mysql://172.16.240.1:3306/quant4s?user=root&password=root&useUnicode=true&characterEncoding=UTF8"
+  val jdbcDriver = "com.mysql.jdbc.Driver"
+  var db = Database.forURL(dbUrl, driver=jdbcDriver)
+  implicit val session = db.createSession()
 
   val strategyCache = new StrategyCache()
 
-  implicit val session = db.createSession()
+  val ddl = gStrategies.ddl ++ gPortfolios.ddl ++ gStockHoldings.ddl ++ gTransactions.ddl ++ gOrders.ddl ++ gTraders.ddl
+  // TODO: 如果是第一次启动
+  if(true) {
+    ddl.drop
+    ddl.create
+  }
 
-  val ddl = strategies.ddl ++ portfolios.ddl ++ stockHoldings.ddl ++ transactions.ddl ++ gOrders.ddl ++ traders.ddl
-  ddl.create
 
   @scala.throws[Exception](classOf[Exception])
   override def postStop(): Unit = {
@@ -57,24 +57,35 @@ class PersistenceActor extends Actor {
   }
 
   override def receive: Receive = {
-    case action: SaveStrategy => _saveStrategy(action.obj)
+    case action: NewStrategy => _saveStrategy(action.strategy)
     case action: DeleteStrategy => _deleteStrategy(action.id)
-    case action: UpdateStrategy => _updateStrategy(action.id, action.obj)
+    case action: UpdateStrategy => _updateStrategy(action.strategy.id, action.strategy)
     case action: GetStrategy => _getStrategy(action.id)
     case action: ListStrategies => _listStrategies()
 
     // 保存订单
     // 撤销订单
-    case action: SaveOrder =>
+    case action: NewOrder =>
     case action: CancelOrder =>
+
+    // 交易接口
+    case action: NewTrader => _saveTrader(action.trader)
+    case actoin: ListTraders => _listTraders()
     case _ =>
   }
 
   val strategyDao = new StrategyDao
-  val portfolioDao = new PortfolioDao()
+  val portfolioDao = new PortfolioDao
+  val traderDao = new TraderDao
+
   private def _saveStrategy(strategy: Strategy): Unit = {
-    val s = EStrategy(None, strategy.name, strategy.runMode, strategy.runMode, strategy.lang.getOrElse("C#"))
-    strategyDao.insert(s)
+    val s = EStrategy(None, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
+    val s1 = strategyDao.insert(s)
+
+    if (strategy.portfolio != None) {
+      val t = strategy.portfolio.get
+      portfolioDao.insert(EPortfolio(None, t.cash, new Timestamp(t.date.getTime), s1.id.get))
+    }
   }
 
   private def _getStrategy(id: Int): Unit = {
@@ -100,4 +111,18 @@ class PersistenceActor extends Actor {
     sender ! strategyArr
   }
 
+
+  private def _saveTrader(trader: Trader): Unit = {
+    val t = ETrader(None, trader.name, trader.brokerType, trader.brokerName, trader.brokerCode, trader.brokerAccount, trader.brokerPassword, trader.brokerUri, trader.brokerServicePwd, trader.status)
+    val s1 = traderDao.insert(t)
+  }
+
+  private def _listTraders(): Unit = {
+    val traderArr = new ArrayBuffer[Trader]()
+    for(s <- traderDao.list) {
+      val trader = Trader(s.id, s.name, s.brokerType, s.brokerName, s.brokerCode, s.brokerAccount, s.brokerPassword, s.brokerUri, s.brokerServicePwd, s.status)
+      traderArr += trader
+    }
+    sender ! traderArr.toArray
+  }
 }

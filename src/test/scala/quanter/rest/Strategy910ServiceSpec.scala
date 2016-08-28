@@ -18,20 +18,20 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService {
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
         """{"id": 910,"name": "不带资金组合","runMode":1, "status": 1}"""
       )) ~> strategyServiceRoute ~> check {
-        //status === Success
-        responseAs[String] === """{"code":0}"""
+        //status shouldEqual Success
+        responseAs[String] shouldEqual """{"code":0}"""
       }
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
         """{"id": 911,"name": "带资金组合","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
       )) ~> strategyServiceRoute ~> check {
-        //status === Success
-        responseAs[String] === """{"code":0}"""
+        //status shouldEqual Success
+        responseAs[String] shouldEqual """{"code":0}"""
       }
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
         """{"id": 912,"name": "实盘测试","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
       )) ~> strategyServiceRoute ~> check {
-        //status === Success
-        responseAs[String] === """{"code":0}"""
+        //status shouldEqual Success
+        responseAs[String] shouldEqual """{"code":0}"""
       }
       Get("/strategy/list")~> strategyServiceRoute ~> check {
         val json = responseAs[String]
@@ -39,8 +39,8 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService {
         implicit val formats = DefaultFormats
         val jv = parse(json)
         val ret = jv.extract[RetStrategyList]
-        ret.code === 0
-        ret.strategies.getOrElse(new Array[Strategy](1)).length === 3
+        ret.code shouldEqual 0
+        ret.strategies.getOrElse(new Array[Strategy](1)).length shouldEqual 3
               }
     }
 
@@ -48,22 +48,22 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService {
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
         """{"id": 910,"name": "实盘测试","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
       )) ~> strategyServiceRoute ~> check {
-        //status === Success
-        responseAs[String] === """{"code":0}"""
+        //status shouldEqual Success
+        responseAs[String] shouldEqual """{"code":0}"""
       }
       Get("/strategy/910") ~> strategyServiceRoute ~> check {
         val json = responseAs[String]
         implicit val formats = DefaultFormats
         val jv = parse(json)
         val ret = jv.extract[RetStrategy]
-        ret.code === 0
-        ret.strategy.get.portfolio.get.cash === 100000.0
+        ret.code shouldEqual 0
+        ret.strategy.get.portfolio.get.cash shouldEqual 100000.0
       }
     }
 
     "  读取不存在的策略918" in {
       Get("/strategy/918") ~> strategyServiceRoute ~> check {
-        responseAs[String] === """{"code":1}"""
+        responseAs[String] shouldEqual """{"code":1}"""
       }
     }
 
@@ -71,22 +71,22 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService {
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
         """{"id": 912,"name": "实盘测试","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
       )) ~> strategyServiceRoute ~> check {
-        //status === Success
-        responseAs[String] === """{"code":0}"""
+        //status shouldEqual Success
+        responseAs[String] shouldEqual """{"code":0}"""
       }
       Put("/strategy", HttpEntity(MediaTypes.`application/json`,
         """{"id": 912,"name": "实盘测试","runMode":1, "status": 1, "portfolio": {"cash":90000, "date":"2004-09-04T18:06:22Z"}}"""
       )) ~> strategyServiceRoute ~> check {
-        responseAs[String] === """{"code":0}"""
+        responseAs[String] shouldEqual """{"code":0}"""
       }
       Get("/strategy/912") ~> strategyServiceRoute ~> check {
         val json = responseAs[String]
         implicit val formats = DefaultFormats
         val jv = parse(json)
         val ret = jv.extract[RetStrategy]
-        ret.code === 0
-        ret.strategy.get.id === 912
-        ret.strategy.get.portfolio.get.cash === 90000
+        ret.code shouldEqual 0
+        ret.strategy.get.id shouldEqual 912
+        ret.strategy.get.portfolio.get.cash shouldEqual 90000
       }
     }
 
@@ -94,14 +94,14 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService {
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
         """{"id": 913,"name": "实盘测试","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
       )) ~> strategyServiceRoute ~> check {
-        //status === Success
-        responseAs[String] === """{"code":0}"""
+        //status shouldEqual Success
+        responseAs[String] shouldEqual """{"code":0}"""
       }
       Delete("/strategy/913") ~> strategyServiceRoute ~> check {
-        responseAs[String] === """{"code":0, "message":"成功删除"}"""
+        responseAs[String] shouldEqual """{"code":0, "message":"成功删除"}"""
       }
       Get("/strategy/913") ~> strategyServiceRoute ~> check {
-        responseAs[String] === """{"code":1}"""
+        responseAs[String] shouldEqual """{"code":1}"""
       }
     }
 
@@ -109,20 +109,20 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService {
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
         """{"id": 910,"name": "实盘测试","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
       )) ~> strategyServiceRoute ~> check {
-        //status === Success
-        responseAs[String] === """{"code":0}"""
+        //status shouldEqual Success
+        responseAs[String] shouldEqual """{"code":0}"""
       }
       Post("/strategy/run/910") ~> strategyServiceRoute ~> check {
-        responseAs[String] === """{"code":0}"""
+        responseAs[String] shouldEqual """{"code":0}"""
       }
       Get("/strategy/910") ~> strategyServiceRoute ~> check {
         val json = responseAs[String]
         implicit val formats = DefaultFormats
         val jv = parse(json)
         val ret = jv.extract[RetStrategy]
-        ret.code === 0
-        ret.strategy.get.id === 910
-        ret.strategy.get.status === 1
+        ret.code shouldEqual 0
+        ret.strategy.get.id shouldEqual 910
+        ret.strategy.get.status shouldEqual 1
       }
     }
   }

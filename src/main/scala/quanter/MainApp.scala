@@ -1,21 +1,21 @@
 package quanter
 
+import scala.io.StdIn
+
 import akka.actor.ActorSystem
 import akka.io.IO
 import org.json4s.DefaultFormats
 import org.json4s.jackson.JsonMethods._
+import quanter.actors.{NewStrategy, NewTrader}
 import quanter.actors.data.DataManagerActor
 import quanter.actors.persistence.PersistenceActor
 import quanter.actors.receivers.SinaL1Actor
 import quanter.actors.securities.SecuritiesManagerActor
-import quanter.actors.strategies.{CreateStrategy, StrategiesManagerActor}
-import quanter.actors.trade.{CreateTrader, TradeRouteActor}
-
+import quanter.actors.strategy.StrategiesManagerActor
+import quanter.actors.trade.TradeRouteActor
 import quanter.actors.zeromq.ZeroMQServerActor
 import quanter.rest.{HttpServer, Strategy, Trader}
 import spray.can.Http
-
-import scala.io.StdIn
 
 /**
   * 启动入口
@@ -64,7 +64,7 @@ object MainApp extends App {
       val jv = parse(json)
       val strategy = jv.extract[Strategy]
 
-      strategyManagerRef ! CreateStrategy(strategy)
+      strategyManagerRef ! NewStrategy(strategy)
       """{"code":0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
@@ -78,7 +78,7 @@ object MainApp extends App {
       val jv = parse(json)
       val trader = jv.extract[Trader]
 
-      tradeRouteRef ! CreateTrader(trader)
+      tradeRouteRef ! NewTrader(trader)
       """{"code":0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)

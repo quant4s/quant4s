@@ -3,9 +3,10 @@ package quanter.rest
 import org.json4s.{DefaultFormats, Extraction, Formats}
 import spray.routing.HttpService
 import org.json4s.jackson.JsonMethods._
-import quanter.actors.strategies._
+import quanter.actors.strategy._
 import akka.pattern.ask
 import akka.util.Timeout
+import quanter.actors._
 
 import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration._
@@ -120,7 +121,7 @@ trait StrategyService extends HttpService {
   private def _getAllStrategies(): String = {
     try {
       implicit val timeout = Timeout(5 seconds)
-      val future = manager ? ListStrategy
+      val future = manager ? ListStrategies
 
       val result = Await.result(future, timeout.duration).asInstanceOf[Option[Array[Strategy]]]
       implicit val formats: Formats = DefaultFormats
@@ -154,7 +155,7 @@ trait StrategyService extends HttpService {
 
   private def _runStrategy(id: Int): String = {
     try {
-      manager ! RunStrategy(id)
+      //manager ! RunStrategy(id)
       """{"code":0}"""
     } catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
@@ -175,7 +176,7 @@ trait StrategyService extends HttpService {
       val jv = parse(json)
       val strategy = jv.extract[Strategy]
 
-      manager ! CreateStrategy(strategy)
+      manager ! NewStrategy(strategy)
       """{"code":0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)

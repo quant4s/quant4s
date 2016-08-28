@@ -4,6 +4,7 @@
 package quanter.actors.persistence
 
 import akka.actor.Actor
+import quanter.actors.NewStrategy
 import quanter.rest._
 import quanter.strategies.StrategyCache
 
@@ -21,7 +22,7 @@ class StrategyPersistorActor extends  Actor{
     strategyCache.addStrategy(strategy)
 
     // 调用slick
-    ref ! SaveStrategy(strategy)
+    ref ! NewStrategy(strategy)
   }
 
   def getStrategy(id: Int): Unit = {

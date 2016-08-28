@@ -1,8 +1,8 @@
 package quanter
-import java.util.Date
+import java.sql.Timestamp
 
-// import scala.slick.driver.MySQLDriver.simple._
-import scala.slick.driver.H2Driver.simple._
+import scala.slick.driver.MySQLDriver.simple._
+//import scala.slick.driver.H2Driver.simple._
 
 
 /**
@@ -22,21 +22,21 @@ package object persistence {
 
     def * = (id.?, name, runMode, status, lang) <> (EStrategy.tupled, EStrategy.unapply)
   }
-  val strategies = TableQuery[EStrategies]
+  val gStrategies = TableQuery[EStrategies]
 
-  case class EPortfolio(id: Option[Int], cash: Double, date: String, strategyId: Int) {
+  case class EPortfolio(id: Option[Int], cash: Double, date: Timestamp, strategyId: Int) {
     // def holdings = stockHoldings.filter(_.portfolioId === id.get).list.toList
   }
   class EPortfolios(tag: Tag) extends Table[EPortfolio](tag, "PORTFOLIOS") {
     def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
     def cash = column[Double]("CASH")
-    def date = column[String]("HOLDINGDATE")
+    def date = column[Timestamp]("HOLDINGDATE")
     def strategyId = column[Int]("STRATEGY_ID")
 
-    def strategy = foreignKey("STRATEGY_FK", strategyId, strategies)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+    def strategy = foreignKey("STRATEGY_FK", strategyId, gStrategies)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
     def * = (id.?, cash, date, strategyId) <> (EPortfolio.tupled, EPortfolio.unapply)
   }
-  val portfolios = TableQuery[EPortfolios]
+  val gPortfolios = TableQuery[EPortfolios]
 
   case class EStockHolding(id: Option[Int], portfolioId: Int, symbol: String, cost: Double)
   class EStockHoldings(tag: Tag) extends Table[EStockHolding](tag, "STOCKHOLDINGS") {
@@ -47,7 +47,7 @@ package object persistence {
 
     def * = (id.?, portfolioId, symbol, cost) <> (EStockHolding.tupled, EStockHolding.unapply)
   }
-  val stockHoldings = TableQuery[EStockHoldings]
+  val gStockHoldings = TableQuery[EStockHoldings]
 
   case class ETransaction(id: Option[Int], strategyId: Int,symbol: String) {
     def orders = gOrders.filter(_.strategyId === strategyId)
@@ -59,7 +59,7 @@ package object persistence {
 
     def * = (id.?, strategyId, symbol) <> (ETransaction.tupled, ETransaction.unapply)
   }
-  val transactions = TableQuery[ETransactions]
+  val gTransactions = TableQuery[ETransactions]
 
   case class EOrder(id: Option[Int], orderNo: Int, strategyId: Int, symbol: String, orderType: Int, side: Int,
                     transactTime: String, quantity: Int, openClose: String, price: Double, currency: String, securityExchange: String )
@@ -81,12 +81,21 @@ package object persistence {
   }
   val gOrders = TableQuery[EOrders]
 
-  case class ETrader(id: Option[Int], name: String)
+  case class ETrader(id: Option[Int], name: String, brokerType: String, brokerName: String, brokerCode: String, brokerAccount: String, brokerPassword: Option[String], brokerUri: String, brokerServicePwd: Option[String], status: Int = 0)
+
   class ETraders(tag: Tag) extends Table[ETrader](tag, "TRADERS") {
     def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
     def name = column[String]("NAME")
+    def brokerType = column[String]("BROKERTYPE")
+    def brokerName = column[String]("BROKERNAME")
+    def brokerCode = column[String]("BROKERCODE")
+    def brokerAccount = column[String]("BROKERACCOUNT")
+    def brokerPassword = column[String]("BROKERPASSWORD", O.Nullable, O.Default[String](""))
+    def brokerUri = column[String]("BROKERURI")
+    def brokerServicePwd = column[String]("BROKERSERVICEPWD", O.Nullable, O.Default[String](""))
+    def status = column[Int]("STATUS")
 
-    def * = (id.?, name) <> (ETrader.tupled, ETrader.unapply)
+    def * = (id.?, name, brokerType, brokerName, brokerCode, brokerAccount, brokerPassword?, brokerUri, brokerServicePwd?, status) <> (ETrader.tupled, ETrader.unapply)
   }
-  val traders = TableQuery[ETraders]
+  val gTraders = TableQuery[ETraders]
 }
