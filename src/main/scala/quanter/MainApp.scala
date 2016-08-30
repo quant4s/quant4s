@@ -25,11 +25,12 @@ object MainApp extends App {
 
   // MARKET actor
   val httpServer = system.actorOf(HttpServer.props)
+  val persistenceRef = system.actorOf(PersistenceActor.props, PersistenceActor.path)
+  val tradeRouteRef = system.actorOf(TradeRouteActor.props, TradeRouteActor.path)
+
   val manager = system.actorOf(SecuritiesManagerActor.props, SecuritiesManagerActor.path)
 
   val strategyManagerRef = system.actorOf(StrategiesManagerActor.props, StrategiesManagerActor.path)
-  val tradeRouteRef = system.actorOf(TradeRouteActor.props, TradeRouteActor.path)
-  val persistenceRef = system.actorOf(PersistenceActor.props, PersistenceActor.path)
 
   val sinaL1Ref = system.actorOf(SinaL1Actor.props, SinaL1Actor.path)
   val dataManagerRef = system.actorOf(DataManagerActor.props, DataManagerActor.path)

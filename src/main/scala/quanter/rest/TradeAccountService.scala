@@ -67,7 +67,7 @@ trait TradeAccountService extends HttpService{
 
   val traderManager = actorRefFactory.actorSelection("/user/" + TradeRouteActor.path)
   private def _getAllTraders(): String = {
-    implicit val timeout = Timeout(5 seconds)
+    implicit val timeout = Timeout(10 seconds)
     val future = traderManager ? ListTraders
     val result = Await.result(future, timeout.duration).asInstanceOf[Option[Array[Trader]]]
     val retTraders = RetTraderList(0, "success", result)

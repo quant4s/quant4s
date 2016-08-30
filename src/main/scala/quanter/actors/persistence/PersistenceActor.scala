@@ -44,7 +44,7 @@ class PersistenceActor extends Actor {
 
   val ddl = gStrategies.ddl ++ gPortfolios.ddl ++ gStockHoldings.ddl ++ gTransactions.ddl ++ gOrders.ddl ++ gTraders.ddl
   // TODO: 如果是第一次启动
-  if(true) {
+  if(false) {
     ddl.drop
     ddl.create
   }
@@ -117,7 +117,7 @@ class PersistenceActor extends Actor {
     val s1 = traderDao.insert(t)
   }
 
-  private def _listTraders(): Unit = {
+  private def  _listTraders(): Unit = {
     val traderArr = new ArrayBuffer[Trader]()
     for(s <- traderDao.list) {
       val trader = Trader(s.id, s.name, s.brokerType, s.brokerName, s.brokerCode, s.brokerAccount, s.brokerPassword, s.brokerUri, s.brokerServicePwd, s.status)
