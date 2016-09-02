@@ -7,7 +7,7 @@ import quanter.actors.zeromq.{PublishData, ZeroMQServerActor}
 import quanter.consolidators.{TDataConsolidator, TradeBarConsolidator}
 import quanter.data.BaseData
 import quanter.data.market.TradeBar
-import quanter.indicators.{Indicator, IndicatorDataPoint}
+import quanter.indicators.{Indicator, IndicatorBase, IndicatorDataPoint}
 
 /**
   * 指标Actor
@@ -56,7 +56,7 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String,
     new TradeBarConsolidator(ptimespan = Some(TimeSpan.fromSeconds(duration)))
   }
 
-  private def _registerIndicator(symbol: String, indicator: Indicator, consolidator: TradeBarConsolidator) = {
+  private def _registerIndicator(symbol: String, indicator: IndicatorBase[IndicatorDataPoint], consolidator: TradeBarConsolidator) = {
     val ts: SelectType = { x => x.value}
     consolidator.dataConsolidated += {(sender, consolidated) => {
       val value = ts(consolidated)

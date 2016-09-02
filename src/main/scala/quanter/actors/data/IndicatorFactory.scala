@@ -1,7 +1,6 @@
 package quanter.actors.data
 
-import quanter.indicators.{Indicator, MovingAverageConvergenceDivergence, MovingAverageType}
-import quanter.indicators.MovingAverageType.MovingAverageType
+import quanter.indicators.{IndicatorDataPoint, _}
 import quanter.indicators.window.{ExponentialMovingAverage, SimpleMovingAverage}
 
 /**
@@ -9,8 +8,8 @@ import quanter.indicators.window.{ExponentialMovingAverage, SimpleMovingAverage}
   */
 class IndicatorFactory {
 
-  def createIndicator(name: String, param: String): Indicator = {
-    var indicator: Indicator = null
+  def createIndicator(name: String, param: String): IndicatorBase[IndicatorDataPoint] = {
+    var indicator: IndicatorBase[IndicatorDataPoint] = null
     name match {
       case IndicatorFactory.MACD =>
         val params = param.split(IndicatorFactory.regex)
@@ -21,22 +20,30 @@ class IndicatorFactory {
       case IndicatorFactory.EMA =>
         val params = param.split(IndicatorFactory.regex)
         indicator = _ema(params(0).toInt)
+      case IndicatorFactory.KAMA =>
+        val params = param.split(IndicatorFactory.regex)
+        indicator = _kama(params(0).toInt)
+      case IndicatorFactory.PSAR =>
       case _ =>
     }
 
     indicator
   }
 
-  private def _macd(fastPeriod: Int, slowPeriod: Int, signalPeriod: Int): Indicator = {
+  private def _macd(fastPeriod: Int, slowPeriod: Int, signalPeriod: Int) = {
     new MovingAverageConvergenceDivergence(fastPeriod, slowPeriod, signalPeriod, MovingAverageType.Simple)
   }
 
-  private def _sma(period: Int): Indicator = {
+  private def _sma(period: Int) = {
     new SimpleMovingAverage(period)
   }
 
-  private def _ema(period: Int): Indicator = {
+  private def _ema(period: Int) = {
     new ExponentialMovingAverage(period)
+  }
+
+  private def _kama(period: Int) = {
+    new KaufmanAdaptiveMovingAverage(period)
   }
 }
 
@@ -47,4 +54,10 @@ object IndicatorFactory {
   val EMA = "EMA"
   val SMA = "SMA"
   val RSI = "RSI"
+  val PSAR = "PSAR"
+  val SAR = "SAR"
+  val KDJ = "KDJ"
+  val DMI = "DMI"
+  val KAMA = "KAMA"
+
 }
