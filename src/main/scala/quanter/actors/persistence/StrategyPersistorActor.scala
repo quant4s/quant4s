@@ -9,7 +9,7 @@ import quanter.rest._
 import quanter.strategies.StrategyCache
 
 /**
-  *
+  * 保留， 后期使用
   */
 class StrategyPersistorActor extends  Actor{
   val strategyCache = new StrategyCache()
@@ -28,6 +28,4 @@ class StrategyPersistorActor extends  Actor{
   def getStrategy(id: Int): Unit = {
     strategyCache.getStrategy(id)
   }
-
-
 }

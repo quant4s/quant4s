@@ -34,7 +34,7 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String,
 
 
   override def receive: Receive = {
-    case data: BaseData => _consolidator.update(data)  // TODO:计算指标
+    case data: BaseData => _consolidator.update(data)  // 计算指标
 
   }
 
@@ -52,11 +52,11 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String,
     consolidator
   }
 
-  private def _resolveConsolidators(symbol: String, duration: Int): TradeBarConsolidator = {
+  private def _resolveConsolidators(symbol: String, duration: Int): TDataConsolidator = {
     new TradeBarConsolidator(ptimespan = Some(TimeSpan.fromSeconds(duration)))
   }
 
-  private def _registerIndicator(symbol: String, indicator: IndicatorBase[IndicatorDataPoint], consolidator: TradeBarConsolidator) = {
+  private def _registerIndicator(symbol: String, indicator: IndicatorBase[IndicatorDataPoint], consolidator: TDataConsolidator) = {
     val ts: SelectType = { x => x.value}
     consolidator.dataConsolidated += {(sender, consolidated) => {
       val value = ts(consolidated)

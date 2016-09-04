@@ -26,6 +26,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="jlts" target="1.7" />
       <module name="quant4s" target="1.7" />
     </bytecodeTargetLevel>
   </component>

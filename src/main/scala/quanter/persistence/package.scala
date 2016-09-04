@@ -62,7 +62,7 @@ package object persistence {
   val gTransactions = TableQuery[ETransactions]
 
   case class EOrder(id: Option[Int], orderNo: Int, strategyId: Int, symbol: String, orderType: Int, side: Int,
-                    transactTime: String, quantity: Int, openClose: String, price: Double, currency: String, securityExchange: String )
+                    transactTime: String, quantity: Int, openClose: String, price: Double, currency: String, securityExchange: String, status: Int)
   class EOrders(tag: Tag) extends Table[EOrder](tag, "ORDER") {
     def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
     def orderNo = column[Int]("ORDER_NO")
@@ -76,8 +76,9 @@ package object persistence {
     def price = column[Double]("PRICE")
     def currency = column[String]("CURRENCY")
     def securityExchange = column[String]("SECURITY_EXCHANGE")
+    def status = column[Int]("STATUS")
 
-    def * = (id.?, orderNo,strategyId, symbol, orderType, side, transactTime, quantity, openClose, price, currency, securityExchange) <> (EOrder.tupled, EOrder.unapply)
+    def * = (id.?, orderNo,strategyId, symbol, orderType, side, transactTime, quantity, openClose, price, currency, securityExchange, status) <> (EOrder.tupled, EOrder.unapply)
   }
   val gOrders = TableQuery[EOrders]
 

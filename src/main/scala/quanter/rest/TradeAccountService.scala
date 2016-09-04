@@ -68,7 +68,7 @@ trait TradeAccountService extends HttpService{
   val traderManager = actorRefFactory.actorSelection("/user/" + TradeRouteActor.path)
   private def _getAllTraders(): String = {
     implicit val timeout = Timeout(10 seconds)
-    val future = traderManager ? ListTraders
+    val future = traderManager ? new ListTraders()
     val result = Await.result(future, timeout.duration).asInstanceOf[Option[Array[Trader]]]
     val retTraders = RetTraderList(0, "success", result)
     implicit val formats: Formats = DefaultFormats
@@ -101,7 +101,7 @@ trait TradeAccountService extends HttpService{
       val jv = parse(json)
       val trader = jv.extract[Trader]
 
-      traderManager ! UpdateTrader(trader)
+      traderManager ! new UpdateTrader(trader)
       """{"code":0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)

@@ -1,7 +1,9 @@
 package quanter.actors.data
 
+
 import quanter.indicators.{IndicatorDataPoint, _}
 import quanter.indicators.window.{ExponentialMovingAverage, SimpleMovingAverage}
+
 
 /**
   *
@@ -24,6 +26,9 @@ class IndicatorFactory {
         val params = param.split(IndicatorFactory.regex)
         indicator = _kama(params(0).toInt)
       case IndicatorFactory.PSAR =>
+        val params = param.split(IndicatorFactory.regex)
+         //indicator = _psar(params(0).toDouble, params(1).toDouble, params(2).toDouble)
+
       case _ =>
     }
 
@@ -44,6 +49,10 @@ class IndicatorFactory {
 
   private def _kama(period: Int) = {
     new KaufmanAdaptiveMovingAverage(period)
+  }
+
+  private def _psar(afStart: Double, afIncrement: Double, afMax: Double) = {
+    new ParabolicStopAndReverse(afStart, afIncrement, afMax)
   }
 }
 

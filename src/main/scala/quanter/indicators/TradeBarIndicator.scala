@@ -5,6 +5,6 @@ import quanter.data.market.TradeBar
 /**
   *
   */
-abstract class TradeBarIndicator(pname: String) extends IndicatorBase[TradeBar](pname){
+abstract class TradeBarIndicator(name: String) extends IndicatorBase[TradeBar](name){
 
 }

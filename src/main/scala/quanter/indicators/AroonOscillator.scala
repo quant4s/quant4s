@@ -19,9 +19,6 @@ object AroonOscillator {
 
 }
 
-/**
-  *
-  */
 class AroonOscillator(name:String, upPeriod: Int, downPeriod: Int) extends TradeBarIndicator(name){
   val max = new Maximum(name + "_Max", upPeriod + 1);
   val aroonUp = new FunctionalIndicator[IndicatorDataPoint](name + "_AroonUp",

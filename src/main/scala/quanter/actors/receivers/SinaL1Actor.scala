@@ -37,6 +37,7 @@ class SinaL1Actor extends Actor with ActorLogging {
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {
     super.preStart()
+    log.info("启动Sina L1 行情获取......")
     _run()
   }
 
@@ -48,22 +49,22 @@ class SinaL1Actor extends Actor with ActorLogging {
 
   private def _run(): Unit = {
     context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
-    context.system.scheduler.schedule(0 seconds, 3 seconds, new Runnable {
-      override def run(): Unit =  {
-        if(_isOpened) {
-          _querySnapData()
-        }
-      }
-//      private def _isClosed = false
-//      private def _isNotOpened = false
-//      private def _isPause = false
-      private def _isOpened = true
-    });
+//    context.system.scheduler.schedule(0 seconds, 3 seconds, new Runnable {
+//      override def run(): Unit =  {
+//        if(_isOpened) {
+//          _querySnapData()
+//        }
+//      }
+////      private def _isClosed = false
+////      private def _isNotOpened = false
+////      private def _isPause = false
+//      private def _isOpened = true
+//    });
   }
 
   private def _addSymbol(symbol: String): Unit = {
     if (!symbolSelections.contains(symbol)) {
-      log.debug(s"准备接受${symbol}的行情数据")
+      log.info(s"准备接受${symbol}的行情数据")
       val ref = context.actorSelection(s"/user/${SecuritiesManagerActor.path}/${symbol}")
       symbolSelections += (symbol -> ref)
       aliases += _symbol2Alias(symbol)

@@ -10,7 +10,7 @@ import scala.slick.driver.MySQLDriver.simple._
 import akka.actor.{Actor, Props}
 import quanter.actors._
 import quanter.persistence._
-import quanter.rest.{Strategy, Trader}
+import quanter.rest.{Order, Strategy, Trader}
 import quanter.strategies.StrategyCache
 
 // import scala.slick.driver.H2Driver.simple._
@@ -33,18 +33,17 @@ object PersistenceActor {
   def path = "persistence"
 }
 class PersistenceActor extends Actor {
-//  val dbUrl = "jdbc:h2:mem:test"
-//  val jdbcDriver = "org.h2.Driver"
-  val dbUrl = "jdbc:mysql://172.16.240.1:3306/quant4s?user=root&password=root&useUnicode=true&characterEncoding=UTF8"
-  val jdbcDriver = "com.mysql.jdbc.Driver"
-  var db = Database.forURL(dbUrl, driver=jdbcDriver)
+//  val dbUrl = "jdbc:mysql://172.16.240.1:3306/quant4s?user=root&password=root&useUnicode=true&characterEncoding=UTF8"
+//  val jdbcDriver = "com.mysql.jdbc.Driver"
+//  var db = Database.forURL(dbUrl, driver=jdbcDriver)
+  var db = Database.forConfig("mysql")
   implicit val session = db.createSession()
 
   val strategyCache = new StrategyCache()
 
   val ddl = gStrategies.ddl ++ gPortfolios.ddl ++ gStockHoldings.ddl ++ gTransactions.ddl ++ gOrders.ddl ++ gTraders.ddl
   // TODO: 如果是第一次启动
-  if(false) {
+  if(true) {
     ddl.drop
     ddl.create
   }
@@ -65,18 +64,21 @@ class PersistenceActor extends Actor {
 
     // 保存订单
     // 撤销订单
-    case action: NewOrder =>
-    case action: CancelOrder =>
+    case action: NewOrder => _saveOrder(action.order)
+    case action: CancelOrder => _cancelOrder(action.id)
 
     // 交易接口
     case action: NewTrader => _saveTrader(action.trader)
-    case actoin: ListTraders => _listTraders()
+    case action: ListTraders => _listTraders()
+    case action: DeleteTrader => _deleteTrader(action.id)
+    case action: UpdateTrader => _updateTrader(action.trader)
     case _ =>
   }
 
   val strategyDao = new StrategyDao
   val portfolioDao = new PortfolioDao
   val traderDao = new TraderDao
+  val orderDao = new OrderDao
 
   private def _saveStrategy(strategy: Strategy): Unit = {
     val s = EStrategy(None, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
@@ -112,6 +114,7 @@ class PersistenceActor extends Actor {
   }
 
 
+  // Trader
   private def _saveTrader(trader: Trader): Unit = {
     val t = ETrader(None, trader.name, trader.brokerType, trader.brokerName, trader.brokerCode, trader.brokerAccount, trader.brokerPassword, trader.brokerUri, trader.brokerServicePwd, trader.status)
     val s1 = traderDao.insert(t)
@@ -124,5 +127,25 @@ class PersistenceActor extends Actor {
       traderArr += trader
     }
     sender ! traderArr.toArray
+  }
+
+  private def _updateTrader(trader: Trader): Unit = {
+    val s = ETrader(trader.id, trader.name,trader.brokerType, trader.brokerName, trader.brokerCode, trader.brokerAccount, trader.brokerPassword, trader.brokerUri, trader.brokerServicePwd, trader.status)
+    val query = traderDao.update(s.id.get, s)
+  }
+
+  private def _deleteTrader(id: Int): Unit = {
+    traderDao.delete(id)
+  }
+
+  // Order
+  private def _saveOrder(order: Order): Unit = {
+    val o = EOrder(None, order.orderNo, order.strategyId, order.symbol, order.orderType, order.side, "time", order.quantity, "", order.price.getOrElse(0), "RMB", order.securityExchange, 0)
+    val o1 = orderDao.insert(o)
+  }
+
+  private def _cancelOrder(id: Int): Unit = {
+    // FIXME: 保存委托单
+    orderDao.delete(id)
   }
 }

@@ -1,7 +1,6 @@
 package quanter
 
 import scala.io.StdIn
-
 import akka.actor.ActorSystem
 import akka.io.IO
 import org.json4s.DefaultFormats
@@ -12,7 +11,7 @@ import quanter.actors.persistence.PersistenceActor
 import quanter.actors.receivers.SinaL1Actor
 import quanter.actors.securities.SecuritiesManagerActor
 import quanter.actors.strategy.StrategiesManagerActor
-import quanter.actors.trade.TradeRouteActor
+import quanter.actors.trade.{InitTradeRoute, TradeRouteActor}
 import quanter.actors.zeromq.ZeroMQServerActor
 import quanter.rest.{HttpServer, Strategy, Trader}
 import spray.can.Http
@@ -42,6 +41,7 @@ object MainApp extends App {
   _createStrategy("""{"id": 911,"name": "带资金组合","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}""")
   _createStrategy("""{"id": 912,"name": "带资金组合","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}""")
 
+  _initTrader()
   _createTrader("""{"id": 1002,"name": "SHSE","brokerType":"CTP", "brokerName":"THS", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
   _createTrader("""{"id": 1001,"name": "SHSE","brokerType":"THS", "brokerName":"THS", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
 
@@ -72,6 +72,9 @@ object MainApp extends App {
     }
   }
 
+  private def _initTrader(): Unit = {
+    tradeRouteRef ! new InitTradeRoute()
+  }
   private def _createTrader(json: String): String = {
     // 将JSON转换为strategy，加入到strategy
     implicit val formats = DefaultFormats

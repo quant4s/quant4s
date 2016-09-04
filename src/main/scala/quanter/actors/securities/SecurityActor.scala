@@ -25,17 +25,17 @@ class SecurityActor(security: Security) extends Actor with ActorLogging{
   }
 
   private def _subscribe(symbol: String) = {
-    log.debug("订阅 %s's price".format(symbol))
+    log.info("订阅 %s's price".format(symbol))
     _subscribers += sender
   }
 
   private def _unsubscribe(symbol: String) = {
-    log.debug("取消订阅 %s's price".format(symbol))
+    log.info("取消订阅 %s's price".format(symbol))
     _subscribers -= sender
   }
 
   private def _dataArrived(data: SnapData): Unit = {
-    log.debug("数据到达")
+    log.debug("数据到达" + data.toJson)
     for(suber <- _subscribers)
       suber ! data
   }

@@ -22,7 +22,7 @@ class OrderDao (implicit session: Session)  extends BaseDao[EOrder] {
   }
 
   override def delete(id: Int): Unit = {
-    // nothing to do
+    // nothing to do, 修改委托单的状态,
   }
 
   override def list(): List[EOrder] = {
