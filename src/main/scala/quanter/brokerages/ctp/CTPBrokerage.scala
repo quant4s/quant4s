@@ -14,7 +14,6 @@ class CTPBrokerage(pname: String) extends Brokerage("CTP交易接口" + pname) {
   }
 
   override def disconnect: Unit = {
-
   }
 
   override def connect: Unit = {
@@ -23,4 +22,8 @@ class CTPBrokerage(pname: String) extends Brokerage("CTP交易接口" + pname) {
   override def keep: Unit = {
 
   }
+
+  override def buy(code: String, price: Double, quantity: Int): Unit = {}
+
+  override def sell(code: String, price: Double, quantity: Int): Unit = {}
 }

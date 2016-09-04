@@ -44,7 +44,7 @@ class DataManagerActor extends Actor with ActorLogging {
       val ref = context.actorOf(IndicatorActor.props(json), json)
       indicatorRefs += (json -> ref)
 
-      println("create indicator actor")
+      log.info("创建指标%s".format(json))
     }
   }
 

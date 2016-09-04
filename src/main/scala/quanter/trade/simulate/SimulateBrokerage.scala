@@ -27,5 +27,7 @@ class SimulateBrokerage(pname: String) extends Brokerage("仿真交易接口" + 
   override def isConnected: Boolean = true
   override def keep(): Unit = {}
 
+  override def buy(code: String, price: Double, quantity: Int): Unit = {}
 
+  override def sell(code: String, price: Double, quantity: Int): Unit = {}
 }

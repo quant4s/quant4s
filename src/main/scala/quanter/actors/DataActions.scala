@@ -17,3 +17,6 @@ import quanter.rest.{Order, Strategy, Trader}
   case class DeleteTrader(id: Int){}
   case class GetTrader(id: Int){}
 
+  case class KeepAlive()
+  case class Connect()
+  case class Disconnect()
