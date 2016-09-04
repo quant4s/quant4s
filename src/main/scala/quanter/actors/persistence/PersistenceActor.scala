@@ -140,7 +140,7 @@ class PersistenceActor extends Actor {
 
   // Order
   private def _saveOrder(order: Order): Unit = {
-    val o = EOrder(None, order.orderNo, order.strategyId, order.symbol, order.orderType, order.side, "time", order.quantity, "", order.price.getOrElse(0), "RMB", order.securityExchange, 0)
+    val o = EOrder(None, order.orderNo, order.strategyId, order.tradeAccountId, order.symbol, order.orderType, order.side, "time", order.quantity, "", order.price.getOrElse(0), "RMB", order.securityExchange, 0)
     val o1 = orderDao.insert(o)
   }
 
