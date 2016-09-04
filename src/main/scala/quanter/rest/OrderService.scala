@@ -1,5 +1,6 @@
 package quanter.rest
 
+import akka.actor.ActorLogging
 import org.json4s.DefaultFormats
 import org.json4s.jackson.JsonMethods._
 import spray.routing.HttpService
@@ -37,10 +38,9 @@ trait OrderService extends HttpService {
     try {
       val jv = parse(json)
       val transaction = jv.extract[Transaction]
-      for(order <- transaction.orders.get) {
-        order.strategyId = transaction.strategyId
-      }
+
       tradeRoute ! transaction
+//      log.info("接收到策略%d订单".format(transaction.strategyId))
       """{"code":0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
@@ -50,7 +50,13 @@ trait OrderService extends HttpService {
   private def _cancelOrder(param: String): String = {
     try {
       val ids = param.split("-")
-      val trans = Transaction(ids(0).toInt, None, Some(CancelOrder(ids(1).toInt)))
+      val strategyId = ids(0).toInt
+      val orderNo = ids(1).toInt
+      val cancelNo = ids(2).toInt
+      val tradeAccountId = ids(3).toInt
+
+      val order = new CancelOrder(orderNo, cancelNo , tradeAccountId)
+      val trans = Transaction(ids(0).toInt, None, Some(order))
       tradeRoute ! trans
       """{"code":0}"""
     }catch {

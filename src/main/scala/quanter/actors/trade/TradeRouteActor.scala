@@ -110,20 +110,26 @@ class TradeRouteActor extends Actor with ActorLogging{
     * @param tran
     */
   private def _handleOrder(tran: Transaction): Unit = {
-    for(order <- tran.orders.get) {
-//      val o = EOrder(None, order.orderNo, order.strategyId, order.symbol, order.orderType, order.side,
-//        "201606060000", order.quantity, order.openClose, order.price.get, "RMB", order.securityExchange, 0)
-      // 发送到相应的交易接口
-      persisRef ! new NewOrder(order)
-      traderAccounts.get(order.tradeAccountId).get ! order
+    if(tran.orders != None) {
+      for (order <- tran.orders.get) {
+        //      val o = EOrder(None, order.orderNo, order.strategyId, order.symbol, order.orderType, order.side,
+        //        "201606060000", order.quantity, order.openClose, order.price.get, "RMB", order.securityExchange, 0)
+        order.strategyId = tran.strategyId
+        // 发送到相应的交易接口
+        persisRef ! new NewOrder(order)
+        traderAccounts.get(order.tradeAccountId).get ! order
+        log.info("接收到策略%d订单%d, 交易接口为%d".format(order.strategyId, order.orderNo, order.tradeAccountId))
+      }
     }
 
     if(tran.cancelOrder != None) {
       val accountId = 0
       val order = tran.cancelOrder.get
+      order.strategyId = tran.strategyId
       // 将取消订单保存到数据库，并发送到交易接口
-      persisRef ! new CancelOrder(order.id)
+      persisRef ! new RemoveOrder(order)
       traderAccounts.get(accountId).get ! order
+      log.info("取消策略%d订单%d,交易接口为%d".format(order.strategyId, order.cancelOrderNo, order.tradeAccountId))
     }
   }
 }

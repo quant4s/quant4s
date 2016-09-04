@@ -56,7 +56,9 @@ case class Order(orderNo:Int, symbol: String, quantity: Int, price: Option[Doubl
   var securityExchange = "XSHE"
 }
 
-case class CancelOrder(id: Int)
+case class CancelOrder(orderNo: Int, cancelOrderNo: Int, tradeAccountId: Int) {
+  var strategyId: Int = 0
+}
 
 case class Transaction(strategyId: Int, orders: Option[List[Order]], cancelOrder: Option[CancelOrder])
 

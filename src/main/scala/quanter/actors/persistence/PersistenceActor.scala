@@ -10,7 +10,7 @@ import scala.slick.driver.MySQLDriver.simple._
 import akka.actor.{Actor, Props}
 import quanter.actors._
 import quanter.persistence._
-import quanter.rest.{Order, Strategy, Trader}
+import quanter.rest.{CancelOrder, Order, Strategy, Trader}
 import quanter.strategies.StrategyCache
 
 // import scala.slick.driver.H2Driver.simple._
@@ -65,7 +65,7 @@ class PersistenceActor extends Actor {
     // 保存订单
     // 撤销订单
     case action: NewOrder => _saveOrder(action.order)
-    case action: CancelOrder => _cancelOrder(action.id)
+    case action: RemoveOrder => _cancelOrder(action.order)
 
     // 交易接口
     case action: NewTrader => _saveTrader(action.trader)
@@ -144,8 +144,10 @@ class PersistenceActor extends Actor {
     val o1 = orderDao.insert(o)
   }
 
-  private def _cancelOrder(id: Int): Unit = {
+  private def _cancelOrder(order: CancelOrder): Unit = {
     // FIXME: 保存委托单
-    orderDao.delete(id)
+    val o = EOrder(None, order.orderNo, order.strategyId, order.tradeAccountId, "", 3, 3, "time", 100, "", 0, "RMB", "", 0)
+    orderDao.insert(o)
+    orderDao.delete(order.orderNo)
   }
 }

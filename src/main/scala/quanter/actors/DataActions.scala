@@ -1,6 +1,6 @@
 package quanter.actors
 
-import quanter.rest.{Order, Strategy, Trader}
+import quanter.rest.{CancelOrder, Order, Strategy, Trader}
 
   case class NewStrategy(strategy: Strategy) {}
   case class UpdateStrategy(strategy: Strategy){}
@@ -9,7 +9,7 @@ import quanter.rest.{Order, Strategy, Trader}
   case class ListStrategies(){}
 
   case class NewOrder(order: Order){}
-  case class CancelOrder(id: Int){}
+  case class RemoveOrder(order: CancelOrder){}
 
   case class NewTrader(trader: Trader){}
   case class ListTraders(){}
