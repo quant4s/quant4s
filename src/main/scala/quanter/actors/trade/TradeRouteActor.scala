@@ -56,6 +56,7 @@ class TradeRouteActor extends Actor with ActorLogging{
     val result = Await.result(future, timeout.duration).asInstanceOf[Array[Trader]]
 
     // 从数据库中读取所有的内容
+    // FIXME: 从配置文件中读取映射关系
     for(t <- result) {
        t.brokerType match {
         case "THS" => log.info("启动同花顺交易接口")

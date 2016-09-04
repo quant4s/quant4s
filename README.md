@@ -18,4 +18,10 @@
  sh run.sh [linux]
  ```
 
+# 扩展方法
+* 交易接口
+1. 从Brokerage派生之类
+2. 修改TradeRouteActor._init, 增加支持
+
+* 数据接口
 [quant4s-sdk-href]: https://github.com/quant4s/quant4s-sdk "SDK"

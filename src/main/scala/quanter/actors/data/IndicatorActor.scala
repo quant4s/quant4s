@@ -39,9 +39,9 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String,
   }
 
   /**
-    * 初始化指标
+    * 初始化指标, TODO: 用型变处理泛型化继承
     */
-  private def _initIndicator : TDataConsolidator[TradeBar] = {
+  private def _initIndicator : TradeBarConsolidator = {
 
     val indicator = new IndicatorFactory().createIndicator(name, param)
     val consolidator = _resolveConsolidators(symbol, duration)
@@ -52,11 +52,11 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String,
     consolidator
   }
 
-  private def _resolveConsolidators(symbol: String, duration: Int): TDataConsolidator = {
+  private def _resolveConsolidators(symbol: String, duration: Int): TradeBarConsolidator = {
     new TradeBarConsolidator(ptimespan = Some(TimeSpan.fromSeconds(duration)))
   }
 
-  private def _registerIndicator(symbol: String, indicator: IndicatorBase[IndicatorDataPoint], consolidator: TDataConsolidator) = {
+  private def _registerIndicator(symbol: String, indicator: IndicatorBase[IndicatorDataPoint], consolidator: TradeBarConsolidator) = {
     val ts: SelectType = { x => x.value}
     consolidator.dataConsolidated += {(sender, consolidated) => {
       val value = ts(consolidated)
