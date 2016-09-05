@@ -19,9 +19,12 @@
  ```
 
 # 扩展方法
-* 交易接口
+## 交易接口
 1. 从Brokerage派生之类
 2. 修改TradeRouteActor._init, 增加支持
 
-* 数据接口
+## 数据接口
+1. 参照 SinaL1Actor, 构建Actor
+2. 修改配置文件application.conf, 可同时支持多个数据源（不同的数据， 如果数据相同，在Tick级别时可能会报错）。 
+
 [quant4s-sdk-href]: https://github.com/quant4s/quant4s-sdk "SDK"
