@@ -1,7 +1,5 @@
-package quanter.actors.data
+package quanter.indicators
 
-
-import quanter.indicators.{IndicatorDataPoint, _}
 import quanter.indicators.window.{ExponentialMovingAverage, SimpleMovingAverage}
 
 
