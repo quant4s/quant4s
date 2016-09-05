@@ -7,7 +7,7 @@ import quanter.actors.zeromq.{PublishData, ZeroMQServerActor}
 import quanter.consolidators.{TDataConsolidator, TradeBarConsolidator}
 import quanter.data.BaseData
 import quanter.data.market.TradeBar
-import quanter.indicators.{Indicator, IndicatorBase, IndicatorDataPoint}
+import quanter.indicators.{Indicator, IndicatorBase, IndicatorDataPoint, IndicatorFactory}
 
 /**
   * 指标Actor
