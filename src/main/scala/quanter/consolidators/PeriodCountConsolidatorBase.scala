@@ -82,7 +82,7 @@ abstract class PeriodCountConsolidatorBase[T <: TBaseData, TC <: BaseData](pmaxC
   protected  def shouldProcess(data: T): Boolean = true
 
   protected def onDataConsolidated(e: TC): Unit = {
-    dataConsolidated.foreach(h => h(this, e))
+    // dataConsolidated.foreach(h => h(this, e))
     super.onBaseDataConsolidated(e)
   }
 

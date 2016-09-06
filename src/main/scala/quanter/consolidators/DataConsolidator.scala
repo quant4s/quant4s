@@ -33,10 +33,10 @@ abstract class DataConsolidator[TInput <: TBaseData] extends TDataConsolidator {
   def update(data: TInput): Unit
 
   protected def onBaseDataConsolidated(data: BaseData) : Unit =  {
-    if (dataConsolidated != null) {
-      for(consolidater <- dataConsolidated)consolidater(this, data)
-    }
-
+//    if (dataConsolidated != null) {
+//      for(consolidater <- dataConsolidated) consolidater(this, data)
+//    }
+    dataConsolidated.foreach(h => h(this, data))
     _consolidated = data
   }
 }
