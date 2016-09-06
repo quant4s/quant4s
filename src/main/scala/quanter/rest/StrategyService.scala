@@ -51,12 +51,12 @@ trait StrategyService extends HttpService {
             _readHistoryStrategy(id)
           }
       } ~
-      path("strategy" / "backtest" / IntNumber) {
-        id =>
-          complete {
-            _backtestReport(id)
-          }
-      } ~
+//      path("strategy" / "backtest" / IntNumber) {
+//        id =>
+//          complete {
+//            _backtestReport(id)
+//          }
+//      } ~
       path("strategy" / "real" / IntNumber) {
         id =>
           complete {
@@ -136,7 +136,7 @@ trait StrategyService extends HttpService {
   private def _getStrategy(id: Int): String = {
     try {
       implicit val timeout = Timeout(10 seconds)
-      val future = manager ? GetStrategy(id)
+      val future = manager ? new GetStrategy(id)
       var  ret = ""
       val result = Await.result(future, timeout.duration).asInstanceOf[Option[Strategy]]
       if(result == None) ret = """{"code":1}"""

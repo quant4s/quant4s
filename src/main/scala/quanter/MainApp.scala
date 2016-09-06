@@ -8,7 +8,8 @@ import org.json4s.jackson.JsonMethods._
 import quanter.actors.{NewStrategy, NewTrader}
 import quanter.actors.data.DataManagerActor
 import quanter.actors.persistence.PersistenceActor
-import quanter.actors.receivers.SinaL1Actor
+import quanter.actors.provider.DataProviderManagerActor
+import quanter.actors.provider.sina.SinaL1Actor
 import quanter.actors.securities.SecuritiesManagerActor
 import quanter.actors.strategy.StrategiesManagerActor
 import quanter.actors.trade.{InitTradeRoute, TradeRouteActor}
@@ -31,7 +32,8 @@ object MainApp extends App {
 
   val strategyManagerRef = system.actorOf(StrategiesManagerActor.props, StrategiesManagerActor.path)
 
-  val sinaL1Ref = system.actorOf(SinaL1Actor.props, SinaL1Actor.path)
+  // val sinaL1Ref = system.actorOf(SinaL1Actor.props, SinaL1Actor.path)
+  val dataProviderManagerRef = system.actorOf(DataProviderManagerActor.prop, DataProviderManagerActor.path)
   val dataManagerRef = system.actorOf(DataManagerActor.props, DataManagerActor.path)
 //  val wsRef = system.actorOf(WebSocketActor.props, WebSocketActor.path)
 

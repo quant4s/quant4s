@@ -5,12 +5,12 @@ package quanter.actors.provider.csv
 
 import java.io.File
 
-import com.github.tototoshi.csv.CSVReader
-import quanter.actors.provider.{AskListenedSymbol, DataProviderActor, Execute, QuerySnapData}
-
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import com.github.tototoshi.csv.CSVReader
+import quanter.actors.AskListenedSymbol
+import quanter.actors.provider.{DataProviderActor, Execute, QuerySnapData}
 
 /**
   *

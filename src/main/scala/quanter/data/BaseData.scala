@@ -10,7 +10,11 @@ import quanter.MarketDataType._
   */
 trait TBaseData{
   var dataType: MarketDataType = MarketDataType.Base
-  var time: Date = new Date()
+  private var _time: Date = new Date(0)
+  def time = _time
+  def time_= (newValue: Date) {
+    _time = newValue
+  }
   var symbol: String = ""
   var value: Double = 0
   def price: Double
@@ -18,7 +22,7 @@ trait TBaseData{
 
 class BaseData extends  TBaseData{
 
-  private var _isFillForward = false;
+  private var _isFillForward = false
   def isFillForward = _isFillForward
 
   var endTime = time

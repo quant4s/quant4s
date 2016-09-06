@@ -38,13 +38,14 @@ abstract class IndicatorBase[T <: BaseData] (pname: String) extends Comparable[I
       _previousInput = input
       val nextResult = validateAndComputeNextValue(input)
       if(nextResult.status == IndicatorStatus.Success) {
-        _current = new IndicatorDataPoint(input.time, nextResult.value)
+        _current = new IndicatorDataPoint(input.symbol,input.time, nextResult.value)
         onUpdated(_current)
       }
     }
 
     isReady
   }
+
   def reset:Unit = {
     _samples = 0
     _previousInput = null.asInstanceOf[T]

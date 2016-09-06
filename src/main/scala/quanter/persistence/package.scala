@@ -10,17 +10,17 @@ import scala.slick.driver.MySQLDriver.simple._
   */
 package object persistence {
 
-  case class EStrategy (id: Option[Int], name: String, runMode: Int, status: Int, lang: String) {
+  case class EStrategy (id: Int, name: String, runMode: Int, status: Int, lang: String) {
     // def portfolio = portfolios.filter(_.strategyId === id.get).take(1).firstOption
   }
   class EStrategies(tag: Tag) extends Table[EStrategy](tag, "STRATEGIES") {
-    def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
+    def id = column[Int]("ID", O.PrimaryKey)
     def name = column[String]("NAME")
     def runMode = column[Int]("RUNMODE")
     def status = column[Int]("STATUS")
     def lang = column[String]("LANG")
 
-    def * = (id.?, name, runMode, status, lang) <> (EStrategy.tupled, EStrategy.unapply)
+    def * = (id, name, runMode, status, lang) <> (EStrategy.tupled, EStrategy.unapply)
   }
   val gStrategies = TableQuery[EStrategies]
 

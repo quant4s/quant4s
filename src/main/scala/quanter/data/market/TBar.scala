@@ -4,9 +4,9 @@ package quanter.data.market
   *
   */
 trait TBar {
-  var open: Double = 0
-  var close: Double = 0
-  var high: Double = 0
-  var low: Double = 0
+  def open: Double = 0
+  def close: Double = 0
+  def high: Double = 0
+  def low: Double = 0
 
 }

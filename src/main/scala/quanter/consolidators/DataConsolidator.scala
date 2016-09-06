@@ -8,13 +8,22 @@ import scala.collection.mutable.ArrayBuffer
 /**
   *
   */
-trait TDataConsolidator[TInput <: TBaseData] {
-  type EventHandler[TE] = (Object, TE) => Unit
+trait TDataConsolidator {
   def consolidated: BaseData
   def workingData: BaseData
+
+  def update(data: BaseData): Unit
+
+}
+
+abstract class DataConsolidator[TInput <: TBaseData] extends TDataConsolidator {
+  type EventHandler[TE] = (Object, TE) => Unit
   var dataConsolidated = ArrayBuffer[EventHandler[BaseData]]()
 
-  final def update(data: BaseData): Unit = {
+  private var _consolidated: BaseData = null
+  def consolidated: BaseData =_consolidated
+
+  override def update(data: BaseData): Unit = {
     val typedData = data.asInstanceOf[TInput]
     Asserts.assert(typedData != null)
 
@@ -22,12 +31,6 @@ trait TDataConsolidator[TInput <: TBaseData] {
   }
 
   def update(data: TInput): Unit
-
-}
-
-abstract class DataConsolidator[TInput <: TBaseData] extends TDataConsolidator[TInput] {
-  private var _consolidated: BaseData = null
-  def consolidated: BaseData =_consolidated
 
   protected def onBaseDataConsolidated(data: BaseData) : Unit =  {
     if (dataConsolidated != null) {

@@ -14,26 +14,25 @@ class TradeBarConsolidator(pmaxCount: Option[Int] = None, ptimespan: Option[Time
     if(workingBar == null) {
       bar = new TradeBar()
       {
-        //time = GetRoundedBarTime(data.time)
+        time = getRoundedBarTime(data.time)
         symbol = data.symbol
         open = data.open
         high = data.high
         low = data.low
         close = data.close
-        //_volume = data.volume
+        volume = data.volume
         dataType = MarketDataType.TradeBar
         period = data.period
       }
     } else {
       workingBar.close = data.close
       workingBar.volume += data.volume
-     // workingBar.period += data.period
+      workingBar.period += data.period // TODO: data.period is null
       if (data.low < workingBar.low) workingBar.low = data.low
       if (data.high > workingBar.high) workingBar.high = data.high
 
       bar = workingBar
     }
-
     bar
   }
 }

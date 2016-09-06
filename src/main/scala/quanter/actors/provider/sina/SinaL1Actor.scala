@@ -1,20 +1,20 @@
 package quanter.actors.provider.sina
 
 import java.io.{BufferedReader, InputStreamReader}
-
-import akka.actor.{Actor, ActorLogging, ActorSelection, Props}
-import org.apache.http.client.methods.HttpGet
-import org.apache.http.impl.client.DefaultHttpClient
-import quanter.actors.provider.{AskListenedSymbol, QuerySnapData}
-import quanter.actors.securities.SecuritiesManagerActor
-import quanter.data.market.SnapData
+import java.util.Date
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.util.control.Breaks._
-
+import akka.actor.{Actor, ActorLogging, ActorSelection, Props}
+import org.apache.http.client.methods.HttpGet
+import org.apache.http.impl.client.DefaultHttpClient
+import quanter.actors.AskListenedSymbol
+import quanter.actors.provider.QuerySnapData
+import quanter.actors.securities.SecuritiesManagerActor
+import quanter.data.market.SnapData
 
 /**
   *
@@ -25,7 +25,7 @@ object SinaL1Actor {
     Props(classOf[SinaL1Actor])
   }
 
-  def path = "sinafree"
+  def path = "sinal1"
 }
 
 class SinaL1Actor extends Actor with ActorLogging {
@@ -63,6 +63,7 @@ class SinaL1Actor extends Actor with ActorLogging {
   }
 
   private def _addSymbol(symbol: String): Unit = {
+
     if (!symbolSelections.contains(symbol)) {
       log.info(s"准备接受${symbol}的行情数据")
       val ref = context.actorSelection(s"/user/${SecuritiesManagerActor.path}/${symbol}")
@@ -149,6 +150,7 @@ class SinaL1Actor extends Actor with ActorLogging {
     data.close = items(3).toDouble
     data.high = items(4).toDouble
     data.low = items(5).toDouble
+    data.time =  new Date()
 
 //    data.volume = items(8).toLong
 //    data.turnover = items(9).toDouble

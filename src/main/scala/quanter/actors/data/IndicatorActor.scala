@@ -62,8 +62,8 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String,
       val value = ts(consolidated)
       indicator.update(new IndicatorDataPoint(consolidated.symbol, consolidated.endTime, value))
       // TODO: 将数据写入到MQ 或者WS
-      log.debug("指标数据整合,写入到WS")
-      pubRef ! PublishData(topic, consolidated.toJson)
+      log.debug("指标数据整合,写入到MQ")
+      pubRef ! PublishData(topic, indicator.toJson)
 
     }}
 

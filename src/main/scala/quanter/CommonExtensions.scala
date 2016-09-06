@@ -27,6 +27,15 @@ object CommonExtensions {
       ret
     }
 
+    def addTicks(x: Long) = {
+      val cal = Calendar.getInstance()
+      cal.setTime(time)
+      cal.add(Calendar.MILLISECOND, x.toInt)
+      val ret = cal.getTime()
+      ret
+
+    }
+
     def - (x:Date) : TimeSpan = {
       new TimeSpan(time.getTime() - x.getTime())
     }
@@ -36,6 +45,11 @@ object CommonExtensions {
     }
     def <= (x:Date): Boolean = {
       true
+    }
+
+    def roundDown(interval: TimeSpan): Date = {
+      if (interval == TimeSpan.Zero) time
+      else time.addTicks(-(time.getTime() % interval.milliSeconds));
     }
   }
 

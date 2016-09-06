@@ -81,12 +81,12 @@ class PersistenceActor extends Actor {
   val orderDao = new OrderDao
 
   private def _saveStrategy(strategy: Strategy): Unit = {
-    val s = EStrategy(None, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
-    val s1 = strategyDao.insert(s)
+    val s = EStrategy(strategy.id, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
+    // val s1 = strategyDao.insert(s)
 
     if (strategy.portfolio != None) {
       val t = strategy.portfolio.get
-      portfolioDao.insert(EPortfolio(None, t.cash, new Timestamp(t.date.getTime), s1.id.get))
+      portfolioDao.insert(EPortfolio(None, t.cash, new Timestamp(t.date.getTime), s.id))
     }
   }
 
@@ -96,7 +96,7 @@ class PersistenceActor extends Actor {
   }
 
   private def _updateStrategy(id: Int, strategy: Strategy): Unit = {
-    val s = EStrategy(Some(id), strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
+    val s = EStrategy(id, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
     val query = strategyDao.update(id, s)
   }
 
@@ -107,7 +107,7 @@ class PersistenceActor extends Actor {
   private def _listStrategies(): Unit = {
     val strategyArr = new ArrayBuffer[Strategy]()
     for(s <- strategyDao.list) {
-      val strategy = Strategy(s.id.getOrElse(0), s.name, s.runMode, s.status, Some(s.lang), None)
+      val strategy = Strategy(s.id, s.name, s.runMode, s.status, Some(s.lang), None)
       strategyArr += strategy
     }
     sender ! strategyArr

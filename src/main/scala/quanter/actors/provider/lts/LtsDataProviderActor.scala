@@ -3,7 +3,8 @@
   */
 package quanter.actors.provider.lts
 
-import quanter.actors.provider.{AskListenedSymbol, DataProviderActor, Execute, QuerySnapData}
+import quanter.actors.AskListenedSymbol
+import quanter.actors.provider.{DataProviderActor, Execute, QuerySnapData}
 
 /**
   *

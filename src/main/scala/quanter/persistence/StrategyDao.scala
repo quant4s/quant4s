@@ -30,7 +30,8 @@ class StrategyDao(implicit session: Session) extends BaseDao[EStrategy] {
 
   override  def insert(strategy: EStrategy): EStrategy = {
     val id = ( gStrategies returning gStrategies.map(_.id) += strategy) //(strategy.name, strategy.runMode, strategy.status, strategy.lang))
-    strategy.copy(id = Some(id))
+    // strategy.copy(id = Some(id))
+    strategy
   }
 
   override  def delete(id: Int): Unit = {

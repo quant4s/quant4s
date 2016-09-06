@@ -20,3 +20,5 @@ import quanter.rest.{CancelOrder, Order, Strategy, Trader}
   case class KeepAlive()
   case class Connect()
   case class Disconnect()
+
+  case class AskListenedSymbol(symbol: String)

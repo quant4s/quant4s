@@ -31,7 +31,7 @@ class BarActor(symbol: String, duration: Int, topic: String) extends Actor with 
       _consolidator.update(data)
   }
 
-  private def _initConsolidator: TDataConsolidator[TradeBar] =  {
+  private def _initConsolidator: TDataConsolidator =  {
     val consolidator = new TradeBarConsolidator(ptimespan = Some(TimeSpan.fromSeconds(duration)))
     consolidator.dataConsolidated += {(sender, consolidated) => {
       // TODO: 将数据写入到MQ 或者WS

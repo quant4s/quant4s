@@ -112,9 +112,7 @@ class TradeRouteActor extends Actor with ActorLogging{
   private def _handleOrder(tran: Transaction): Unit = {
     if(tran.orders != None) {
       for (order <- tran.orders.get) {
-        //      val o = EOrder(None, order.orderNo, order.strategyId, order.symbol, order.orderType, order.side,
-        //        "201606060000", order.quantity, order.openClose, order.price.get, "RMB", order.securityExchange, 0)
-        order.strategyId = tran.strategyId
+       order.strategyId = tran.strategyId
         // 发送到相应的交易接口
         persisRef ! new NewOrder(order)
         traderAccounts.get(order.tradeAccountId).get ! order

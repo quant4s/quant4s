@@ -14,6 +14,7 @@ object TimeSpan {
 
   def MinValue = new TimeSpan(Int.MinValue)
   def MaxValue = new TimeSpan(Int.MaxValue)
+  def Zero = new TimeSpan(0)
 }
 
 class TimeSpan(ptotalMilliSeconds: Long) {
@@ -30,6 +31,14 @@ class TimeSpan(ptotalMilliSeconds: Long) {
 
   def >= (time: TimeSpan): Boolean = {
     this.milliSeconds >= time.milliSeconds
+  }
+
+  def +=(time:TimeSpan): TimeSpan = {
+    TimeSpan.fromTicks(this.milliSeconds + time.milliSeconds)
+  }
+
+  def ==(time: TimeSpan): Boolean = {
+    this.milliSeconds == time.milliSeconds
   }
 
   def totalDays : Int = {

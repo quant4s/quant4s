@@ -40,7 +40,6 @@ trait OrderService extends HttpService {
       val transaction = jv.extract[Transaction]
 
       tradeRoute ! transaction
-//      log.info("接收到策略%d订单".format(transaction.strategyId))
       """{"code":0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)

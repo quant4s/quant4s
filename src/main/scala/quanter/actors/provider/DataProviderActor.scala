@@ -8,7 +8,7 @@ import quanter.actors.securities.SecuritiesManagerActor
 
 import scala.collection.mutable
 
-case class AskListenedSymbol(symbol: String)
+
 case class QuerySnapData()
 case class Execute()
 
