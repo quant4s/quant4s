@@ -17,4 +17,5 @@ class ConstantIndicator[T <: BaseData](pname: String, private val pvalue: Double
     super.reset
     current = new IndicatorDataPoint(new Date(0), pvalue)
   }
+
 }

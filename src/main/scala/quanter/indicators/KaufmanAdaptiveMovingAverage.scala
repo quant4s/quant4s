@@ -67,4 +67,5 @@ class KaufmanAdaptiveMovingAverage(pname: String, pperiod: Int) extends WindowIn
     _trailingValue = 0
     super.reset
   }
+
 }

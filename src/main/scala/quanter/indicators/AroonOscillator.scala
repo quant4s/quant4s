@@ -47,4 +47,6 @@ class AroonOscillator(name:String, upPeriod: Int, downPeriod: Int) extends Trade
 
     aroonUp - aroonDown
   }
+
+  override def toJson = "{\"symbol\":%s,\"up\":%f,\"down\":%f,\"value\":%f%f}".format(symbol, aroonUp.current.value, aroonDown.current.value, current.value)
 }

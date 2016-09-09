@@ -19,4 +19,5 @@ class FunctionalIndicator[T <: BaseData](pname: String, pcomputeNextValue: (T) =
   override def computeNextValue(input: T) : Double = {
     pcomputeNextValue.apply(input)
   }
+
 }

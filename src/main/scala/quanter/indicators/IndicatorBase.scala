@@ -28,6 +28,7 @@ abstract class IndicatorBase[T <: BaseData] (pname: String) extends Comparable[I
   private var _samples: Long = 0
   def samples = _samples
 
+  def symbol = _current.symbol
   override def compareTo(o: IndicatorBase[T]) = 0
 
   def update(input: T) =  {
@@ -80,7 +81,7 @@ abstract class IndicatorBase[T <: BaseData] (pname: String) extends Comparable[I
     "%s - %s".format(name, this.toString())
   }
 
-  def toJson: String = ""  // TODO:
+  def toJson = "{\"symbol\":%s,\"value\":%f%f}".format(symbol,  current.value)
 
   // ================== override operator ===============================
   def +(right: IndicatorBase[IndicatorDataPoint]) = {

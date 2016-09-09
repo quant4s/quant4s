@@ -176,4 +176,5 @@ class ParabolicStopAndReverse(ppname: String, afStart:Double, afIncrement: Doubl
         _sar = currentBar.high
     }
   }
+
 }
