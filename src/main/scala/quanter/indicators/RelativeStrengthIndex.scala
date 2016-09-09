@@ -14,7 +14,7 @@ import quanter.indicators.IndicatorExtensions._
 class RelativeStrengthIndex(pname: String, pperiod: Int, pmovingAverageType: MovingAverageType) extends Indicator(pname) {
 
   private var _previousInput: IndicatorDataPoint = null
-  private var _movingAverageType: MovingAverageType = movingAverageType
+  private var _movingAverageType: MovingAverageType = pmovingAverageType
   private var _averageLoss: IndicatorBase[IndicatorDataPoint] = movingAverageType.asIndicator(name + "Down", pperiod)
   private var _averageGain: IndicatorBase[IndicatorDataPoint] = movingAverageType.asIndicator(name + "Up", pperiod)
 
