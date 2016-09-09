@@ -9,6 +9,6 @@ import quanter.indicators.{IndicatorBase, CommonIndicatorSpec}
   */
 class PartingIndicatorSpec extends CommonIndicatorSpec[TradeBar] {
   override protected def createIndicator(): IndicatorBase[TradeBar] = new ChanParting()
-  override protected def testFileName: String = "/home/joe/workspace/quanter/quanter.indicator/src/test/resources/datas/spy_tradebar_parting.csv"
+  override protected def testFileName: String = "datas/spy_tradebar_parting.csv"
   override protected def testColumnName: String = "parting"
 }
