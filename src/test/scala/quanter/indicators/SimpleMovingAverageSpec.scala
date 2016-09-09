@@ -41,7 +41,7 @@ class SimpleMovingAverageSpec extends QuanterUnitSpec{
       sma.isReady should be(true)
 
       sma.reset
-      TestHelper.shouldBeInDefaultState(sma)
+      TestHelper.assertIndicatorIsInDefaultState(sma)
       sma.current.value should be(0.0)
 
       sma.update(new Date(), 1.0)
@@ -51,7 +51,7 @@ class SimpleMovingAverageSpec extends QuanterUnitSpec{
   }
 
   describe ("用外部文件测试") {
-    it("") {
+    it("spy_with_indicators.txt SMA14 列") {
       val sma = new SimpleMovingAverage(14)
       TestHelper.testIndicator(sma, "SMA14", 0.01)
     }

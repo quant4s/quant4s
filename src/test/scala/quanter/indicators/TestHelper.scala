@@ -26,8 +26,7 @@ object TestHelper extends Matchers{
     ret
   }
 
-
-  def shouldBeInDefaultState[T <: BaseData](indicator: IndicatorBase[T]) = {
+  def assertIndicatorIsInDefaultState[T <: BaseData](indicator: IndicatorBase[T]) = {
     indicator.current.value should be(0.0)
     // indicator.current.time should be()
     indicator.samples should be(0)
@@ -35,8 +34,6 @@ object TestHelper extends Matchers{
 
     // TODO: 递归验证indicator 的子indicator
   }
-
-
 
   def testTradeBarIndicator(indicator: IndicatorBase[TradeBar], externalDataFilename: String, targetColumn: String, customAssertion: ((IndicatorBase[TradeBar], Double) => Unit)) = {
     val reader = CSVReader.open(new File(externalDataFilename))
@@ -87,7 +84,7 @@ object TestHelper extends Matchers{
 
     indicator.isReady should be(true)
     indicator.reset
-    shouldBeInDefaultState(indicator)
+    assertIndicatorIsInDefaultState(indicator)
   }
 
   def testIndicatorReset(indicator: IndicatorBase[IndicatorDataPoint], externalDataFilename: String) = {
@@ -98,7 +95,7 @@ object TestHelper extends Matchers{
     indicator.isReady should be(true)
 
     indicator.reset
-    shouldBeInDefaultState(indicator)
+    assertIndicatorIsInDefaultState(indicator)
 
   }
 
@@ -116,5 +113,6 @@ object TestHelper extends Matchers{
     })
     tradeBars
   }
+
 }
 

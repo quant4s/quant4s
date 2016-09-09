@@ -37,7 +37,7 @@ class SumSpec extends QuanterUnitSpec{
       sum.isReady should be(true)
 
       sum.reset
-      TestHelper.shouldBeInDefaultState(sum)
+      TestHelper.assertIndicatorIsInDefaultState(sum)
       sum.current.value should be(0.0)
 
       sum.update(new Date(), 1.0)

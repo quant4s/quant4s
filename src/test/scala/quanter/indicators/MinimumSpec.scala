@@ -57,7 +57,7 @@ class MinimumSpec extends QuanterUnitSpec {
       min.isReady should be(true)
 
       min.reset
-      TestHelper.shouldBeInDefaultState(min)
+      TestHelper.assertIndicatorIsInDefaultState(min)
 
       min.periodsSinceMinimum should be(0)
     }

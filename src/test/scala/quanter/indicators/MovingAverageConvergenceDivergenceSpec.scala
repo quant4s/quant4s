@@ -43,10 +43,10 @@ class MovingAverageConvergenceDivergenceSpec extends QuanterUnitSpec{
 
       macd.reset
 
-      TestHelper.shouldBeInDefaultState(macd)
-      TestHelper.shouldBeInDefaultState(macd.fast)
-      TestHelper.shouldBeInDefaultState(macd.slow)
-      TestHelper.shouldBeInDefaultState(macd.signal)
+      TestHelper.assertIndicatorIsInDefaultState(macd)
+      TestHelper.assertIndicatorIsInDefaultState(macd.fast)
+      TestHelper.assertIndicatorIsInDefaultState(macd.slow)
+      TestHelper.assertIndicatorIsInDefaultState(macd.signal)
     }
   }
 

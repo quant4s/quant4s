@@ -49,7 +49,7 @@ class MaximumSpec extends QuanterUnitSpec {
       max.isReady should be(true)
 
       max.reset
-      TestHelper.shouldBeInDefaultState(max)
+      TestHelper.assertIndicatorIsInDefaultState(max)
 
       max.periodsSinceMaximum should be(0)
     }
