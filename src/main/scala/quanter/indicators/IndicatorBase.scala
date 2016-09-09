@@ -106,5 +106,13 @@ abstract class IndicatorBase[T <: BaseData] (pname: String) extends Comparable[I
   def *(right: Double) = {
     this.current.value * right
   }
+
+  def /(right: IndicatorBase[IndicatorDataPoint]) = {
+    this.current.value / right.current.value
+  }
+
+  def /(right: Double) = {
+    this.current.value / right
+  }
 }
 
