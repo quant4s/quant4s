@@ -76,6 +76,11 @@ object TestHelper extends Matchers{
 
   }
 
+  def testIndicator(indicator: IndicatorBase[IndicatorDataPoint] , targetColumn: String, epsilon: Double = 0.001)
+  {
+    testIndicator(indicator, "datas/spy_with_indicators.txt", targetColumn, (i, expected) => math.abs(i.current.value - expected) should be <= expected)
+  }
+
   def testTradeBarIndicatorReset(indicator: IndicatorBase[TradeBar], externalDataFilename: String) = {
     for(bar <- getTradeBarStream(externalDataFilename))
       indicator.update(bar)

@@ -49,4 +49,11 @@ class SimpleMovingAverageSpec extends QuanterUnitSpec{
 
     }
   }
+
+  describe ("用外部文件测试") {
+    it("") {
+      val sma = new SimpleMovingAverage(14)
+      TestHelper.testIndicator(sma, "SMA14", 0.01)
+    }
+  }
 }
