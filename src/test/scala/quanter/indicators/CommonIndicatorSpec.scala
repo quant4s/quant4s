@@ -39,8 +39,8 @@ abstract class CommonIndicatorSpec[T <: BaseData] extends QuanterUnitSpec {
   }
 
   private def testIndicator(indicator: IndicatorBase[T]) = {
-    if(indicator.isInstanceOf[IndicatorBase[TradeBar]]) TestHelper.testTradeBarIndicator(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName, testColumnName, (indi, expected) => indi.current.value should be(expected))
-    else if(indicator.isInstanceOf[IndicatorBase[IndicatorDataPoint]]) TestHelper.testIndicator(indicator.asInstanceOf[IndicatorBase[IndicatorDataPoint]],testFileName, testColumnName, (indi, expected) => indi.current.value should be(expected))
+    if(indicator.isInstanceOf[IndicatorBase[TradeBar]]) TestHelper.testTradeBarIndicator(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName, testColumnName, (indi, expected) => math.abs(indi.current.value -expected) should be <= 0.0001)
+    else if(indicator.isInstanceOf[IndicatorBase[IndicatorDataPoint]]) TestHelper.testIndicator(indicator.asInstanceOf[IndicatorBase[IndicatorDataPoint]],testFileName, testColumnName, (indi, expected) => math.abs(indi.current.value -expected) should be <= 0.0001)
     else println("不支持的指标")
     indicator match  {
 //      case indi: IndicatorBase[TradeBar] => TestHelper.testTradeBarIndicator(indi, testFileName, testColumnName, (indicator, expected) => indicator.current.value should be(expected))
