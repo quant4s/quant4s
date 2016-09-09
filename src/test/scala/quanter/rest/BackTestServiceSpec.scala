@@ -2,8 +2,7 @@
   *
   */
 package quanter.rest
-import org.specs2.runner.JUnitRunner
-import org.junit.runner.RunWith
+
 
 
 /**
