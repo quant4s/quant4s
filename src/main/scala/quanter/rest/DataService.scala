@@ -46,24 +46,32 @@ trait DataService extends HttpService {
       }
     }~
     post {
-      path("data"/ Rest) { subscription =>
-        complete {
-          _subscribe(subscription)
+      path("data"/ Rest) { topic =>
+        requestInstance {
+          request =>
+            complete {
+              _subscribe(topic, request.entity.data.asString)
+            }
         }
       }
     }
   }
 
-  private def _subscribe(subscription: String): String = {
+//  private def _subscribe(topic: String, subscription: String): String = {
+//    dataManager ! RequestIndicatorData(subscription, topic)
+//    """{"code":0}"""
+//  }
+
+  private def _subscribe(topic: String, subscription: String): String = {
     try {
       val arr = subscription.split(",")
       val symbol = arr(0)
       val _type = arr(1)
 
       _type match {
-        case "TICK" => dataManager ! RequestTickData(subscription)
-        case "BAR" =>dataManager ! RequestBarData(subscription)
-        case _ =>dataManager ! RequestIndicatorData(subscription)
+        case "TICK" => dataManager ! RequestTickData(topic, subscription)
+        case "BAR" =>dataManager ! RequestBarData(topic, subscription)
+        case _ =>dataManager ! RequestIndicatorData(subscription, subscription)
       }
       """{"code":0}"""
     }catch {
