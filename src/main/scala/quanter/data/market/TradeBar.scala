@@ -37,7 +37,7 @@ class TradeBar extends BaseData with TBar{
     _high = newValue
   }
 
-  override def low: Double = super.low
+  override def low: Double = _low
   def low_=(newValue: Double)  {
     initialize(newValue)
     _low = newValue
