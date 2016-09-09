@@ -23,7 +23,14 @@ class BollingerBands(pname: String, pperiod: Int, pk: Double, pmovingAverageType
 
   override def isReady: Boolean = _middleBand.isReady && _upperBand.isReady && _lowerBand.isReady
 
-  override def computeNextValue(input: IndicatorDataPoint): Double = ???
+  override def computeNextValue(input: IndicatorDataPoint): Double = {
+    _standardDeviation.update(input)
+    _middleBand.update(input)
+    _lowerBand.update(input)
+    _upperBand.update(input)
+
+    input.value
+  }
 
   override def toJson = ""
 }
