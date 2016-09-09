@@ -9,7 +9,7 @@ import quanter.data.market.TradeBar
   */
 class ParabolicStopAndReverse(ppname: String, afStart:Double, afIncrement: Double , afMax: Double) extends TradeBarIndicator(ppname){
   def this(afStart:Double = 0.02, afIncrement: Double = 0.02, afMax: Double = 0.2) {
-    this("PSAR(%d,%d,%d)".format(afStart, afIncrement, afMax), afStart, afIncrement, afMax)
+    this("PSAR(%f,%f,%f)".format(afStart, afIncrement, afMax), afStart, afIncrement, afMax)
   }
 
   private var _isLong: Boolean = false
