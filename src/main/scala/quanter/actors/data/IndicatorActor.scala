@@ -15,15 +15,18 @@ import quanter.indicators.{Indicator, IndicatorBase, IndicatorDataPoint, Indicat
   */
 
 object IndicatorActor {
-  def props (json: String): Props = {
-    val arr = json.split(",")
-    val symbol = arr(0)
-    val duration = arr(2).toInt
-    val name = arr(1)
-    val param = arr(3)
-
-    Props(classOf[IndicatorActor], symbol, duration, name, param, json)
+  def props(symbol: String, duration: Int, indiName: String, param: String, topic: String) = {
+    Props(classOf[IndicatorActor], symbol, duration, indiName, param, topic)
   }
+//  def props (json: String): Props = {
+//    val arr = json.split(",")
+//    val symbol = arr(0)
+//    val duration = arr(2).toInt
+//    val name = arr(1)
+//    val param = arr(3)
+//
+//    Props(classOf[IndicatorActor], symbol, duration, name, param, json)
+//  }
 }
 
 class IndicatorActor(symbol: String, duration: Int, name: String, param: String, topic: String) extends Actor with ActorLogging {

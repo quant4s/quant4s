@@ -5,9 +5,9 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 
 import scala.collection.mutable
 
-case class RequestIndicatorData(sub: String)
-case class RequestBarData(sub: String)
-case class RequestTickData(sub: String)
+case class RequestIndicatorData(topic: String, sub: String)
+case class RequestBarData(topic: String, sub: String)
+case class RequestTickData(topic: String, sub: String)
 
 /**
   * 订阅数据
@@ -19,35 +19,57 @@ class DataManagerActor extends Actor with ActorLogging {
   var indicatorRefs = new mutable.HashMap[String, ActorRef]()
 
   override def receive: Receive = {
-    case RequestBarData(json) => _createBarActor(json)
-    case RequestTickData(json) => _createTickActor(json)
-    case RequestIndicatorData(json) => _createIndicatorActor(json)
+    case req: RequestBarData => _createBarActor(req.topic, req.sub)
+    case req: RequestTickData => _createTickActor(req.topic, req.sub)
+    case req: RequestIndicatorData => _createIndicatorActor(req.topic, req.sub)
     case _ =>
   }
 
-  private def _createBarActor(sub: String): Unit = {
+  private def _createBarActor(topic: String, sub: String): Unit = {
     if(!barRefs.contains(sub)) {
-      val ref = context.actorOf(BarActor.props(sub), sub)
+      val ref = context.actorOf(BarActor.props(sub), topic)
       barRefs += (sub -> ref)
     }
   }
 
-  private def _createTickActor(json: String): Unit = {
-    if(!tickRefs.contains(json)) {
-      val ref = context.actorOf(TickActor.props(json), json)
-      tickRefs += (json -> ref)
+  private def _createTickActor(topic: String, subscription: String): Unit = {
+    if(!tickRefs.contains(subscription)) {
+      val ref = context.actorOf(TickActor.props(subscription), topic)
+      tickRefs += (subscription -> ref)
     }
   }
 
-  private def _createIndicatorActor(json: String): Unit = {
-    if(!indicatorRefs.contains(json)) {
-      val ref = context.actorOf(IndicatorActor.props(json), json)
-      indicatorRefs += (json -> ref)
+  /**
+    * 根据JSON来创建Indicator Actor, 每个indicator 可以有多个topic
+    *
+    * @param subscription
+    * @param topic
+    */
+  private def _createIndicatorActor(topic: String, subscription: String): Unit = {
+    //  如果是一个股票池
+    if(_isPool(subscription)) {
+      // TODO: 分析
+    } else {
+      if (!indicatorRefs.contains(subscription)) {
 
-      log.info("创建指标%s".format(json))
+        // 如果是单个股票
+        val arr = subscription.split(",")
+        val symbol = arr(0)
+        val duration = arr(2).toInt
+        val indiName = arr(1)
+        val param = arr(3)
+        val ref = context.actorOf(IndicatorActor.props(symbol, duration, indiName, param, topic), topic)
+        indicatorRefs += (subscription -> ref)
+
+        log.info("创建指标%s".format(subscription))
+      }
     }
+
   }
 
+  private def _isPool(value: String): Boolean = {
+    false
+  }
 }
 
 object DataManagerActor {
