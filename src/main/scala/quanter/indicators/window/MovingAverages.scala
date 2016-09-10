@@ -27,14 +27,11 @@ class SimpleMovingAverage(pname: String, pperiod: Int) extends WindowIndicator[I
 }
 
 class ExponentialMovingAverage(pname: String, pperiod: Int, psmoothingFactor: Double) extends WindowIndicator[IndicatorDataPoint](pname, pperiod){
-  private val _k: Double = {
-    if(psmoothingFactor == Double.NaN) 2 / (period + 1)
-    else psmoothingFactor
-  }
+  private val _k: Double = psmoothingFactor
   private val _period: Int = pperiod
 
   def this(pname: String, pperiod: Int) {
-    this(pname, pperiod, Double.NaN)
+    this(pname, pperiod, 2 / (pperiod + 1))
   }
 
   def this(pperiod: Int) {
@@ -65,15 +62,13 @@ class LinearWeightedMovingAverage(pname: String, pperiod: Int) extends WindowInd
 
     for (i <- 0 to window.size) denominator += i
 
-    // our first data point just return identity
     if (window.size == 1) input.value
     else {
       var index = window.size
-      var minSizeSamples = math.min(window.size, window.samples).toInt
-      for (i <- 0 to minSizeSamples) {
+      val minSizeSamples = math.min(window.size, window.samples).toInt
+      for (i <- 0 until minSizeSamples) {
+        val x = window.get(i) * index
         index -= 1
-
-        var x = window.get(i) * index
         numerator += x
       }
       numerator / denominator
