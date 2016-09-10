@@ -1,8 +1,6 @@
 package quanter
 
-import java.util.{Calendar, Date}
-
-import org.scalatest.{FlatSpec, FunSpec, Matchers, MustMatchers}
+import org.scalatest.{FunSpec, Matchers}
 
 /**
   * Created by joe on 16-3-11.
