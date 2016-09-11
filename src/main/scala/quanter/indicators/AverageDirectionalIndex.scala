@@ -56,7 +56,18 @@ class AverageDirectionalIndex(pname: String, pperiod: Int) extends TradeBarIndic
     )
   override def isReady: Boolean = samples >= _period
 
-  override def reset = ???
+  override def reset = {
+    super.reset
+    _previousInput = null
+    trueRange.reset
+    directionalMovementPlus.reset
+    directionalMovementMinus.reset
+    smoothedTrueRange.reset
+    smoothedDirectionalMovementMinus.reset
+    smoothedDirectionalMovementPlus.reset
+    positiveDirectionalIndex.reset
+    negativeDirectionalIndex.reset
+  }
 
   override def computeNextValue(input: TradeBar): Double = {
 
