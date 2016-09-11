@@ -20,17 +20,11 @@ abstract class CommonIndicatorSpec[T <: BaseData] extends QuanterUnitSpec {
       if(indicator.isInstanceOf[IndicatorBase[TradeBar]]) TestHelper.testTradeBarIndicatorReset(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName)
       else if(indicator.isInstanceOf[IndicatorBase[IndicatorDataPoint]]) TestHelper.testIndicatorReset(indicator.asInstanceOf[IndicatorBase[IndicatorDataPoint]],testFileName)
       else println("不支持的指标")
-//      indicator match  {
-//          // TODO: 泛型化的信息被擦除
-//        case indi: IndicatorBase[TradeBar] => TestHelper.testTradeBarIndicatorReset(indi,testFileName)
-//        case indi: IndicatorBase[IndicatorDataPoint] => TestHelper.testIndicatorReset(indi,testFileName)
-//        case _ => println("unsupported message")
-//      }
     }
   }
 
   describe("用外部数据文件进行测试") {
-    it("reset 前后") {
+    it("测试， reset，测试") {
       val indicator = createIndicator
       testIndicator(indicator)
       indicator.reset
@@ -39,14 +33,9 @@ abstract class CommonIndicatorSpec[T <: BaseData] extends QuanterUnitSpec {
   }
 
   private def testIndicator(indicator: IndicatorBase[T]) = {
-    if(indicator.isInstanceOf[IndicatorBase[TradeBar]]) TestHelper.testTradeBarIndicator(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName, testColumnName, (indi, expected) => math.abs(indi.current.value -expected) should be <= 0.0001)
-    else if(indicator.isInstanceOf[IndicatorBase[IndicatorDataPoint]]) TestHelper.testIndicator(indicator.asInstanceOf[IndicatorBase[IndicatorDataPoint]],testFileName, testColumnName, (indi, expected) => math.abs(indi.current.value -expected) should be <= 0.0001)
+    if(indicator.isInstanceOf[IndicatorBase[TradeBar]]) TestHelper.testTradeBarIndicator(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName, testColumnName, (indi, expected) => indi.current.value should be (expected +- epsilon))
+    else if(indicator.isInstanceOf[IndicatorBase[IndicatorDataPoint]]) TestHelper.testIndicator(indicator.asInstanceOf[IndicatorBase[IndicatorDataPoint]],testFileName, testColumnName, (indi, expected) => indi.current.value should be (expected +- epsilon))
     else println("不支持的指标")
-    indicator match  {
-//      case indi: IndicatorBase[TradeBar] => TestHelper.testTradeBarIndicator(indi, testFileName, testColumnName, (indicator, expected) => indicator.current.value should be(expected))
-      //        case indi: IndicatorBase[IndicatorDataPoint] => TestHelper.testIndicator(indi,testFileName)
-      case _ => println("unsupported message")
-    }
   }
 
   protected def createIndicator: IndicatorBase[T]

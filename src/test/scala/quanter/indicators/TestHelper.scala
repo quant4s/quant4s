@@ -36,7 +36,7 @@ object TestHelper extends Matchers{
   }
 
   def testTradeBarIndicator(indicator: IndicatorBase[TradeBar], externalDataFilename: String, targetColumn: String, customAssertion: ((IndicatorBase[TradeBar], Double) => Unit)) = {
-    val reader = CSVReader.open(new File(externalDataFilename))
+    val reader = CSVReader.open(new File("datas/" + externalDataFilename))
     val lines = reader.allWithHeaders()
     lines.foreach(m => {
       val tradebar = new TradeBar(){
@@ -55,7 +55,7 @@ object TestHelper extends Matchers{
   }
 
   def testIndicator(indicator: IndicatorBase[IndicatorDataPoint], externalDataFilename: String, targetColumn: String, customAssertion: ((IndicatorBase[IndicatorDataPoint], Double) => Unit)): Unit = {
-    val reader = CSVReader.open(new File(externalDataFilename))
+    val reader = CSVReader.open(new File("datas/" + externalDataFilename))
     val lines = reader.allWithHeaders()
 
     lines.foreach(m => {
@@ -75,7 +75,12 @@ object TestHelper extends Matchers{
 
   def testIndicator(indicator: IndicatorBase[IndicatorDataPoint] , targetColumn: String, epsilon: Double = 0.001)
   {
-    testIndicator(indicator, "datas/spy_with_indicators.txt", targetColumn, (i, expected) => math.abs(i.current.value - expected) should be <= expected)
+    testIndicator(indicator, "spy_with_indicators.txt", targetColumn, (i, expected) => i.current.value should be(expected +- epsilon))
+  }
+
+  def testTradeBarIndicator(indicator: IndicatorBase[TradeBar], externalDataFilename: String, targetColumn: String, epsilon: Double = 1e-3)
+  {
+    testTradeBarIndicator(indicator, externalDataFilename, targetColumn, (i, expected) => i.current.value should be(expected +- epsilon))
   }
 
   def testTradeBarIndicatorReset(indicator: IndicatorBase[TradeBar], externalDataFilename: String) = {
@@ -100,7 +105,7 @@ object TestHelper extends Matchers{
   }
 
   def getTradeBarStream(externalDataFilename: String) = {
-    val reader = CSVReader.open(new File(externalDataFilename))
+    val reader = CSVReader.open(new File("datas/" + externalDataFilename))
     val lines = reader.allWithHeaders()
     var tradeBars = ArrayBuffer[TradeBar]()
     lines.foreach(m => {
