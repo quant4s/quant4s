@@ -31,7 +31,7 @@ class ExponentialMovingAverage(pname: String, pperiod: Int, psmoothingFactor: Do
   private val _period: Int = pperiod
 
   def this(pname: String, pperiod: Int) {
-    this(pname, pperiod, 2 / (pperiod + 1))
+    this(pname, pperiod, 2.0 / (pperiod + 1.0))
   }
 
   def this(pperiod: Int) {
@@ -46,7 +46,8 @@ class ExponentialMovingAverage(pname: String, pperiod: Int, psmoothingFactor: Do
 
   override protected def computeNextValue(window: ReadOnlyWindow[IndicatorDataPoint], input: IndicatorDataPoint): Double = {
     if (samples == 1) input.value
-    else input * _k + current *( 1 - _k);
+    else current + _k * (input - current)
+    //else input * _k + current *( 1 - _k)
   }
 }
 
