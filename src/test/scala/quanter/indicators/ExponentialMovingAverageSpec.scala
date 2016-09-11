@@ -10,7 +10,7 @@ import quanter.indicators.window.ExponentialMovingAverage
   *
   */
 class ExponentialMovingAverageSpec extends QuanterUnitSpec {
-  override val epsilon = 0.01
+  epsilon = 0.01
   describe ("用外部文件测试 EMA") {
     it("spy_with_indicators.txt EMA14 列") {
       val ema = new ExponentialMovingAverage(14)
