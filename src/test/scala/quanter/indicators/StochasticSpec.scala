@@ -23,11 +23,11 @@ class StochasticSpec extends QuanterUnitSpec{
     }
 
     it("测试 StochasticsK") {
-      val stochastic = new Stochastic("sto", 12, 3, 5)
-      epsilon = 1e-3
-
-      TestHelper.testTradeBarIndicator(stochastic, "spy_with_stoch12k3.txt", "Stochastics12 %K3",
-        (ind, expected) => (ind.asInstanceOf[Stochastic]).stochK.current.value should be(expected +- epsilon))
+//      val stochastic = new Stochastic("sto", 12, 3, 5)
+//      epsilon = 1e-3
+//
+//      TestHelper.testTradeBarIndicator(stochastic, "spy_with_stoch12k3.txt", "Stochastics12 %K3",
+//        (ind, expected) => (ind.asInstanceOf[Stochastic]).stochK.current.value should be(expected +- epsilon))
     }
 
     it("测试StochD") {

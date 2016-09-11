@@ -50,6 +50,7 @@ class Stochastic(pname: String, pperiod: Int, pkPeriod: Int, pdPeriod: Int) exte
     fastStoch.update(input)
     stochK.update(input)
     stochD.update(input)
+    log.debug("Stochastic's value is %f".format( fastStoch.current.value))
     fastStoch.current.value
   }
 
