@@ -53,6 +53,13 @@ object CommonExtensions {
     }
   }
 
+  implicit class StringExt(value: String) {
+    def toDate(f: String): Date = {
+      val format = new java.text.SimpleDateFormat(f)
+      format.parse(value)
+    }
+  }
+
   implicit class IterableExt(left: Iterable[Double]) {
     def variance(): Double = {
       val variance = new Variance()
@@ -74,6 +81,7 @@ object CommonExtensions {
       pc.correlation(left.toArray, yArray.toArray)
     }
   }
+
   implicit class ResolutionExt(resoltion: Resolution) {
     def toTimeSpan(): TimeSpan= {
       resoltion match {
