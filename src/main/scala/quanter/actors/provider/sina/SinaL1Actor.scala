@@ -49,17 +49,6 @@ class SinaL1Actor extends Actor with ActorLogging {
 
   private def _run(): Unit = {
     context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
-//    context.system.scheduler.schedule(0 seconds, 3 seconds, new Runnable {
-//      override def run(): Unit =  {
-//        if(_isOpened) {
-//          _querySnapData()
-//        }
-//      }
-////      private def _isClosed = false
-////      private def _isNotOpened = false
-////      private def _isPause = false
-//      private def _isOpened = true
-//    });
   }
 
   private def _addSymbol(symbol: String): Unit = {
@@ -106,14 +95,15 @@ class SinaL1Actor extends Actor with ActorLogging {
       val rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
       var line = ""
-      breakable {
-        while ((line = rd.readLine()) != null) {
-          if (line == null) break;
+      //breakable {
+      while ((line = rd.readLine()) != null) {
+        if (line != null) {
           // 分析每行数据转为SnapData
           val data = _parseLine(line)
           _newDataArrived(data)
         }
       }
+     // }
     }
   }
 
