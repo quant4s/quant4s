@@ -17,7 +17,7 @@ case class UpdatePortfolio(strategy: Strategy)
 /**
   * 1、策略的CRUD 操作
   * 2、买入|卖出股票
-  *
+  * 3、
   */
 class StrategiesManagerActor extends Actor{
   val strategyCache = new StrategyCache()
@@ -25,29 +25,16 @@ class StrategiesManagerActor extends Actor{
   val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
 
   override def receive: Receive = {
-    case s: NewStrategy => _saveStrategy(s.strategy)
-    case s: UpdateStrategy => _updateStrategy(s.strategy)
+    case s: NewStrategy => _createStrategy(s.strategy)
     case s: DeleteStrategy => _deleteStrategy(s.id)
-//    case s: RunStrategy => _runStrategy(s.id)
     case ListStrategies => _listStrategies()
-    case s: GetStrategy => _getStrategy(s.id)
-
-    case s: UpdatePortfolio =>
-
   }
 
-  private def _getStrategy(id: Int): Unit = {
-   //  println ("长度为："+ managers.getAllStrategies().length)
-    val strategy = strategyCache.getStrategy(id)
-    val portfolio = Portfolio(10.0, new Date(), None)
-    // strategy.get.portfolio = Some(portfolio)
-    sender ! strategy
-  }
-
-  private def _saveStrategy(strategy: Strategy) = {
+  private def _createStrategy(strategy: Strategy) = {
     // 保存到数据库
 //    val es = EStrategy(None, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
-    strategyCache.addStrategy(strategy)
+    context.actorOf(StrategyActor.props(strategy.id), strategy.id.toString)
+//    strategyCache.addStrategy(strategy)
     persisRef ! new NewStrategy(strategy)
   }
 
@@ -55,11 +42,7 @@ class StrategiesManagerActor extends Actor{
     sender ! Some(strategyCache.getAllStrategies())
     // persisRef ? ListStrategies
   }
-  private def _updateStrategy(strategy: Strategy) = {
-    // TODO: 处理cache
-    strategyCache.updateStrategy(strategy)
-    persisRef ! UpdateStrategy(strategy)
-  }
+
 
   private def _deleteStrategy(id: Int) = {
     // TODO: 处理cache
@@ -91,9 +74,7 @@ class StrategiesManagerActor extends Actor{
 }
 
 object StrategiesManagerActor {
-  def props = {
-    Props(classOf[StrategiesManagerActor])
-  }
+  def props = Props(classOf[StrategiesManagerActor])
 
   val path = "StrategiesManager"
 }
