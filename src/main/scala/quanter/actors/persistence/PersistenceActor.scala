@@ -82,7 +82,7 @@ class PersistenceActor extends Actor {
 
   private def _saveStrategy(strategy: Strategy): Unit = {
     val s = EStrategy(strategy.id, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
-    // val s1 = strategyDao.insert(s)
+    val s1 = strategyDao.insert(s)
 
     if (strategy.portfolio != None) {
       val t = strategy.portfolio.get
