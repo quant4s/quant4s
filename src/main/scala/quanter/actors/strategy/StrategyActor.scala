@@ -65,7 +65,7 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
       goto(Running) using stateData.copy(riskControll = false)
     }
   }
-  when(Stoped) {
+  when(Stopped) {
     case Event(StartStrategy(sid), _) => {
       if (stateData.riskControll) goto(RunningWithRiskControl)
       else goto(Running)
@@ -174,7 +174,7 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
     if(!riskRules.contains(riskRule))
       riskRules += (riskRule ->risk)
   }
-  
+
   private def _riskMatch(order: Order): Boolean = {
     var ret = false
     for(risk <- riskRules) {
@@ -193,7 +193,7 @@ object StrategyActor {
   case object Initialized extends StrategyState
   case object Running extends StrategyState
   case object Suspended extends StrategyState
-  case object Stoped extends StrategyState
+  case object Stopped extends StrategyState
   case object RunningWithRiskControl extends StrategyState
 
   case class StrategyData(riskControll: Boolean = false)

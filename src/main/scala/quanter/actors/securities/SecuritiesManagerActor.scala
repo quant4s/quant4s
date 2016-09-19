@@ -55,7 +55,6 @@ class SecuritiesManagerActor extends Actor with ActorLogging {
     for((k, v) <- manager) {
       val ref = context.actorOf(SecurityActor.props(v), k)
       secActors += ( k -> ref)
-      log.debug(s"初始化股票${k}Actor")
     }
   }
 }
