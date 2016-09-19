@@ -1,13 +1,19 @@
 package quanter.rest
 
+import java.util.HashMap
+
+import akka.actor.{ActorSystem, Props}
 import akka.pattern.ask
 import akka.util.Timeout
+import com.typesafe.config.ConfigFactory
 import org.json4s.jackson.JsonMethods._
 import org.json4s.{DefaultFormats, Extraction, Formats}
 import quanter.actors.trade._
 import quanter.actors._
+import quanter.config.Settings
 import spray.routing.HttpService
 
+import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext}
 
@@ -15,11 +21,17 @@ import scala.concurrent.{Await, ExecutionContext}
   *
   */
 trait TradeAccountService extends HttpService{
+  implicit def systemRef: ActorSystem
   val tradeAccountServiceRoute = {
     get {
       path("account" / "list") {
         complete {
           _getAllTraders()
+        }
+      }~
+      path("config" / "brokerageChannelTypes") {
+        complete {
+          _listChannelTypes()
         }
       }
     } ~
@@ -76,8 +88,29 @@ trait TradeAccountService extends HttpService{
     compact(render(json))
   }
 
-  private def _reconnect(id: Int): String = {
+  private def _listChannelTypes(): String = {
+//     val config = ConfigFactory.load("application.conf")
+    val setting = Settings(systemRef)
 
+    val channelTypes = new ArrayBuffer[ChannelType]()
+    for(i <- 0 until setting.channelTypes.size()) {
+      val provider = setting.channelTypes.get(i).asInstanceOf[HashMap[String, String]]
+      val name = provider.get("name")
+      val title = provider.get("title")
+      val desc = provider.get("desc")
+      val driver = provider.get("driver")
+
+      val channelType = new ChannelType(name, title, desc, driver)
+      channelTypes += channelType
+    }
+
+    val retChannelTypes = new RetChannelTypes(0, "", channelTypes.toArray)
+    implicit val formats: Formats = DefaultFormats
+    val json = Extraction.decompose(retChannelTypes)
+    compact(render(json))
+  }
+
+  private def _reconnect(id: Int): String = {
     """{"code": 1}"""
   }
 

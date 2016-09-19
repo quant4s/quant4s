@@ -12,6 +12,9 @@ import quanter.TimeSpan
   */
 class TradeStatistics(trades: List[Trade]) {
 
+  def this() {
+    this(null)
+  }
   private var _maxConsecutiveWinners = 0
   private var _maxConsecutiveLosers = 0
   private var _maxTotalProfitLoss = 0.0

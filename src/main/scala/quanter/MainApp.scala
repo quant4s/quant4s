@@ -40,8 +40,8 @@ object MainApp extends App {
   //
   val pub = system.actorOf(ZeroMQServerActor.props, ZeroMQServerActor.path)
 
-  _createStrategy("""{"id": 911,"name": "带资金组合","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}""")
-  _createStrategy("""{"id": 912,"name": "带资金组合","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}""")
+  _createStrategy("""{"id": 1,"name": "测试数据","runMode":1, "lang": "C#", "status": 1, "portfolio": {"cash":120000, "date":"2004-09-04T18:06:22Z"}}""")
+  _createStrategy("""{"id": 2,"name": "带资金组合","runMode":1, "lang": "C#", "status": 1，"portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}""")
 
   _initTrader()
   _createTrader("""{"id": 1002,"name": "SHSE","brokerType":"SIM", "brokerName":"仿真接口", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
@@ -67,7 +67,7 @@ object MainApp extends App {
       val jv = parse(json)
       val strategy = jv.extract[Strategy]
 
-      strategyManagerRef ! NewStrategy(strategy)
+      strategyManagerRef ! new NewStrategy(strategy)
       """{"code":0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)

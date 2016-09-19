@@ -7,7 +7,7 @@ import java.util.Date
 
 import org.apache.commons.math3.stat.descriptive.moment.{Mean, Variance}
 
-import scala.collection.immutable.SortedMap
+import scala.collection.SortedMap
 import math._
 import scala.collection.mutable.ArrayBuffer
 import quanter.CommonExtensions.IterableExt
@@ -57,6 +57,9 @@ class PortfolioStatistics(profitLoss: SortedMap[Date, Double],
                           listBenchmark: List[Double],
                           startingCapital: Double,
                           tradingDaysPerYear: Int = 252) {
+  def this() {
+    this(null, null, null, null, 0.0)
+  }
   val riskFreeRate = 0.0
 
   var runningCapital = startingCapital
@@ -85,15 +88,12 @@ class PortfolioStatistics(profitLoss: SortedMap[Date, Double],
   val lossRate = if(profitLoss.size == 0) 0 else totalLosses / profitLoss.size
   val expectancy = winRate * profitLossRatio - lossRate
 
-
-
-
   val totalNetProfit = if (profitLoss.size > 0) 0 /*equity.Values.LastOrDefault() / startingCapital) - 1*/ else 0
 
   private val _fractionOfYears =   (equity.lastKey - equity.firstKey).totalDays / 365
   val compoundingAnnualReturn: Double = PortfolioStatistics.compoundingAnnualPerformance(startingCapital, equity(equity.lastKey), _fractionOfYears)
 
-  val drawdown = PortfolioStatistics.drawdownPercent(equity, 3);
+  val drawdown = PortfolioStatistics.drawdownPercent(equity, 3)
 
   val annualVariance = PortfolioStatistics.getAnnualVariance(listPerformance, tradingDaysPerYear)
   val annualStandardDeviation = sqrt(annualVariance)

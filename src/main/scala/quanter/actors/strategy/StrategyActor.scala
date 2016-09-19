@@ -4,6 +4,8 @@
 package quanter.actors.strategy
 
 import akka.actor.{ActorLogging, ActorSelection, FSM, Props}
+import akka.pattern.ask
+import akka.util.Timeout
 import quanter.actors.persistence.PersistenceActor
 import quanter.actors._
 import quanter.actors.strategy.StrategyActor._
@@ -12,7 +14,8 @@ import quanter.rest._
 import quanter.risk.BaseRisk
 
 import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 /**
   * 1、更新策略
@@ -23,7 +26,7 @@ import scala.collection.mutable.ArrayBuffer
 class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with ActorLogging {
   val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
   val strategyContext: StrategyContext = null
-  val riskRules = new ArrayBuffer[BaseRisk]()
+  val riskRules = new mutable.HashMap[String, BaseRisk]()
 
   // TODO: 从数据库中读取1、持仓信息 2、当日成交信息 3、当日委托信息
   val portfolio: Portfolio = null
@@ -32,50 +35,67 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
   startWith(Initialized, new StrategyData(riskControll = rc))
 
   when(Initialized) {
-    case Event(StartStrategy, _) =>
+    case Event(StartStrategy(tid), _) => {
+      log.debug("启动策略,编号为:%d".format(id))
       goto(Running)
+    }
   }
   when(Running) {
-    case Event(PauseStrategy(id), _) =>
+    case Event(PauseStrategy, _) => {
       _pauseStrategy(id)
       goto(Suspended)
-    case Event(t: Transaction, _) =>
+    }
+    case Event(t: Transaction, _) => {
       _handleOrder(t)
       stay()
-    case Event(OpenRiskControl, _) =>
+    }
+    case Event(OpenRiskControl(sid), _) => {
+      log.debug("策略%d, 启动风险控制".format(id))
       goto(RunningWithRiskControl) using stateData.copy(riskControll = true)
+    }
   }
   when(RunningWithRiskControl) {
-    case Event(t: Transaction, _) =>
+    case Event(t: Transaction, _) => {
+      log.debug("策略%d, 接受到订单".format(id))
       _handleOrder(t)
       stay()
-    case Event(CloseRiskControl, _) => goto(Running) using stateData.copy(riskControll = false)
+    }
+    case Event(CloseRiskControl(sid), _) => {
+      log.debug("策略%d, 关闭风险控制".format(id))
+      goto(Running) using stateData.copy(riskControll = false)
+    }
   }
   when(Stoped) {
-    case Event(StartStrategy, _) =>
-      if(stateData.riskControll) goto(RunningWithRiskControl)
+    case Event(StartStrategy(sid), _) => {
+      if (stateData.riskControll) goto(RunningWithRiskControl)
       else goto(Running)
+    }
   }
   when(Suspended) {
-    case Event(RestoreStrategy(id), _) =>
+    case Event(RestoreStrategy(sid), _) => {
       _restoreStrategy(id)
-      if(stateData.riskControll) goto(RunningWithRiskControl)
+      if (stateData.riskControll) goto(RunningWithRiskControl)
       else goto(Running)
+    }
   }
   whenUnhandled {
-    case Event(GetStrategy(id), _) =>
+    case Event(GetStrategy(sid), _) => {
       _getStrategy(id)
       stay()
-    case Event(UpdateStrategy(id), _) =>
-      _updateStrategy(id)
+    }
+    case Event(UpdateStrategy(strategy), _) =>
+      _updateStrategy(strategy)
       stay()
-    case Event(UpdateRiskControlInfo, _) =>
-      stay()
-    case Event(UpdateTradeAccount, _) =>
-      stay()
-    case Event(AddRisk(risk, rule), _) =>
+    case Event(UpdateRiskControlInfo, _) =>     stay()
+    case Event(UpdateTradeAccount, _) => stay()
+    case Event(AddRisk(risk, rule), _) => {
       _addRiskRule(risk, rule)
       stay()
+    }
+    case Event(StopStrategy, _) => {
+      if(stateData.riskControll) goto(RunningWithRiskControl)
+      else goto(Running)
+    }
   }
 
   /**
@@ -85,7 +105,6 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
     */
   private def _updateStrategy(strategy: Strategy) = {
     // TODO: 处理cache
-    //    strategyCache.updateStrategy(strategy)
     persisRef ! UpdateStrategy(strategy)
   }
 
@@ -95,12 +114,12 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
     * @param id
     */
   private def _getStrategy(id: Int): Unit = {
-    // TODO: 从数据库中获取数据
-    //  println ("长度为："+ managers.getAllStrategies().length)
-    //    val strategy = strategyCache.getStrategy(id)
-    //    val portfolio = Portfolio(10.0, new Date(), None)
-    // strategy.get.portfolio = Some(portfolio)
-    //    sender ! strategy
+    // 从数据库中获取数据
+    implicit val timeout = Timeout(10 seconds)
+    val future = persisRef ? new GetStrategy(id)
+    val result = Await.result(future, timeout.duration).asInstanceOf[Option[Strategy]]
+
+    sender ! result
   }
 
 
@@ -112,15 +131,20 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
   private def _handleOrder(tran: Transaction): Unit = {
     if(tran.orders != None) {
       for (order <- tran.orders.get) {
+        var rc = false
         if(stateData.riskControll){
-          _riskMatch(order)
+         rc = _riskMatch(order)
         }
-
-        order.strategyId = tran.strategyId
-        // 发送到相应的交易接口
-        persisRef ! new NewOrder(order)
-        _getBrokerageActor(order.tradeAccountId) ! order
-        log.debug("接收到策略%d订单%d, 交易接口为%d".format(order.strategyId, order.orderNo, order.tradeAccountId))
+        if(rc) {
+          log.info("风控禁止买入")
+        }
+        else {
+          order.strategyId = tran.strategyId
+          // 发送到相应的交易接口
+          persisRef ! new NewOrder(order)
+          _getBrokerageActor(order.tradeAccountId) ! order
+          log.debug("接收到策略%d订单%d, 交易接口为%d".format(order.strategyId, order.orderNo, order.tradeAccountId))
+        }
       }
     }
 
@@ -143,18 +167,18 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
     * 增加风控
     */
   private def _addRiskRule(riskName: String, riskRule: String): Unit = {
-    // 动态创建
     val clazz: String = "quanter.risk." + riskName
     val risk = Class.forName(clazz).newInstance().asInstanceOf[BaseRisk]
     risk.addRule(riskRule)
 
-    riskRules += risk
+    if(!riskRules.contains(riskRule))
+      riskRules += (riskRule ->risk)
   }
   
   private def _riskMatch(order: Order): Boolean = {
     var ret = false
     for(risk <- riskRules) {
-      if(risk.matchRule(portfolio, order)) ret = true
+      if(risk._2.matchRule(strategyContext, order)) ret = true
     }
     ret
   }
@@ -174,7 +198,5 @@ object StrategyActor {
 
   case class StrategyData(riskControll: Boolean = false)
 
-  class StrategyContext {
-
-  }
+  case class StrategyContext(portfolio: Portfolio)
 }

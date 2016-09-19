@@ -1,5 +1,6 @@
 package quanter.rest
 
+import akka.actor.ActorSelection
 import org.json4s.{DefaultFormats, Extraction, Formats}
 import spray.routing.HttpService
 import org.json4s.jackson.JsonMethods._
@@ -17,24 +18,6 @@ import scala.concurrent.duration._
 trait StrategyService extends HttpService {
 //  val strategiesManager = new StrategiesManager()
   val manager = actorRefFactory.actorSelection("/user/" + StrategiesManagerActor.path)
-//  val strategyServiceRoute = {
-//    post {
-//      path("/strategy") {
-//        requestInstance {
-//          request => {
-//            complete {
-//              "code: 0"
-//            }
-//          }
-//        }
-//      }
-//    } ~
-//    get {
-//      path("strategy") {
-//        complete("""{"code":404}""")
-//      }
-//    }
-//  }
   val strategyServiceRoute = {
     get {
       path("strategy") {
@@ -51,12 +34,6 @@ trait StrategyService extends HttpService {
             _readHistoryStrategy(id)
           }
       } ~
-//      path("strategy" / "backtest" / IntNumber) {
-//        id =>
-//          complete {
-//            _backtestReport(id)
-//          }
-//      } ~
       path("strategy" / "real" / IntNumber) {
         id =>
           complete {
@@ -77,6 +54,12 @@ trait StrategyService extends HttpService {
       }
     }  ~
     post {
+      path("strategy" / "addrisk" / IntNumber / Segment / Segment) {
+        (id, risk, rule) =>
+            complete {
+              _addRiskRule(id, risk, rule)
+            }
+      } ~
       path("strategy") {
         requestInstance {
           request =>
@@ -84,22 +67,44 @@ trait StrategyService extends HttpService {
               _createStrategy(request.entity.data.asString)
             }
         }
-      }~
-      path("strategy" / "run" / IntNumber) {
-        id => {
-          complete {
-            _runStrategy(id)
-          }
-        }
       }
     } ~
     put {
-      path("strategy") {
+      path("strategy" / IntNumber) {
+        id=>
         requestInstance {
           request =>
             complete {
-              _updateStrategy(request.entity.data.asString)
+              _updateStrategy(id, request.entity.data.asString)
             }
+        }
+      } ~
+      path("strategy" / "start" / IntNumber) {
+        id => {
+          complete {
+            _startStrategy(id)
+          }
+        }
+      }~
+      path("strategy" / "stop" / IntNumber) {
+        id => {
+          complete {
+            _stopStrategy(id)
+          }
+        }
+      }~
+      path("strategy"/"enablerisk"/IntNumber) {
+        id => {
+          complete {
+            _enableRiskControl(id)
+          }
+        }
+      }~
+      path("strategy"/"disablerisk"/IntNumber) {
+        id => {
+          complete {
+            _disableRiskControl(id)
+          }
         }
       }
     } ~
@@ -133,10 +138,33 @@ trait StrategyService extends HttpService {
     }
   }
 
+  /**
+    * 创建一个策略
+    *
+    * @param json
+    * @return
+    */
+  private def _createStrategy(json: String): String = {
+    // 将JSON转换为strategy，加入到strategy
+    implicit val formats = DefaultFormats
+    try {
+      val jv = parse(json)
+      val strategy = jv.extract[Strategy]
+
+      manager ! NewStrategy(strategy)
+      """{"code":0}"""
+    }catch {
+      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
+  }
+
+
   private def _getStrategy(id: Int): String = {
     try {
-      implicit val timeout = Timeout(10 seconds)
-      val future = manager ? new GetStrategy(id)
+      implicit val timeout = Timeout(5 seconds)
+
+      val strategyRef = _findStrategyActor(id)
+      val future = strategyRef ? new GetStrategy(id)
       var  ret = ""
       val result = Await.result(future, timeout.duration).asInstanceOf[Option[Strategy]]
       if(result == None) ret = """{"code":1}"""
@@ -153,44 +181,14 @@ trait StrategyService extends HttpService {
     }
   }
 
-  private def _runStrategy(id: Int): String = {
-    try {
-      //manager ! RunStrategy(id)
-      """{"code":0}"""
-    } catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
-  }
-  private def _readHistoryStrategy(id: Int): String = {
-    "历史信息，等待支持"
-  }
-
-  private def _backtestReport(id: Int): String = {
-    "回测报告，等待支持"
-  }
-
-  private def _createStrategy(json: String): String = {
-    // 将JSON转换为strategy，加入到strategy
+  private def _updateStrategy(id: Int, json: String): String = {
     implicit val formats = DefaultFormats
     try {
+      val strategyRef = _findStrategyActor(id)
       val jv = parse(json)
       val strategy = jv.extract[Strategy]
 
-      manager ! NewStrategy(strategy)
-      """{"code":0}"""
-    }catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
-  }
-
-  private def _updateStrategy(json: String): String = {
-    implicit val formats = DefaultFormats
-    try {
-      val jv = parse(json)
-      val strategy = jv.extract[Strategy]
-
-//      strategiesManager.modifyStrategy(strategy)
-      manager ! UpdateStrategy(strategy)
+      strategyRef ! new UpdateStrategy(strategy)
       """{"code":0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
@@ -200,11 +198,95 @@ trait StrategyService extends HttpService {
 
   private def _deleteStrategy(id: Int): String = {
     try {
-//      strategiesManager.removeStrategy(id)
+      //      strategiesManager.removeStrategy(id)
       manager ! DeleteStrategy(id)
       """{"code":0, "message":"成功删除"}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
     }
+  }
+
+  /**
+    * 启动策略
+    *
+    * @param id
+    * @return
+    */
+  private def _startStrategy(id: Int): String = {
+    try {
+      val strategyRef = _findStrategyActor(id)
+       strategyRef ! new StartStrategy(id)
+      """{"code":0}"""
+    } catch {
+      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
+  }
+
+  /**
+    * 停止策略
+    *
+    * @param id
+    * @return
+    */
+  private def _stopStrategy(id: Int): String = {
+    try {
+      val strategyRef = _findStrategyActor(id)
+      strategyRef ! new StopStrategy(id)
+      """{"code":0}"""
+    } catch {
+      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
+  }
+  /**
+    * 暂停策略运行
+    *
+    * @param id
+    * @return
+    */
+  private def _pause(id: Int) : String = {
+    try {
+      val strategyRef = _findStrategyActor(id)
+      strategyRef ! new PauseStrategy(id)
+      """{"code":0}"""
+    } catch {
+      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
+  }
+
+  private def _readHistoryStrategy(id: Int): String = {
+    "历史信息，等待支持"
+  }
+
+  private def _addRiskRule(id: Int, risk: String, rule: String): String = {
+    try {
+      val strategyRef = _findStrategyActor(id)
+      strategyRef ! new AddRisk(risk, rule)
+      """{"code":0}"""
+    } catch {
+      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
+  }
+
+  private def _findStrategyActor(id: Int): ActorSelection = actorRefFactory.actorSelection("/user/%s/%d".format(StrategiesManagerActor.path, id))
+
+  private def _enableRiskControl(id: Int): String = {
+    try {
+      val strategyRef = _findStrategyActor(id)
+      strategyRef ! new OpenRiskControl(id)
+      """{"code":0}"""
+    } catch {
+      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
+  }
+
+  private def _disableRiskControl(id: Int): String = {
+    try {
+      val strategyRef = _findStrategyActor(id)
+      strategyRef ! new CloseRiskControl(id)
+      """{"code":0}"""
+    } catch {
+      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
+
   }
 }

@@ -12,6 +12,10 @@ class PortfolioDao(implicit session: Session)  extends BaseDao[EPortfolio] {
     gPortfolios.filter(_.strategyId === id).take(1).firstOption
   }
 
+  def getByStrategyId(id: Int): Option[EPortfolio] = {
+    gPortfolios.filter(_.strategyId === id).take(1).firstOption
+  }
+
   override def update(id: Int, entity: EPortfolio): Unit = ???
 
   override def insert(entity: EPortfolio): EPortfolio = {

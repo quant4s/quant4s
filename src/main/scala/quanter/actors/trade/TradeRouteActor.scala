@@ -1,5 +1,7 @@
 package quanter.actors.trade
 
+import java.util.HashMap
+
 import scala.collection.mutable
 import scala.concurrent.duration._
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
@@ -9,6 +11,7 @@ import quanter.actors._
 import quanter.actors.persistence.PersistenceActor
 import quanter.actors.provider.QuerySnapData
 import quanter.brokerages.ctp.CTPBrokerage
+import quanter.config.Settings
 import quanter.interfaces.TBrokerage
 import quanter.persistence.EOrder
 import quanter.rest.{Trader, Transaction}
@@ -16,6 +19,8 @@ import quanter.trade.TradeAccountCache
 import quanter.trade.simulate.SimulateBrokerage
 
 import scala.concurrent.Await
+import scala.reflect._
+import scala.reflect.runtime._
 
 
 /**
@@ -24,8 +29,8 @@ import scala.concurrent.Await
   */
 case class InitTradeRoute()
 class TradeRouteActor extends Actor with ActorLogging{
-  var traderAccounts = new mutable.HashMap[Int, ActorRef]()
-  val cache = new TradeAccountCache()
+//  var traderAccounts = new mutable.HashMap[Int, ActorRef]()
+//  val cache = new TradeAccountCache()
   val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
 
 
@@ -42,9 +47,9 @@ class TradeRouteActor extends Actor with ActorLogging{
     case t: NewTrader => _createTrader(t.trader)
     case t: UpdateTrader => _updateTrader(t.trader)
     case t: DeleteTrader => _deleteTrader(t.id)
-    case t: GetTrader => _getTrader(t.id)
+//    case t: GetTrader => _getTrader(t.id)
 
-    case tran: Transaction => _handleOrder(tran)
+//    case tran: Transaction => _handleOrder(tran)
   }
 
   /**
@@ -57,21 +62,34 @@ class TradeRouteActor extends Actor with ActorLogging{
 
     // 从数据库中读取所有的内容
     // FIXME: 从配置文件中读取映射关系
-    for(t <- result) {
-       t.brokerType match {
-        case "THS" => log.info("启动同花顺交易接口")
-        case "CTP" => log.info("启动CTP交易接口")
-          val brokerage = new CTPBrokerage(t.name)
-          val ref = context.actorOf(BrokerageActor.props(brokerage))
-          traderAccounts += (t.id.get -> ref)
+    val setting = Settings(context.system)
+    val map = new mutable.HashMap[String, String]()
+    for(i <- 0 until setting.channelTypes.size()) {
+      val provider = setting.channelTypes.get(i).asInstanceOf[java.util.HashMap[String, String]]
+      map.put(provider.get("name"), provider.get("driver"))
+    }
 
-        case "SIM" => {
-           val brokerage = new SimulateBrokerage(t.name)
-           val ref = context.actorOf(BrokerageActor.props(brokerage))
-          traderAccounts += (t.id.get -> ref)
-        }
-        case _ => log.info("启动监控")
-      }
+    for(t <- result) {
+      val clazz = map.get(t.brokerType).toString
+
+      val c = Class.forName(clazz)
+      //TODO: 动态实例化对象
+
+      //val ref = context.actorOf(Props(Class.forName(clazz)), path)
+//       t.brokerType match {
+//        case "THS" => log.info("启动同花顺交易接口")
+//        case "CTP" => log.info("启动CTP交易接口")
+//          val brokerage = new CTPBrokerage(t.name)
+//          val ref = context.actorOf(BrokerageActor.props(brokerage))
+////          traderAccounts += (t.id.get -> ref)
+//
+//        case "SIM" => {
+//           val brokerage = new SimulateBrokerage(t.name)
+//           val ref = context.actorOf(BrokerageActor.props(brokerage))
+////          traderAccounts += (t.id.get -> ref)
+//        }
+//        case _ => log.info("启动监控")
+//      }
 
     }
 
@@ -100,36 +118,11 @@ class TradeRouteActor extends Actor with ActorLogging{
     persisRef ! new DeleteTrader(id)
   }
 
-  private def _getTrader(id: Int): Unit = {
-    sender ! cache.getTrader(id)
-  }
+//  private def _getTrader(id: Int): Unit = {
+//    sender ! cache.getTrader(id)
+//  }
 
-  /**
-    * 将订单发送给合适的交易通道
-    *
-    * @param tran
-    */
-  private def _handleOrder(tran: Transaction): Unit = {
-    if(tran.orders != None) {
-      for (order <- tran.orders.get) {
-       order.strategyId = tran.strategyId
-        // 发送到相应的交易接口
-        persisRef ! new NewOrder(order)
-        traderAccounts.get(order.tradeAccountId).get ! order
-        log.info("接收到策略%d订单%d, 交易接口为%d".format(order.strategyId, order.orderNo, order.tradeAccountId))
-      }
-    }
 
-    if(tran.cancelOrder != None) {
-      val accountId = 0
-      val order = tran.cancelOrder.get
-      order.strategyId = tran.strategyId
-      // 将取消订单保存到数据库，并发送到交易接口
-      persisRef ! new RemoveOrder(order)
-      traderAccounts.get(accountId).get ! order
-      log.info("取消策略%d订单%d,交易接口为%d".format(order.strategyId, order.cancelOrderNo, order.tradeAccountId))
-    }
-  }
 }
 
 object TradeRouteActor {

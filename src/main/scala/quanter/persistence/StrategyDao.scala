@@ -29,7 +29,9 @@ class StrategyDao(implicit session: Session) extends BaseDao[EStrategy] {
   }
 
   override  def insert(strategy: EStrategy): EStrategy = {
-    val id = ( gStrategies returning gStrategies.map(_.id) += strategy) //(strategy.name, strategy.runMode, strategy.status, strategy.lang))
+//    val id = ( gStrategies returning gStrategies.map(_.id) += strategy) //(strategy.name, strategy.runMode, strategy.status, strategy.lang))
+
+    gStrategies.map(s => (s.id, s.name, s.runMode, s.status, s.lang)) += (strategy.id, strategy.name, strategy.runMode, strategy.status, strategy.lang)
     // strategy.copy(id = Some(id))
     strategy
   }

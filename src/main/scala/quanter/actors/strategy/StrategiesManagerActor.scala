@@ -3,14 +3,16 @@
   */
 package quanter.actors.strategy
 
-import java.util.Date
-
 import akka.actor.{Actor, Props}
-import quanter.actors.{NewStrategy, UpdateStrategy, GetStrategy, DeleteStrategy, ListStrategies}
+import akka.pattern.ask
+import akka.util.Timeout
+import quanter.actors._
 import quanter.actors.persistence.PersistenceActor
-import quanter.rest.{CancelOrder, Portfolio, Strategy}
+import quanter.rest.{CancelOrder, Strategy, Trader}
 import quanter.strategies.StrategyCache
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
 case class UpdatePortfolio(strategy: Strategy)
 
 
@@ -39,8 +41,13 @@ class StrategiesManagerActor extends Actor{
   }
 
   private def _listStrategies() = {
-    sender ! Some(strategyCache.getAllStrategies())
+    // 从数据库 读取
     // persisRef ? ListStrategies
+    implicit val timeout = Timeout(5 seconds)
+    val future = persisRef ? new ListStrategies()
+    val result = Await.result(future, timeout.duration).asInstanceOf[Array[Strategy]]
+    sender ! Some(result)
+
   }
 
 

@@ -17,7 +17,6 @@ class StrategyPersistorActor extends  Actor{
 
   override def receive: Receive = ???
 
-
   def insertStrategy(strategy: Strategy): Unit = {
     strategyCache.addStrategy(strategy)
 

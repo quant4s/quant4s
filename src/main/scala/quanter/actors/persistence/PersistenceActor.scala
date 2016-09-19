@@ -7,10 +7,10 @@ import java.sql.Timestamp
 
 import scala.collection.mutable.ArrayBuffer
 import scala.slick.driver.MySQLDriver.simple._
-import akka.actor.{Actor, Props}
+import akka.actor.{Actor, ActorLogging, Props}
 import quanter.actors._
 import quanter.persistence._
-import quanter.rest.{CancelOrder, Order, Strategy, Trader}
+import quanter.rest._
 import quanter.strategies.StrategyCache
 
 // import scala.slick.driver.H2Driver.simple._
@@ -32,7 +32,7 @@ object PersistenceActor {
 
   def path = "persistence"
 }
-class PersistenceActor extends Actor {
+class PersistenceActor extends Actor with ActorLogging{
 //  val dbUrl = "jdbc:mysql://172.16.240.1:3306/quant4s?user=root&password=root&useUnicode=true&characterEncoding=UTF8"
 //  val jdbcDriver = "com.mysql.jdbc.Driver"
 //  var db = Database.forURL(dbUrl, driver=jdbcDriver)
@@ -44,6 +44,7 @@ class PersistenceActor extends Actor {
   val ddl = gStrategies.ddl ++ gPortfolios.ddl ++ gStockHoldings.ddl ++ gTransactions.ddl ++ gOrders.ddl ++ gTraders.ddl
   // TODO: 如果是第一次启动
   if(true) {
+    log.info("初始化数据库")
     ddl.drop
     ddl.create
   }
@@ -92,7 +93,22 @@ class PersistenceActor extends Actor {
 
   private def _getStrategy(id: Int): Unit = {
     val strategy = strategyDao.getById(id)
-    sender ! strategy
+    var s: Option[Strategy] = None
+    if(strategy.isDefined) {
+      val s1 = strategy.get
+
+      // 装载portfolio
+      val p = portfolioDao.getByStrategyId(id)
+      var port: Option[Portfolio] = None
+      if(p.isDefined) {
+        val pt = p.get
+        val p1 = new Portfolio(pt.cash, pt.date, None)
+        port = Some(p1)
+      }
+
+      s = Some(new Strategy(id, s1.name, s1.runMode, s1.status, Some(s1.lang), port ))
+    }
+    sender ! s
   }
 
   private def _updateStrategy(id: Int, strategy: Strategy): Unit = {
@@ -105,14 +121,14 @@ class PersistenceActor extends Actor {
   }
 
   private def _listStrategies(): Unit = {
+    log.debug("加载所有策略列表")
     val strategyArr = new ArrayBuffer[Strategy]()
     for(s <- strategyDao.list) {
       val strategy = Strategy(s.id, s.name, s.runMode, s.status, Some(s.lang), None)
       strategyArr += strategy
     }
-    sender ! strategyArr
+    sender ! strategyArr.toArray
   }
-
 
   // Trader
   private def _saveTrader(trader: Trader): Unit = {

@@ -15,6 +15,7 @@ import spray.http.{AllOrigins, StatusCodes}
   */
 class HttpServer extends Actor with StrategyService with OrderService with TradeAccountService with DataService with ActorLogging {
   def actorRefFactory = context
+  def systemRef = context.system
   implicit def executionContext = actorRefFactory.dispatcher
   private val allowOriginHeader = `Access-Control-Allow-Origin`(AllOrigins)
   private val optionsCorsHeaders = List(

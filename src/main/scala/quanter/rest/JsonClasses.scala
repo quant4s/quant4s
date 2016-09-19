@@ -14,8 +14,8 @@ import java.util.Date
   * @param lang
   * @param portfolio
   */
-case class Strategy(id: Int, var name: String, var runMode: Int, var status: Int, var lang: Option[String], var portfolio: Option[Portfolio]) {
-}
+case class Strategy(id: Int, var name: String, var runMode: Int, var status: Int, var lang: Option[String], var portfolio: Option[Portfolio])
+
 
 /**
   *
@@ -42,7 +42,6 @@ case class SecurityHolding(symbol: String, quantity: Long, totalCost: Double) {
 
 /**
   *
-  * @param id
   * @param symbol
   * @param quantity
   * @param price
@@ -64,6 +63,7 @@ case class Transaction(strategyId: Int, orders: Option[List[Order]], cancelOrder
 
 case class Trader(id: Option[Int], name: String, brokerType: String, brokerName: String, brokerCode: String, brokerAccount: String, brokerPassword: Option[String], brokerUri: String, brokerServicePwd: Option[String], status: Int = 0)
 
+case class ChannelType(name: String, title: String, desc: String, driver: String)
 
 // 返回的JSON CLASS
 case class RetCode(code: Int, message: String)
@@ -71,3 +71,4 @@ case class RetStrategy(code: Int, message: String, strategy: Option[Strategy])
 case class RetStrategyList(code: Int, message: String, strategies: Option[Array[Strategy]])
 case class RetTrader(code: Int, message: String, trader: Option[Trader])
 case class RetTraderList(code: Int, message: String, traders: Option[Array[Trader]])
+case class RetChannelTypes(code: Int, message: String, channelTypes: Array[ChannelType])

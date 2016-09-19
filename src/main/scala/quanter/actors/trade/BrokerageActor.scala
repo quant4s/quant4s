@@ -1,6 +1,7 @@
 package quanter.actors.trade
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.{Actor, ActorLogging, FSM, Props}
+import quanter.actors.trade.BrokerageActor._
 import quanter.actors.{Connect, Disconnect, KeepAlive}
 import quanter.interfaces.TBrokerage
 import quanter.persistence.EOrder
@@ -12,13 +13,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
   *
   */
-object BrokerageActor {
-  def props(brokerage: TBrokerage): Props = {
-    Props(classOf[BrokerageActor], brokerage)
-  }
-}
 
-class BrokerageActor(brokerage: TBrokerage) extends Actor with ActorLogging{
+
+class BrokerageActor(brokerage: TBrokerage) extends FSM[BrokerageState, BrokerageData] with ActorLogging{
 
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {
@@ -27,11 +24,25 @@ class BrokerageActor(brokerage: TBrokerage) extends Actor with ActorLogging{
     context.system.scheduler.schedule(0 seconds, 3 seconds, self, new KeepAlive())
   }
 
-  override def receive: Receive = {
-    case o: EOrder => _handleOrder(o)
-    case KeepAlive => _refresh
-    case Connect => _connect
-    case Disconnect => _disconnect
+  when(Login) {
+    case Event(_, _) =>
+      stay()
+  }
+  when(Connected) {
+    case Event(Disconnect, _) =>
+      _disconnect()
+      goto(Disconnected)
+    case Event(o: EOrder, _) =>
+      _handleOrder(o)
+      stay()
+    case Event(KeepAlive, _) =>
+      _refresh()
+      stay()
+  }
+  when(Disconnected) {
+    case Event(Connected, _) =>
+      _connect()
+      goto(Connected)
   }
 
   private def _handleOrder(order: EOrder): Unit = {
@@ -42,15 +53,29 @@ class BrokerageActor(brokerage: TBrokerage) extends Actor with ActorLogging{
     }
   }
 
-  private def _refresh: Unit = {
+  private def _refresh(): Unit = {
     brokerage.keep
   }
 
-  private def _connect: Unit = {
+  private def _connect(): Unit = {
     brokerage.connect
   }
 
-  private def _disconnect: Unit = {
+  private def _disconnect(): Unit = {
     brokerage.disconnect
   }
+}
+
+object BrokerageActor {
+  def props(brokerage: TBrokerage): Props = {
+    Props(classOf[BrokerageActor], brokerage)
+  }
+
+  sealed trait BrokerageState
+
+  case object Connected extends BrokerageState
+  case object Disconnected extends BrokerageState
+  case object Login extends BrokerageState
+
+  case class BrokerageData()
 }

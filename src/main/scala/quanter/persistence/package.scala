@@ -13,6 +13,7 @@ package object persistence {
   case class EStrategy (id: Int, name: String, runMode: Int, status: Int, lang: String) {
     // def portfolio = portfolios.filter(_.strategyId === id.get).take(1).firstOption
   }
+
   class EStrategies(tag: Tag) extends Table[EStrategy](tag, "STRATEGIES") {
     def id = column[Int]("ID", O.PrimaryKey)
     def name = column[String]("NAME")
@@ -33,7 +34,7 @@ package object persistence {
     def date = column[Timestamp]("HOLDINGDATE")
     def strategyId = column[Int]("STRATEGY_ID")
 
-    def strategy = foreignKey("STRATEGY_FK", strategyId, gStrategies)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+    def strategy = foreignKey("STRATEGY_FK", strategyId, gStrategies)(_.id)
     def * = (id.?, cash, date, strategyId) <> (EPortfolio.tupled, EPortfolio.unapply)
   }
   val gPortfolios = TableQuery[EPortfolios]
