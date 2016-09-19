@@ -33,12 +33,12 @@ class SinaL1Actor extends Actor with ActorLogging {
   var aliases = new ArrayBuffer[String]()
   _addSymbol("000002.XSHE")
   _addSymbol("000001.XSHE")
-
+  context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {
     super.preStart()
     log.info("启动Sina L1 行情获取......")
-    _run()
+    //_run()
   }
 
   override def receive: Receive =  {
@@ -55,7 +55,7 @@ class SinaL1Actor extends Actor with ActorLogging {
 
     if (!symbolSelections.contains(symbol)) {
       log.info(s"准备接受${symbol}的行情数据")
-      val ref = context.actorSelection(s"/user/${SecuritiesManagerActor.path}/${symbol}")
+      val ref = context.actorSelection(s"/user/%s/%s".format(SecuritiesManagerActor.path, symbol))
       symbolSelections += (symbol -> ref)
       aliases += _symbol2Alias(symbol)
     }
@@ -95,9 +95,9 @@ class SinaL1Actor extends Actor with ActorLogging {
       val rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
       var line = ""
-      //breakable {
-      while ((line = rd.readLine()) != null) {
-        if (line != null) {
+      breakable {
+        while ((line = rd.readLine()) != null) {
+          if (line == null) break;
           // 分析每行数据转为SnapData
           val data = _parseLine(line)
           _newDataArrived(data)
