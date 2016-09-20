@@ -35,7 +35,6 @@ class SecurityActor(security: Security) extends Actor with ActorLogging{
   }
 
   private def _dataArrived(data: SnapData): Unit = {
-    log.debug("数据到达" + data.toJson)
     for(suber <- _subscribers)
       suber ! data
   }

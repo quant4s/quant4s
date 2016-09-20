@@ -15,6 +15,7 @@ import quanter.actors.AskListenedSymbol
 import quanter.actors.provider.QuerySnapData
 import quanter.actors.securities.SecuritiesManagerActor
 import quanter.data.market.SnapData
+import quanter.CommonExtensions._
 
 /**
   *
@@ -140,7 +141,7 @@ class SinaL1Actor extends Actor with ActorLogging {
     data.close = items(3).toDouble
     data.high = items(4).toDouble
     data.low = items(5).toDouble
-    data.time =  new Date()
+    data.time =  (items(30).toString() + " " + items(31).toString()).toDate("yyyy-MM-dd hh:mm:ss")
 
 //    data.volume = items(8).toLong
 //    data.turnover = items(9).toDouble
