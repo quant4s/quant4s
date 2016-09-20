@@ -46,12 +46,12 @@ class Strategy910ServiceSpec extends RoutingSpec with StrategyService {
 
     "  读取存在的策略910" in {
       Post("/strategy", HttpEntity(MediaTypes.`application/json`,
-        """{"id": 910,"name": "实盘测试","runMode":1, "status": 1, "portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}"""
+        """{"id": 915,"name": "实盘测试","runMode":1, "status": 1}"""
       )) ~> strategyServiceRoute ~> check {
         //status shouldEqual Success
         responseAs[String] shouldEqual """{"code":0}"""
       }
-      Get("/strategy/910") ~> strategyServiceRoute ~> check {
+      Get("/strategy/915") ~> strategyServiceRoute ~> check {
         val json = responseAs[String]
         implicit val formats = DefaultFormats
         val jv = parse(json)
