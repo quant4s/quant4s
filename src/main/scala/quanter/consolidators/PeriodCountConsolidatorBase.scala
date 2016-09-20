@@ -76,7 +76,6 @@ abstract class PeriodCountConsolidatorBase[T <: TBaseData, TC <: BaseData](pmaxC
       if(!aggregateBeforeFire)
         _workingBar = aggregateBar(_workingBar, data)
     }
-
   }
 
   protected  def shouldProcess(data: T): Boolean = true

@@ -52,7 +52,7 @@ class TradeBar extends BaseData with TBar{
 
   }
 
-  override def toJson = "{\"symbol\":\"%s\",\"open\":%f,\"high\":%f,\"low\":%f,\"close\":%f,\"time\":\"%s\"}".format(symbol, open, high, low, close, time.formatted("yyyy-MM-dd HH:mm:ss"))
+  override def toJson = "{\"symbol\":\"%s\",\"open\":%f,\"high\":%f,\"low\":%f,\"close\":%f,\"time\":%d}".format(symbol, open, high, low, close, time.getTime())
 }
 
 class TradeBars(frontier: Date) extends DataDictionary[TradeBar](frontier) {
