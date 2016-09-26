@@ -9,6 +9,9 @@ import quanter.brokerages.Brokerage
   *
   */
 class OandaBrokerage(pname: String) extends Brokerage(pname){
+  def this() {
+    this("")
+  }
   override def isConnected: Boolean = ???
 
   override def disconnect: Unit = ???

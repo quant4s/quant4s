@@ -9,6 +9,9 @@ import quanter.brokerages.Brokerage
   *
   */
 class CTPBrokerage(pname: String) extends Brokerage("CTP交易接口" + pname) {
+  def this() {
+    this("")
+  }
   override def isConnected: Boolean = {
     true
   }

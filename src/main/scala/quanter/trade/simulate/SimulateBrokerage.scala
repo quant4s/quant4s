@@ -19,7 +19,7 @@ class SimulateBrokerage(pname: String) extends Brokerage("仿真交易接口" + 
 //  override def sell(symbol: String, quantity: Int): Unit = ???
 //  override def keep(): Unit = ???
 
-  override def name: String = "仿真账户"
+  name = "仿真账户"
 
   override def connect: Unit = {}
   override def disconnect(): Unit = {}

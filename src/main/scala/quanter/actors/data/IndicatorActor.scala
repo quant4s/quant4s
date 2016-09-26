@@ -29,11 +29,9 @@ object IndicatorActor {
 //  }
 }
 
-class IndicatorActor(symbol: String, duration: Int, name: String, param: String, topic: String) extends Actor with ActorLogging {
+class IndicatorActor(symbol: String, duration: Int, name: String, param: String, topic: String) extends BaseIndicatorActor with ActorLogging {
   type SelectType = (BaseData) => Double
-  val securitiesManagerRef = context.actorSelection("/user/" + SecuritiesManagerActor.path)
   val _consolidator = _initIndicator
-  val pubRef = context.actorSelection("/user/" + ZeroMQServerActor.path)
 
 
   override def receive: Receive = {

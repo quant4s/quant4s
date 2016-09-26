@@ -41,7 +41,7 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
     }
   }
   when(Running) {
-    case Event(PauseStrategy, _) => {
+    case Event(PauseStrategy(sid), _) => {
       _pauseStrategy(id)
       goto(Suspended)
     }
@@ -139,11 +139,11 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
           log.info("风控禁止买入")
         }
         else {
-          order.strategyId = tran.strategyId
+          order.strategyId = id
           // 发送到相应的交易接口
           persisRef ! new NewOrder(order)
           _getBrokerageActor(order.tradeAccountId) ! order
-          log.debug("接收到策略%d订单%d, 交易接口为%d".format(order.strategyId, order.orderNo, order.tradeAccountId))
+          log.debug("接收到策略%d订单%d, 交易接口为%d".format(id, order.orderNo, order.tradeAccountId))
         }
       }
     }

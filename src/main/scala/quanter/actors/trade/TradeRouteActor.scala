@@ -1,26 +1,18 @@
 package quanter.actors.trade
 
-import java.util.HashMap
-
-import scala.collection.mutable
-import scala.concurrent.duration._
-import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import akka.actor.{Actor, ActorLogging, Props}
 import akka.pattern.ask
 import akka.util.Timeout
 import quanter.actors._
 import quanter.actors.persistence.PersistenceActor
-import quanter.actors.provider.QuerySnapData
-import quanter.brokerages.ctp.CTPBrokerage
 import quanter.config.Settings
 import quanter.interfaces.TBrokerage
-import quanter.persistence.EOrder
-import quanter.rest.{Trader, Transaction}
-import quanter.trade.TradeAccountCache
-import quanter.trade.simulate.SimulateBrokerage
+import quanter.rest.Trader
 
+import scala.collection.mutable
 import scala.concurrent.Await
-import scala.reflect._
-import scala.reflect.runtime._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
 
 /**
@@ -37,12 +29,12 @@ class TradeRouteActor extends Actor with ActorLogging{
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {
     super.preStart()
-    //_init()
-//    context.system.scheduler.schedule(0 seconds, 3 seconds, self, new InitTradeRoute())
+    _init()
+    //context.system.scheduler.schedule(0 seconds, 3 seconds, self, new InitTradeRoute())
   }
 
   override def receive: Receive = {
-    case t: InitTradeRoute => _init()
+//    case t: InitTradeRoute => _init()
     case t: ListTraders => _getAllTraders()
     case t: NewTrader => _createTrader(t.trader)
     case t: UpdateTrader => _updateTrader(t.trader)
@@ -61,7 +53,7 @@ class TradeRouteActor extends Actor with ActorLogging{
     val result = Await.result(future, timeout.duration).asInstanceOf[Array[Trader]]
 
     // 从数据库中读取所有的内容
-    // FIXME: 从配置文件中读取映射关系
+    // FIXME: 后期改成从配置文件中读取映射关系
     val setting = Settings(context.system)
     val map = new mutable.HashMap[String, String]()
     for(i <- 0 until setting.channelTypes.size()) {
@@ -70,9 +62,14 @@ class TradeRouteActor extends Actor with ActorLogging{
     }
 
     for(t <- result) {
-      val clazz = map.get(t.brokerType).toString
+      val clazz = map.get(t.brokerType).get
 
-      val c = Class.forName(clazz)
+      try {
+        val c = Class.forName(clazz).newInstance()
+        context.actorOf(BrokerageActor.props(c.asInstanceOf[TBrokerage]),t.id.get.toString())
+      }catch  {
+        case ex: Throwable => log.error(ex, ex.getMessage())
+      }
       //TODO: 动态实例化对象
 
       //val ref = context.actorOf(Props(Class.forName(clazz)), path)

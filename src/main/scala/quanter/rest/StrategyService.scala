@@ -67,6 +67,14 @@ trait StrategyService extends HttpService {
               _createStrategy(request.entity.data.asString)
             }
         }
+      }~
+      path("strategy" / IntNumber / "order") {
+        id =>
+          requestInstance { request =>
+            complete {
+              _createOrder(id, request.entity.data.asString)
+            }
+          }
       }
     } ~
     put {
@@ -287,6 +295,22 @@ trait StrategyService extends HttpService {
     } catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
     }
-
   }
+
+  private def _createOrder(id: Int, json: String): String = {
+    implicit val formats = DefaultFormats
+    try {
+      val jv = parse(json)
+      val transaction = jv.extract[Transaction]
+
+      val strategyRef = _findStrategyActor(id)
+      strategyRef ! transaction
+//      tradeRoute ! transaction
+      """{"code":0}"""
+    }catch {
+      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
+  }
+
+
 }

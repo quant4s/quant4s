@@ -8,12 +8,11 @@ import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.util.control.Breaks._
-import akka.actor.{Actor, ActorLogging, ActorSelection, Props}
+import akka.actor.{ActorLogging, Props}
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.DefaultHttpClient
 import quanter.actors.AskListenedSymbol
-import quanter.actors.provider.QuerySnapData
-import quanter.actors.securities.SecuritiesManagerActor
+import quanter.actors.provider.{DataProviderActor, QuerySnapData}
 import quanter.data.market.SnapData
 import quanter.CommonExtensions._
 
@@ -29,12 +28,12 @@ object SinaL1Actor {
   def path = "sinal1"
 }
 
-class SinaL1Actor extends Actor with ActorLogging {
-  var symbolSelections = new mutable.HashMap[String, ActorSelection]
+class SinaL1Actor extends DataProviderActor with ActorLogging {
+//  var symbolSelections = new mutable.HashMap[String, ActorSelection]
   var aliases = new ArrayBuffer[String]()
-  _addSymbol("000002.XSHE")
-  _addSymbol("000001.XSHE")
-  context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
+  addSymbol("000002.XSHE")
+  addSymbol("000001.XSHE")
+ // context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {
     super.preStart()
@@ -43,21 +42,18 @@ class SinaL1Actor extends Actor with ActorLogging {
   }
 
   override def receive: Receive =  {
-    case ask: AskListenedSymbol => _addSymbol(ask.symbol)
+    case ask: AskListenedSymbol => addSymbol(ask.symbol)
     case query: QuerySnapData => _querySnapData()
-    case _ =>
+    case _ => log.warning("不支持的消息")
   }
 
   private def _run(): Unit = {
     context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
   }
 
-  private def _addSymbol(symbol: String): Unit = {
-
+  override protected def addSymbol(symbol: String): Unit = {
+    super.addSymbol(symbol)
     if (!symbolSelections.contains(symbol)) {
-      log.info(s"准备接受${symbol}的行情数据")
-      val ref = context.actorSelection(s"/user/%s/%s".format(SecuritiesManagerActor.path, symbol))
-      symbolSelections += (symbol -> ref)
       aliases += _symbol2Alias(symbol)
     }
   }
@@ -130,7 +126,6 @@ class SinaL1Actor extends Actor with ActorLogging {
   }
 
   private def _parseLine(line: String): SnapData = {
-    // TODO:
     val data = new SnapData()
     val items = line.split(",")
 
@@ -143,24 +138,12 @@ class SinaL1Actor extends Actor with ActorLogging {
     data.low = items(5).toDouble
     data.time =  (items(30).toString() + " " + items(31).toString()).toDate("yyyy-MM-dd hh:mm:ss")
 
-//    data.volume = items(8).toLong
-//    data.turnover = items(9).toDouble
     data.update(items(3).toDouble, items(7).toDouble, items(6).toDouble, items(8).toLong, 0, 0)
-
-    //bid.Name = items[0].Substring(21, items[0].Length - 21);    // var hq_str_sz150023="深成指B
-
-    //bid.Buy = decimal.Parse(items[6]);
-    //bid.Sell = decimal.Parse(items[7]);
-    //bid.Volume = long.Parse(items[8]);
-    //bid.Turnover = float.Parse(items[9]);
-
-
     data
   }
 
   private def _newDataArrived(data: SnapData): Unit = {
      symbolSelections(data.symbol) ! data
   }
-
 
 }

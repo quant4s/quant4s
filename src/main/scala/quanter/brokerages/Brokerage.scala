@@ -9,5 +9,9 @@ import quanter.interfaces.TBrokerage
   *
   */
 abstract class  Brokerage(pname: String) extends TBrokerage{
-  override def name = pname
+  def this() {
+    this("")
+  }
+
+  override var name = pname
 }

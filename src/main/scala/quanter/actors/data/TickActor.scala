@@ -17,12 +17,9 @@ object TickActor {
   }
 }
 
-class TickActor(symbol: String, topic: String) extends Actor with ActorLogging {
-  val securitiesManagerRef = context.actorSelection("/user/" + SecuritiesManagerActor.path)
-  val pubRef = context.actorSelection("/user/" + ZeroMQServerActor.path)
+class TickActor(symbol: String, topic: String) extends BaseIndicatorActor with ActorLogging {
 
   _init()
-
 
   override def receive: Receive = {
     case  s: BaseData => // 将数据写入MQ

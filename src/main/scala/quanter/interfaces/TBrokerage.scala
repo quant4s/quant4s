@@ -4,7 +4,7 @@ package quanter.interfaces
   *
   */
 trait TBrokerage {
-  def name: String
+  var name: String
   def isConnected: Boolean
 
   def connect

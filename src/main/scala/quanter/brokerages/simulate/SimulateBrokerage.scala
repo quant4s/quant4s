@@ -9,7 +9,10 @@ import quanter.brokerages.Brokerage
 /**
   *
   */
-class SimulateBrokerage(pname: String = "") extends Brokerage("模拟交易接口" + pname) {
+class SimulateBrokerage(pname: String) extends Brokerage("模拟交易接口" + pname) {
+  def this() {
+    this("")
+  }
   override def disconnect: Unit = {
     // NOP
   }

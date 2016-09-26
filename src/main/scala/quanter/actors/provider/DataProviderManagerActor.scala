@@ -6,6 +6,7 @@ package quanter.actors.provider
 import java.util.HashMap
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import quanter.actors.AskListenedSymbol
 import quanter.config.Settings
 
 import scala.collection.mutable
@@ -14,13 +15,12 @@ import scala.collection.mutable
   *
   */
 class DataProviderManagerActor extends Actor with ActorLogging {
-  private val _providerRef = new mutable.HashMap[String, ActorRef]
-
+  private val _providerRefs = new mutable.HashMap[String, ActorRef]
 
   _init()
 
   override def receive: Receive = {
-    case _ =>
+    case AskListenedSymbol(symbol) => _addSymbol(symbol)
   }
 
   /**
@@ -35,9 +35,14 @@ class DataProviderManagerActor extends Actor with ActorLogging {
       val path =(provider.asInstanceOf[HashMap[String, String]]).get("path")
 
       val ref = context.actorOf(Props(Class.forName(clazz)), path)
-      _providerRef.put(path, ref)
+      _providerRefs.put(path, ref)
     }
+  }
 
+  private def _addSymbol(symbol: String): Unit = {
+    for(provider <- _providerRefs.values) {
+      provider ! new AskListenedSymbol(symbol)
+    }
   }
 }
 
