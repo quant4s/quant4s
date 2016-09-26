@@ -1,6 +1,6 @@
 package quanter.actors
 
-import quanter.rest.{CancelOrder, Order, Strategy, Trader}
+import quanter.rest._
 
   case class NewStrategy(strategy: Strategy) {}
   case class ListStrategies(){}
@@ -34,3 +34,5 @@ import quanter.rest.{CancelOrder, Order, Strategy, Trader}
   case class Disconnect()
 
   case class AskListenedSymbol(symbol: String)
+
+  case class SecuritySelection(cmds: List[FinanceIndi])

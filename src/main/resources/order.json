@@ -1,7 +1,7 @@
 {
   "orders": [
     {
-      "symbol":"000001.XSHE"
+      "symbol":"000001.XSHE",
       "orderType": "limit|market|",
       "price": 12.3,
       "quantity": -1000,
