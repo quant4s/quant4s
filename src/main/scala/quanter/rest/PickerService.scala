@@ -29,8 +29,8 @@ trait PickerService extends HttpService {
     implicit val formats = DefaultFormats
     try {
       val jv = parse(json)
-      val transaction = jv.extract[SecurityPicker]
-      simRef ! new SecuritySelection(transaction)
+      val cmds = jv.extract[SecurityPicker]
+      simRef ! new SecuritySelection(topic, cmds)
       ""
     } catch {
       case ex: Exception =>

@@ -16,11 +16,12 @@ class SIManagerActor extends Actor with ActorLogging {
   override def receive: Receive = {
     case s: SecuritySelection => {
       // 创建一个选股解释器
-      val ref = context.actorOf(SelectionInterpreterActor.props(s.cmds, selector))
+      val ref = context.actorOf(SelectionInterpreterActor.props(s.cmds, s.topic, selector))
     }
   }
 
   def _loadSelector() = {
+    // TODO: 读取财务数据，创建列表
     selector = null
   }
 }

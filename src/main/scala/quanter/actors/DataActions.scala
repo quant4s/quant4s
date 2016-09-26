@@ -35,4 +35,4 @@ import quanter.rest._
 
   case class AskListenedSymbol(symbol: String)
 
-  case class SecuritySelection(cmds: SecurityPicker)
+  case class SecuritySelection(topic: String, cmds: SecurityPicker)

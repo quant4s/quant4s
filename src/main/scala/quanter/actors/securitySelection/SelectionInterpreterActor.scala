@@ -5,7 +5,7 @@ package quanter.actors.securitySelection
 
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.routing.{RoundRobinPool, RoundRobinRouter}
-import quanter.actors.zeromq.ZeroMQServerActor
+import quanter.actors.zeromq.{PublishData, ZeroMQServerActor}
 import quanter.rest.{FinanceIndi, SecurityPicker}
 import quanter.securitySelection.Selector
 
@@ -13,7 +13,7 @@ import quanter.securitySelection.Selector
   * 当接收到字符串的时候，进行分析 解释
   * PE GT 10 LT 15; 财务指标 送到 FinanceIndiActor 进行计算
   */
-class SelectionInterpreterActor(cmds: SecurityPicker, selector: Selector) extends Actor with ActorLogging{
+class SelectionInterpreterActor(cmds: SecurityPicker, topic: String, selector: Selector) extends Actor with ActorLogging{
   var indiCount = cmds.financeIndi.length
   var resultCount = 0
   var result: Selector = selector
@@ -29,8 +29,14 @@ class SelectionInterpreterActor(cmds: SecurityPicker, selector: Selector) extend
       resultCount += 1
       result = result.intersect(r)
 
-      if(resultCount == indiCount) // TODO:推送计算结果
-        pubRef ! result
+      if(resultCount == indiCount) {
+        // TODO:推送计算结果
+        var rs = ""
+        result.pool.foreach( ins => rs = rs + ins.code + ",")
+        if(rs .length > 0)
+          rs = rs.substring(0, -1)
+        pubRef ! PublishData(topic, rs)
+      }
     }
   }
 
@@ -42,8 +48,8 @@ class SelectionInterpreterActor(cmds: SecurityPicker, selector: Selector) extend
 }
 
 object SelectionInterpreterActor {
-  def props(cmds: SecurityPicker, selector: Selector) = {
-    Props(classOf[SelectionInterpreterActor], cmds, selector)
+  def props(cmds: SecurityPicker, topic: String, selector: Selector) = {
+    Props(classOf[SelectionInterpreterActor], cmds, topic, selector)
   }
 }
 
