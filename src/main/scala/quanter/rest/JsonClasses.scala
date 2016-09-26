@@ -64,7 +64,9 @@ case class Transaction(strategyId: Int, orders: Option[List[Order]], cancelOrder
 case class Trader(id: Option[Int], name: String, brokerType: String, brokerName: String, brokerCode: String, brokerAccount: String, brokerPassword: Option[String], brokerUri: String, brokerServicePwd: Option[String], status: Int = 0)
 case class ChannelType(name: String, title: String, desc: String, driver: String)
 
-case class FinanceIndi(name: String, op: String, value: Double, order: Option[String], count: Int )
+case class FinanceIndi(name: String, op: String, value: Double, order: Option[String], count: Option[Int] )
+
+case class SecurityPicker(financeIndi: List[FinanceIndi])
 
 // 返回的JSON CLASS
 case class RetCode(code: Int, message: String)

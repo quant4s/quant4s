@@ -2,6 +2,8 @@ package quanter.rest
 
 import org.json4s.DefaultFormats
 import org.json4s.jackson.JsonMethods._
+import quanter.actors.SecuritySelection
+import quanter.actors.securitySelection.SIManagerActor
 import spray.routing.HttpService
 
 /**
@@ -9,14 +11,14 @@ import spray.routing.HttpService
   */
 trait PickerService extends HttpService {
 
+  val simRef = actorRefFactory.actorSelection("/user/" + SIManagerActor.path)
   val pickerServiceRoute = {
     post {
       path("picker" / Rest) { topic =>
-        requestInstance {
-          request =>
-            complete {
-              _subscribe(topic, request.entity.data.asString)
-            }
+        requestInstance { request =>
+          complete {
+            _subscribe(topic, request.entity.data.asString)
+          }
         }
       }
     }
@@ -27,10 +29,12 @@ trait PickerService extends HttpService {
     implicit val formats = DefaultFormats
     try {
       val jv = parse(json)
-      val transaction = jv.extract[List[FinanceIndi]]
-    } catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
+      val transaction = jv.extract[SecurityPicker]
+      simRef ! new SecuritySelection(transaction)
       ""
+    } catch {
+      case ex: Exception =>
+        """{"code":1, "message":"%s"}""".format(ex.getMessage)
+    }
   }
 }

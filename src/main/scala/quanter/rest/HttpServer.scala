@@ -13,7 +13,7 @@ import spray.http.{AllOrigins, StatusCodes}
 /**
   *
   */
-class HttpServer extends Actor with StrategyService with OrderService with TradeAccountService with DataService with ActorLogging {
+class HttpServer extends Actor with StrategyService with TradeAccountService with DataService with PickerService with ActorLogging {
   def actorRefFactory = context
   def systemRef = context.system
   implicit def executionContext = actorRefFactory.dispatcher
@@ -29,7 +29,7 @@ class HttpServer extends Actor with StrategyService with OrderService with Trade
 //  })
 
   def receive = runRoute( respondWithHeaders(`Access-Control-Allow-Methods`(OPTIONS, GET, POST, DELETE, PUT) ::  allowOriginHeader :: optionsCorsHeaders){
-    optionsRoute ~ strategyServiceRoute ~ orderServiceRoute ~ tradeAccountServiceRoute ~ dataServiceRoute
+    optionsRoute ~ strategyServiceRoute ~ tradeAccountServiceRoute ~ dataServiceRoute ~ pickerServiceRoute
   })
 
   val optionsRoute = {

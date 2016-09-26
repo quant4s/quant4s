@@ -11,6 +11,7 @@ import quanter.actors.persistence.PersistenceActor
 import quanter.actors.provider.DataProviderManagerActor
 import quanter.actors.provider.sina.SinaL1Actor
 import quanter.actors.securities.SecuritiesManagerActor
+import quanter.actors.securitySelection.SIManagerActor
 import quanter.actors.strategy.StrategiesManagerActor
 import quanter.actors.trade.{InitTradeRoute, TradeRouteActor}
 import quanter.actors.zeromq.ZeroMQServerActor
@@ -27,6 +28,7 @@ object MainApp extends App {
   val httpServer = system.actorOf(HttpServer.props)
   val persistenceRef = system.actorOf(PersistenceActor.props, PersistenceActor.path)
   val tradeRouteRef = system.actorOf(TradeRouteActor.props, TradeRouteActor.path)
+  system.actorOf(SIManagerActor.props, SIManagerActor.path)
 
   val manager = system.actorOf(SecuritiesManagerActor.props, SecuritiesManagerActor.path)
 
