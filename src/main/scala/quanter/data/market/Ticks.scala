@@ -11,7 +11,8 @@ import scala.collection.mutable.ArrayBuffer
 /**
   *
   */
-class Tick(symbol: Symbol, tickType: TickType, bidPrice: Double, askPrice: Double, bidSize: Long, askSize: Long) extends BaseData {
+class Tick(val symbol: Symbol, val tickType: TickType, val bidPrice: Double, val askPrice: Double, val bidSize: Long,
+           val askSize: Long, val quantity: Int) extends BaseData {
 //  val _tickType = ptickType
 //  val bidPrice: BigDecimal = pbidPrice
 //  val askPrice: BigDecimal = paskPrice

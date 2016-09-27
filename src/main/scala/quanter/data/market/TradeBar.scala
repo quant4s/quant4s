@@ -17,6 +17,8 @@ class TradeBar extends BaseData with TBar{
   private var _high: Double = 0
   private var _low: Double = 0
 
+  private var _initialized = false
+
   _init()
 
   // init
@@ -49,7 +51,12 @@ class TradeBar extends BaseData with TBar{
   }
 
   private def initialize(value: Double): Unit = {
-
+    if(!_initialized) {
+      _open = value
+      _low = value
+      _high = value
+      _initialized = true
+    }
   }
 
   override def toJson = "{\"symbol\":\"%s\",\"open\":%f,\"high\":%f,\"low\":%f,\"close\":%f,\"time\":%d}".format(symbol, open, high, low, close, time.getTime())

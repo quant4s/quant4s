@@ -13,12 +13,12 @@ trait TDataConsolidator {
   def workingData: BaseData
 
   def update(data: BaseData): Unit
+  type EventHandler[BaseData] = (Object, BaseData) => Unit
+  var dataConsolidated = ArrayBuffer[EventHandler[BaseData]]()
 
 }
 
 abstract class DataConsolidator[TInput <: TBaseData] extends TDataConsolidator {
-  type EventHandler[TE] = (Object, TE) => Unit
-  var dataConsolidated = ArrayBuffer[EventHandler[BaseData]]()
 
   private var _consolidated: BaseData = null
   def consolidated: BaseData =_consolidated

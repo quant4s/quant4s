@@ -1,5 +1,6 @@
 package quanter.indicators
 
+import quanter.data.market.TradeBar
 import quanter.indicators.window.{ExponentialMovingAverage, SimpleMovingAverage}
 
 
@@ -8,29 +9,34 @@ import quanter.indicators.window.{ExponentialMovingAverage, SimpleMovingAverage}
   */
 class IndicatorFactory {
 
-  def createIndicator(name: String, param: String): IndicatorBase[IndicatorDataPoint] = {
-    var indicator: IndicatorBase[IndicatorDataPoint] = null
+  def createDataPointIndicator(name: String, param: String): IndicatorBase[IndicatorDataPoint] = {
+//    var indicator: IndicatorBase[IndicatorDataPoint] = null
     name match {
       case IndicatorFactory.MACD =>
-        val params = param.split(IndicatorFactory.regex)
-        indicator = _macd(params(0).toInt, params(1).toInt, params(2).toInt)
+        val params = param.split(IndicatorFactory.splitChar)
+        _macd(params(0).toInt, params(1).toInt, params(2).toInt)
       case IndicatorFactory.SMA =>
-        val params = param.split(IndicatorFactory.regex)
-        indicator = _sma(params(0).toInt)
+        val params = param.split(IndicatorFactory.splitChar)
+        _sma(params(0).toInt)
       case IndicatorFactory.EMA =>
-        val params = param.split(IndicatorFactory.regex)
-        indicator = _ema(params(0).toInt)
+        val params = param.split(IndicatorFactory.splitChar)
+        _ema(params(0).toInt)
       case IndicatorFactory.KAMA =>
-        val params = param.split(IndicatorFactory.regex)
-        indicator = _kama(params(0).toInt)
-      case IndicatorFactory.PSAR =>
-        val params = param.split(IndicatorFactory.regex)
-         //indicator = _psar(params(0).toDouble, params(1).toDouble, params(2).toDouble)
+        val params = param.split(IndicatorFactory.splitChar)
+        _kama(params(0).toInt)
 
-      case _ =>
+      case _ => null
     }
 
-    indicator
+  }
+
+  def createTradeBarIndicator(name: String, param: String) : TradeBarIndicator = {
+    name match {
+      case IndicatorFactory.PSAR =>
+        val params = param.split(IndicatorFactory.splitChar)
+        _psar(params(0).toDouble, params(1).toDouble, params(2).toDouble)
+      case _ => null
+    }
   }
 
   private def _macd(fastPeriod: Int, slowPeriod: Int, signalPeriod: Int) = {
@@ -55,16 +61,17 @@ class IndicatorFactory {
 }
 
 object IndicatorFactory {
-  private val regex = "~"
+  private val splitChar = "~"
 
   val MACD = "MACD"
   val EMA = "EMA"
   val SMA = "SMA"
   val RSI = "RSI"
-  val PSAR = "PSAR"
   val SAR = "SAR"
   val KDJ = "KDJ"
   val DMI = "DMI"
   val KAMA = "KAMA"
+
+  val PSAR = "PSAR"
 
 }
