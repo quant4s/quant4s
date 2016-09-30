@@ -3,15 +3,21 @@
   */
 package quanter.actors.securitySelection
 
+import java.io.File
+
 import akka.actor.{Actor, ActorLogging, Props}
+import com.github.tototoshi.csv.CSVReader
 import quanter.actors.SecuritySelection
-import quanter.securitySelection.Selector
+import quanter.securities.Security
+import quanter.securitySelection.{Instrument, Selector}
+
+import scala.collection.mutable
 
 /**
   *
   */
 class SIManagerActor extends Actor with ActorLogging {
-  var selector: Selector = null
+  val selector: Selector = _initSelector()
 
   override def receive: Receive = {
     case s: SecuritySelection => {
@@ -20,9 +26,22 @@ class SIManagerActor extends Actor with ActorLogging {
     }
   }
 
-  def _loadSelector() = {
-    // TODO: 读取财务数据，创建列表
-    selector = null
+  def _initSelector() = {
+    val reader = CSVReader.open(new File("stock.list.csv"))
+    val symbols = reader.allWithHeaders()
+    var securityManager = List[Instrument]()
+    symbols.foreach(m => {
+      val symbol = m("代码")
+      val pe = m("市盈率").toDouble
+      val pb = m("市净率").toDouble
+      val capital = m("总股本").toLong
+      val roe = m("净资产收益率").toDouble
+      val mv = (m("收盘价").toDouble * capital).toLong
+      val ins = new Instrument(symbol, pe, pb, capital, roe, mv)
+      securityManager = securityManager :+ ins
+    })
+
+    new Selector(securityManager)
   }
 }
 
@@ -30,5 +49,5 @@ object SIManagerActor {
   def props = {
     Props.create(classOf[SIManagerActor])
   }
-  def path = "sif"
+  def path = "sim"
 }

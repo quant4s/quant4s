@@ -34,7 +34,7 @@ class FinanceIndiActor(selector: Selector) extends  Actor with ActorLogging{
   def _cmp(op: String , field: Instrument => Double, value: Double): Instrument => Boolean = {
     op match {
       case "GE" => ins: Instrument => {field.apply(ins) >= value}
-      case "LE" => ins: Instrument => {field.apply(ins) >= value}
+      case "LE" => ins: Instrument => {field.apply(ins) <= value}
       case _ => log.warning("不支持的操作符")
         ins: Instrument => true
     }

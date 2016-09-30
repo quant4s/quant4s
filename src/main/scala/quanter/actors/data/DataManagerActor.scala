@@ -2,6 +2,7 @@ package quanter.actors.data
 
 import akka.actor.Actor.Receive
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import quanter.actors.securities.SubscriptionSymbol
 
 import scala.collection.mutable
 
@@ -33,6 +34,9 @@ class DataManagerActor extends Actor with ActorLogging {
       val ref = context.actorOf(BarActor.props(sub), topic)
       barRefs += (sub -> ref)
     }
+
+    // TODO: 保存历史数据
+    // barRefs.get(sub).get forward SubscriptionSymbol()
   }
 
   private def _createTickActor(topic: String, subscription: String): Unit = {

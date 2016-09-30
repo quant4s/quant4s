@@ -16,7 +16,7 @@ class TickConsolidator(pmaxCount: Option[Int] = None, ptimespan: Option[TimeSpan
       bar = new TradeBar()
       {
         time = getRoundedBarTime(data.time)
-        symbol = data.symbol.name
+        symbol = data.symbol
         open = data.value
         high = data.value
         low = data.value

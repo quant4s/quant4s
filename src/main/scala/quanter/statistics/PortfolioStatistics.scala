@@ -16,7 +16,6 @@ import quanter.CommonExtensions.DateExt
 /**
   * 资金组合统计
   */
-
 object PortfolioStatistics {
   def compoundingAnnualPerformance(startingCapital: Double, finalCapital: Double, years: Double): Double = {
     if(years == 0)  0.0 else math.pow(finalCapital / startingCapital, 1 / years) - 1

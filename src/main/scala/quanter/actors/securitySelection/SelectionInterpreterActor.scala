@@ -7,7 +7,7 @@ import akka.actor.{Actor, ActorLogging, Props}
 import akka.routing.{RoundRobinPool, RoundRobinRouter}
 import quanter.actors.zeromq.{PublishData, ZeroMQServerActor}
 import quanter.rest.{FinanceIndi, SecurityPicker}
-import quanter.securitySelection.Selector
+import quanter.securitySelection.{Instrument, Selector}
 
 /**
   * 当接收到字符串的时候，进行分析 解释
@@ -30,20 +30,48 @@ class SelectionInterpreterActor(cmds: SecurityPicker, topic: String, selector: S
       result = result.intersect(r)
 
       if(resultCount == indiCount) {
-        // TODO:推送计算结果
+        // 推送计算结果， 做order by
+        if(cmds.orderName isDefined) {
+          val cmpD:(Double, Double) => Int = cmds.orderBy.getOrElse("ASC") match {
+            case "ASC" => (x: Double, y: Double) => x.compareTo(y)
+            case "DESC" =>(x: Double, y: Double) => y.compareTo(x)
+            case _ => (x: Double, y: Double) => x.compareTo(y)
+          }
+          val cmpL:(Long, Long) => Int = cmds.orderBy.getOrElse("ASC") match {
+            case "ASC" => (x: Long, y: Long) => x.compareTo(y)
+            case "DESC" =>(x: Long, y: Long) => y.compareTo(x)
+            case _ => (x: Long, y: Long) => x.compareTo(y)
+          }
+
+          implicit val KeyOrdering = new Ordering[Instrument] {
+            override def compare(x: Instrument, y: Instrument): Int = {
+              cmds.orderName.get match {
+                case "PE" => cmpD.apply(x.pe, y.pe)
+                case "PB" => cmpD.apply(x.pb, y.pb)
+                case "ROE" => cmpD.apply(x.roe, y.roe)
+                case "MV" => cmpL.apply(x.mv, y.mv)
+                case _ => cmpL.apply(x.mv, y.mv)
+              }
+            }
+          }
+
+          result.pool.sorted
+        }
         var rs = ""
         result.pool.foreach( ins => rs = rs + ins.code + ",")
         if(rs .length > 0)
-          rs = rs.substring(0, -1)
+          rs = rs.substring(0, rs.length - 1)
         pubRef ! PublishData(topic, rs)
       }
     }
   }
 
   def _parse(): Unit = {
-    for(cmd <- cmds.financeIndi) { // TODO: 改成采用 router， 提高并发性
+    for(cmd <- cmds.financeIndi) { // 采用 router， 提高并发性
       finIndiRouter ! cmd
     }
+    // TODO: 板块选股
+    //for()
   }
 }
 

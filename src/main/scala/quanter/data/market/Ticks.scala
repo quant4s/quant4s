@@ -11,7 +11,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   *
   */
-class Tick(val symbol: Symbol, val tickType: TickType, val bidPrice: Double, val askPrice: Double, val bidSize: Long,
+class Tick(psymbol: String, val tickType: TickType, val bidPrice: Double, val askPrice: Double, val bidSize: Long,
            val askSize: Long, val quantity: Int) extends BaseData {
 //  val _tickType = ptickType
 //  val bidPrice: BigDecimal = pbidPrice
@@ -21,6 +21,7 @@ class Tick(val symbol: Symbol, val tickType: TickType, val bidPrice: Double, val
 
   def lastPrice: BigDecimal = value
 
+  symbol = psymbol
   dataType = MarketDataType.Tick
   value = (bidPrice + askPrice) / 2
 
