@@ -36,6 +36,10 @@ class MovingAverageConvergenceDivergence(name: String, fastPeriod: Int, slowPeri
     macd
   }
 
-  override def toJson ="{\"symbol\":%s,\"fast\":%f,\"slow\":%f,\"signal\":%f,\"macd\":%f}".format(symbol,fast.current.value, slow.current.value, signal.current.value, current.value)
+  override def toJson ="{\"symbol\":%s,\"fast\":%f,\"slow\":%f,\"signal\":%f,\"macd\":%f, \"time\": %d}"
+    .format(symbol,fast.current.value, slow.current.value, signal.current.value, current.value, time.getTime())
 
+  override def goldenCross: Boolean = super.goldenCross
+
+  override def deathCross: Boolean = super.deathCross
 }

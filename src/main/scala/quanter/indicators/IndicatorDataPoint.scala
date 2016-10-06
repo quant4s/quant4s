@@ -7,7 +7,7 @@ import quanter.data.BaseData
 /**
   * 一个特定时间点的数据
   */
-class IndicatorDataPoint(psymbol: String, ptime: Date, pvalue: Double) extends BaseData {
+class IndicatorDataPoint(psymbol: String, ptime: Date, pvalue: Double) extends BaseData with Comparable[IndicatorDataPoint] {
   value = pvalue
   time = ptime
   symbol = psymbol
@@ -22,4 +22,8 @@ class IndicatorDataPoint(psymbol: String, ptime: Date, pvalue: Double) extends B
 
   override def toJson = """{"symbol":"%s", "value":"%d"}""".format(this.symbol, value)
 
+  override def compareTo(o: IndicatorDataPoint): Int = {
+    if( o == null) 1
+    else value.compareTo(o.value)
+  }
 }
