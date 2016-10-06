@@ -21,12 +21,9 @@ import java.util.concurrent.TimeUnit
 class Quant4sSettings(config: Config) extends Extension{
   val providers = config.getAnyRefList("quant4s.dataProviders")
   val channelTypes = config.getAnyRefList("quant4s.chanelTypes")
-//  val riskControllers = config.getAnyRef("quant4s.riskControllers")
-//
-//  def getRiskController(name: String): String = {
-//    for(risk <- riskControllers)
-//      (risk.asInstanceOf[util.HashMap[String, String]])._1
-//  }
+
+  def getAnyRefList(key: String) =  config.getAnyRefList(key)
+  
 }
 
 object Settings extends ExtensionId[Quant4sSettings] with ExtensionIdProvider {

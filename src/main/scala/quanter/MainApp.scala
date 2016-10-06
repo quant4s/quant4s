@@ -10,6 +10,7 @@ import quanter.actors.data.DataManagerActor
 import quanter.actors.persistence.PersistenceActor
 import quanter.actors.provider.DataProviderManagerActor
 import quanter.actors.provider.sina.SinaL1Actor
+import quanter.actors.scheduling.QuartzActor
 import quanter.actors.securities.SecuritiesManagerActor
 import quanter.actors.securitySelection.SIManagerActor
 import quanter.actors.strategy.StrategiesManagerActor
@@ -31,6 +32,7 @@ object MainApp extends App {
   system.actorOf(SIManagerActor.props, SIManagerActor.path)
 
   val manager = system.actorOf(SecuritiesManagerActor.props, SecuritiesManagerActor.path)
+  val quartz = system.actorOf(QuartzActor.props, QuartzActor.path)
 
   val strategyManagerRef = system.actorOf(StrategiesManagerActor.props, StrategiesManagerActor.path)
 
@@ -46,8 +48,8 @@ object MainApp extends App {
   _createStrategy("""{"id": 2,"name": "带资金组合","runMode":1, "lang": "C#", "status": 1，"portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}""")
 
   _initTrader()
-  _createTrader("""{"id": 1002,"name": "SHSE","brokerType":"SIM", "brokerName":"仿真接口", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
-  _createTrader("""{"id": 1001,"name": "SHSE","brokerType":"CTP", "brokerName":"THS", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
+  _createTrader("""{"name": "SHSE","brokerType":"SIM", "brokerName":"仿真接口", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
+  _createTrader("""{"name": "SHSE","brokerType":"CTP", "brokerName":"THS", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
 
   // 启动REST 服务
   IO(Http) ! Http.Bind(httpServer, "127.0.0.1", port = 8888)
