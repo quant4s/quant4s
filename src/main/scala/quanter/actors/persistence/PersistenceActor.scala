@@ -89,6 +89,8 @@ class PersistenceActor extends Actor with ActorLogging{
       val t = strategy.portfolio.get
       portfolioDao.insert(EPortfolio(None, t.cash, new Timestamp(t.date.getTime), s.id))
     }
+
+    sender ! s1
   }
 
   private def _getStrategy(id: Int): Unit = {
@@ -114,6 +116,7 @@ class PersistenceActor extends Actor with ActorLogging{
   private def _updateStrategy(id: Int, strategy: Strategy): Unit = {
     val s = EStrategy(id, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
     val query = strategyDao.update(id, s)
+
   }
 
   private def _deleteStrategy(id: Int): Unit = {
@@ -127,6 +130,7 @@ class PersistenceActor extends Actor with ActorLogging{
       val strategy = Strategy(s.id, s.name, s.runMode, s.status, Some(s.lang), None)
       strategyArr += strategy
     }
+
     sender ! strategyArr.toArray
   }
 
@@ -134,6 +138,9 @@ class PersistenceActor extends Actor with ActorLogging{
   private def _saveTrader(trader: Trader): Unit = {
     val t = ETrader(None, trader.name, trader.brokerType, trader.brokerName, trader.brokerCode, trader.brokerAccount, trader.brokerPassword, trader.brokerUri, trader.brokerServicePwd, trader.status)
     val s1 = traderDao.insert(t)
+
+    val t1 = Trader(s1.id, s1.name, s1.brokerType, s1.brokerName, s1.brokerCode, s1.brokerAccount, s1.brokerPassword, s1.brokerUri, s1.brokerServicePwd, s1.status)
+    sender ! t1
   }
 
   private def  _listTraders(): Unit = {
@@ -142,6 +149,7 @@ class PersistenceActor extends Actor with ActorLogging{
       val trader = Trader(s.id, s.name, s.brokerType, s.brokerName, s.brokerCode, s.brokerAccount, s.brokerPassword, s.brokerUri, s.brokerServicePwd, s.status)
       traderArr += trader
     }
+
     sender ! traderArr.toArray
   }
 
@@ -158,6 +166,8 @@ class PersistenceActor extends Actor with ActorLogging{
   private def _saveOrder(order: Order): Unit = {
     val o = EOrder(None, order.orderNo, order.strategyId, order.tradeAccountId, order.symbol, order.orderType, order.side, "time", order.quantity, "", order.price.getOrElse(0), "RMB", order.securityExchange, 0)
     val o1 = orderDao.insert(o)
+
+    sender ! o1
   }
 
   private def _cancelOrder(order: CancelOrder): Unit = {
