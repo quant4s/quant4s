@@ -14,10 +14,10 @@ import quanter.securitySelection.{Instrument, Selector}
 import scala.collection.mutable
 
 /**
-  *
+  * 每天都需要读取一次文件
   */
 class SIManagerActor extends Actor with ActorLogging {
-  val selector: Selector = _initSelector()
+  var selector: Selector = _initSelector()
 
   override def receive: Receive = {
     case s: SecuritySelection => {

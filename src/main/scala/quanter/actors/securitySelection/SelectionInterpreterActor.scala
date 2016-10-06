@@ -14,12 +14,13 @@ import quanter.securitySelection.{Instrument, Selector}
   * PE GT 10 LT 15; 财务指标 送到 FinanceIndiActor 进行计算
   */
 class SelectionInterpreterActor(cmds: SecurityPicker, topic: String, selector: Selector) extends Actor with ActorLogging{
-  var indiCount = cmds.financeIndi.length
+  var indiCount = _countCmd
   var resultCount = 0
   var result: Selector = selector
   val financeIndiRef = context.actorSelection("/user")
   val pubRef = context.actorSelection("/user/" + ZeroMQServerActor.path)
   val finIndiRouter = context.actorOf(RoundRobinPool(5).props(Props.create(classOf[FinanceIndiActor],selector)))
+  val secIndiRouter = context.actorOf(RoundRobinPool(5).props(Props.create(classOf[SectorIndiActor],selector)))
 
   _parse()
 
@@ -57,6 +58,7 @@ class SelectionInterpreterActor(cmds: SecurityPicker, topic: String, selector: S
 
           result.pool.sorted
         }
+
         var rs = ""
         result.pool.foreach( ins => rs = rs + ins.code + ",")
         if(rs .length > 0)
@@ -70,8 +72,22 @@ class SelectionInterpreterActor(cmds: SecurityPicker, topic: String, selector: S
     for(cmd <- cmds.financeIndi) { // 采用 router， 提高并发性
       finIndiRouter ! cmd
     }
-    // TODO: 板块选股
-    //for()
+
+    if(cmds.sectorIndi.isDefined) {
+      for(cmd <- cmds.sectorIndi.get) {
+        secIndiRouter ! cmd
+      }
+    }
+
+    if(cmds.techIndi.isDefined) {
+      for(cmd <- cmds.techIndi.get) {
+        // 技术指标选股
+      }
+    }
+  }
+
+  def _countCmd(): Int = {
+    cmds.financeIndi.length + cmds.sectorIndi.getOrElse(List[String]()).length
   }
 }
 

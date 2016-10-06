@@ -1,6 +1,6 @@
 package quanter.actors.data
 
-import akka.actor.{ActorLogging, Props}
+import akka.actor.{ActorLogging, ActorRef, Props}
 import quanter.TimeSpan
 import quanter.actors.securities.SubscriptionSymbol
 import quanter.actors.zeromq.PublishData
@@ -8,6 +8,8 @@ import quanter.consolidators.{TDataConsolidator, TradeBarConsolidator}
 import quanter.data.BaseData
 import quanter.data.market.TradeBar
 import quanter.indicators.{IndicatorBase, IndicatorDataPoint, IndicatorFactory}
+
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * 指标Actor
@@ -18,23 +20,16 @@ object IndicatorActor {
   def props(symbol: String, duration: Int, indiName: String, param: String, topic: String) = {
     Props(classOf[IndicatorActor], symbol, duration, indiName, param, topic)
   }
-//  def props (json: String): Props = {
-//    val arr = json.split(",")
-//    val symbol = arr(0)
-//    val duration = arr(2).toInt
-//    val name = arr(1)
-//    val param = arr(3)
-//
-//    Props(classOf[IndicatorActor], symbol, duration, name, param, json)
-//  }
 }
 
 class IndicatorActor(symbol: String, duration: Int, name: String, param: String, topic: String) extends BaseIndicatorActor with ActorLogging {
   val _consolidator = _initIndicator
+  var _subscribers = new ArrayBuffer[ActorRef]()
 
 
   override def receive: Receive = {
     case data: BaseData => _consolidator.update(data)  // 计算指标
+    case _ => _subscribers += sender
   }
 
   /**
@@ -61,12 +56,13 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String,
       val value = ts(consolidated)
       indicator.update(new IndicatorDataPoint(consolidated.symbol, consolidated.endTime, value))
       log.debug("%s指标数据写入到MQ".format(topic))
+      // 写到MQ 的同时， 也可以提交给数据订阅者， 便于指标数据重用
+      _subscribers.foreach(s=> s ! indicator)
       pubRef ! PublishData(topic, indicator.toJson)
     }}
 
     //    subscriptionManager.addConsolidator(symbol, consolidator)
   }
-
 
   private def _registerTradeBarIndicator[T <: BaseData](symbol: String, indicator: IndicatorBase[T], consolidator: TDataConsolidator, selector: BaseData => T ) = {
     consolidator.dataConsolidated += {(sender, consolidated) => {

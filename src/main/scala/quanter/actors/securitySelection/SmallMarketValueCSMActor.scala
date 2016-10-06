@@ -29,7 +29,6 @@ class SmallMarketValueCSMActor(count: Int, span: TimeSpan) extends Actor with Ac
   val pubRef = context.actorSelection("/user/" + ZeroMQServerActor.path)
   val dataManager = context.actorSelection("/user/" + DataManagerActor.path)
 
-
   override def receive: Receive = {
     case d: TradeBar => _computeMarketValue(d)
 //    case Compute => _sort()

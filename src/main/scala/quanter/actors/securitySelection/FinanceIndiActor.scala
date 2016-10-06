@@ -11,7 +11,6 @@ import quanter.securitySelection.{Instrument, Selector}
   *
   */
 class FinanceIndiActor(selector: Selector) extends  Actor with ActorLogging{
-//  val list: List[Instrument] = null
 
   override def receive: Receive = {
     case indi: FinanceIndi => _handleIndi(indi)

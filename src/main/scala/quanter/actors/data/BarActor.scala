@@ -1,6 +1,6 @@
 package quanter.actors.data
 
-import akka.actor.{Actor, ActorLogging, ActorSelection, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, ActorSelection, Props}
 import quanter.TimeSpan
 import quanter.actors.securities.{SecuritiesManagerActor, SubscriptionSymbol}
 import quanter.actors.zeromq.{PublishData, ZeroMQServerActor}
@@ -23,12 +23,13 @@ object BarActor {
 
 class BarActor(symbol: String, duration: Int, topic: String) extends BaseIndicatorActor with ActorLogging {
   val _consolidator = _initConsolidator
-  var _subscribers = new ArrayBuffer[ActorSelection]()
+  var _subscribers = new ArrayBuffer[ActorRef]()
 //  val topic = "%s,BAR,%d".format(symbol, duration)
 
   override def receive: Receive = {
     case data: BaseData =>   // 接收到Tick数据
       _consolidator.update(data)
+    case _ => _subscribers += sender
   }
 
   private def _initConsolidator: TDataConsolidator =  {
