@@ -1,10 +1,14 @@
 package quanter.interfaces
 
+import quanter.rest.Trader
+
 /**
   *
   */
 trait TBrokerage {
   var name: String
+  var accountInfo: Trader
+
   def isConnected: Boolean
 
   def connect

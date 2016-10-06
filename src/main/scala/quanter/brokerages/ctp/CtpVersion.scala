@@ -1,7 +1,7 @@
 /**
   *
   */
-package quanter.trade.ctp
+package quanter.brokerages.ctp
 
 sealed trait CtpVersion
 trait Ctp6_3_6 extends CtpVersion

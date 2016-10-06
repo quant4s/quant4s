@@ -4,6 +4,7 @@
 package quanter.brokerages.simulate
 
 import quanter.brokerages.Brokerage
+import quanter.rest.Trader
 
 
 /**
@@ -34,4 +35,6 @@ class SimulateBrokerage(pname: String) extends Brokerage("模拟交易接口" + 
   override def sell(code: String, price: Double, quantity: Int): Unit = {
     // TODO: 保存到仿真数据库
   }
+
+  override var accountInfo: Trader = _
 }

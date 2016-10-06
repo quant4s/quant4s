@@ -1,8 +1,7 @@
 /**
   *
   */
-package quanter.trade.quickfixs
-
+package quanter.brokerages.quickfix
 
 sealed trait FixVersion
 trait Fix50 extends FixVersion

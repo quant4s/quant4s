@@ -67,7 +67,7 @@ case class ChannelType(name: String, title: String, desc: String, driver: String
 case class FinanceIndi(name: String, op: String, value: Double )
 case class TechIndi(name: String, op: String, baseValue: Double )
 
-case class SecurityPicker(financeIndi: List[FinanceIndi], orderName: Option[String], orderBy: Option[String], count: Option[Int])
+case class SecurityPicker(financeIndi: List[FinanceIndi], techIndi: Option[List[TechIndi]], sectorIndi: Option[List[String]], orderName: Option[String], orderBy: Option[String], count: Option[Int])
 
 // 返回的JSON CLASS
 case class RetCode(code: Int, message: String)

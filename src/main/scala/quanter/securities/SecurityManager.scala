@@ -32,7 +32,7 @@ class SecurityManager extends Map[String, Security]{
 
   private def _init() = {
     // read all securities in file "symbol_list.csv"
-    val file = new File("stock_list.csv")
+    val file = new File("stock.list.csv")
     val reader = CSVReader.open(file)
     val symbols = reader.allWithHeaders()
     symbols.foreach(m => {

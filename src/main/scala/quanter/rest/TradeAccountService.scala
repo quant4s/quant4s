@@ -10,6 +10,7 @@ import org.json4s.jackson.JsonMethods._
 import org.json4s.{DefaultFormats, Extraction, Formats}
 import quanter.actors.trade._
 import quanter.actors._
+import quanter.actors.strategy.StrategiesManagerActor
 import quanter.config.Settings
 import spray.routing.HttpService
 
@@ -111,7 +112,9 @@ trait TradeAccountService extends HttpService{
   }
 
   private def _reconnect(id: Int): String = {
-    """{"code": 1}"""
+    val tradeAccountRef = actorRefFactory.actorSelection("/user/" + TradeRouteActor.path + "/" + id.toString)
+    tradeAccountRef ! new Connect()
+    """{"code": 0}"""
   }
 
   private def _createTrader(json: String): String = {

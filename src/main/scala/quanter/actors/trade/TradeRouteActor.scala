@@ -21,76 +21,54 @@ import scala.concurrent.duration._
   */
 case class InitTradeRoute()
 class TradeRouteActor extends Actor with ActorLogging{
-//  var traderAccounts = new mutable.HashMap[Int, ActorRef]()
-//  val cache = new TradeAccountCache()
   val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
+  val providers = _initProviders()
 
 
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {
     super.preStart()
-    _init()
+    persisRef ! new ListTraders()
     //context.system.scheduler.schedule(0 seconds, 3 seconds, self, new InitTradeRoute())
   }
 
   override def receive: Receive = {
-//    case t: InitTradeRoute => _init()
     case t: ListTraders => _getAllTraders()
     case t: NewTrader => _createTrader(t.trader)
     case t: UpdateTrader => _updateTrader(t.trader)
     case t: DeleteTrader => _deleteTrader(t.id)
-//    case t: GetTrader => _getTrader(t.id)
 
-//    case tran: Transaction => _handleOrder(tran)
+    // return
+    case t: Array[Trader] => _createTradeAccountActor(t)
+    case t: Trader => _traderCreated(t)
   }
 
   /**
     * 初始化指定的交易接口
     */
-  private def _init(): Unit = {
-    implicit val timeout = Timeout(5 seconds)
-    val future = persisRef ? new ListTraders()
-    val result = Await.result(future, timeout.duration).asInstanceOf[Array[Trader]]
-
-    // 从数据库中读取所有的内容
-    // FIXME: 后期改成从配置文件中读取映射关系
+  private def _initProviders(): mutable.HashMap[String, String] = {
     val setting = Settings(context.system)
     val map = new mutable.HashMap[String, String]()
     for(i <- 0 until setting.channelTypes.size()) {
       val provider = setting.channelTypes.get(i).asInstanceOf[java.util.HashMap[String, String]]
       map.put(provider.get("name"), provider.get("driver"))
     }
+    map
+  }
 
-    for(t <- result) {
-      val clazz = map.get(t.brokerType).get
+  private def _createTradeAccountActor(traders: Array[Trader]): Unit = {
+    for( t <- traders) {
+      val clazz = providers.get(t.brokerType).get
 
       try {
-        val c = Class.forName(clazz).newInstance()
-        context.actorOf(BrokerageActor.props(c.asInstanceOf[TBrokerage]),t.id.get.toString())
+        val c = Class.forName(clazz).newInstance().asInstanceOf[TBrokerage]
+        c.accountInfo = t
+        context.actorOf(BrokerageActor.props(c),t.id.get.toString())
       }catch  {
         case ex: Throwable => log.error(ex, ex.getMessage())
       }
-      //TODO: 动态实例化对象
-
-      //val ref = context.actorOf(Props(Class.forName(clazz)), path)
-//       t.brokerType match {
-//        case "THS" => log.info("启动同花顺交易接口")
-//        case "CTP" => log.info("启动CTP交易接口")
-//          val brokerage = new CTPBrokerage(t.name)
-//          val ref = context.actorOf(BrokerageActor.props(brokerage))
-////          traderAccounts += (t.id.get -> ref)
-//
-//        case "SIM" => {
-//           val brokerage = new SimulateBrokerage(t.name)
-//           val ref = context.actorOf(BrokerageActor.props(brokerage))
-////          traderAccounts += (t.id.get -> ref)
-//        }
-//        case _ => log.info("启动监控")
-//      }
 
     }
-
-
   }
 
   // CRUD 的操作
@@ -103,6 +81,22 @@ class TradeRouteActor extends Actor with ActorLogging{
 
   private def _createTrader(trader: Trader): Unit = {
     persisRef ! NewTrader(trader)
+  }
+
+  /**
+    *
+    * @param trader
+    */
+  private def _traderCreated(trader: Trader): Unit = {
+    val clazz = providers.get(trader.brokerType).get
+
+    try {
+      val c = Class.forName(clazz).newInstance().asInstanceOf[TBrokerage]
+      c.accountInfo = trader
+      context.actorOf(BrokerageActor.props(c),trader.id.get.toString())
+    }catch  {
+      case ex: Throwable => log.error(ex, ex.getMessage())
+    }
   }
 
   private def _updateTrader(trader: Trader): Unit = {

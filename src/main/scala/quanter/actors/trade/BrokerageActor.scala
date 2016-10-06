@@ -5,6 +5,7 @@ import quanter.actors.trade.BrokerageActor._
 import quanter.actors.{Connect, Disconnect, KeepAlive}
 import quanter.interfaces.TBrokerage
 import quanter.persistence.EOrder
+import quanter.rest.Trader
 
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,18 +25,25 @@ class BrokerageActor(brokerage: TBrokerage) extends FSM[BrokerageState, Brokerag
     context.system.scheduler.schedule(0 seconds, 3 seconds, self, new KeepAlive())
   }
 
-  when(Login) {
-    case Event(_, _) =>
+  startWith(Initialized, new BrokerageData())
+  when(Initialized) {
+    case Event(Connect(), _) => {
+      _connect()
+      goto(Connected)
+    }
+    case Event(KeepAlive(), _)=> {
+      log.debug("不支持keep alive")
       stay()
+    }
   }
   when(Connected) {
-    case Event(Disconnect, _) =>
+    case Event(Disconnect(), _) =>
       _disconnect()
       goto(Disconnected)
     case Event(o: EOrder, _) =>
       _handleOrder(o)
       stay()
-    case Event(KeepAlive, _) =>
+    case Event(KeepAlive(), _) =>
       _refresh()
       stay()
   }
@@ -43,6 +51,7 @@ class BrokerageActor(brokerage: TBrokerage) extends FSM[BrokerageState, Brokerag
     case Event(Connected, _) =>
       _connect()
       goto(Connected)
+    case Event(KeepAlive, _)=> stay()
   }
 
   private def _handleOrder(order: EOrder): Unit = {
@@ -58,6 +67,7 @@ class BrokerageActor(brokerage: TBrokerage) extends FSM[BrokerageState, Brokerag
   }
 
   private def _connect(): Unit = {
+    log.info("连接交易帐号")
     brokerage.connect
   }
 
@@ -73,6 +83,7 @@ object BrokerageActor {
 
   sealed trait BrokerageState
 
+  case object Initialized extends BrokerageState
   case object Connected extends BrokerageState
   case object Disconnected extends BrokerageState
   case object Login extends BrokerageState

@@ -4,6 +4,7 @@
 package quanter.brokerages.oanda
 
 import quanter.brokerages.Brokerage
+import quanter.rest.Trader
 
 /**
   *
@@ -23,4 +24,6 @@ class OandaBrokerage(pname: String) extends Brokerage(pname){
   override def connect: Unit = ???
 
   override def keep: Unit = ???
+
+  override var accountInfo: Trader = _
 }
