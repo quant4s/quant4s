@@ -15,6 +15,7 @@ import quanter.actors.AskListenedSymbol
 import quanter.actors.provider.{DataProviderActor, QuerySnapData}
 import quanter.data.market.SnapData
 import quanter.CommonExtensions._
+import quanter.actors.scheduling.ExecuteJob
 
 /**
   *
@@ -44,6 +45,7 @@ class SinaL1Actor extends DataProviderActor with ActorLogging {
   override def receive: Receive =  {
     case ask: AskListenedSymbol => addSymbol(ask.symbol)
     case query: QuerySnapData => _querySnapData()
+    case job: ExecuteJob => log.debug("sina job 执行")
     case _ => log.warning("不支持的消息")
   }
 
