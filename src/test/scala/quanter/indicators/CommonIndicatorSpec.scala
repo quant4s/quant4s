@@ -17,15 +17,17 @@ abstract class CommonIndicatorSpec[T <: BaseData] extends QuanterUnitSpec {
   describe("测试指标 Reset") {
     it("测试reset") {
       val indicator = createIndicator
-      if(indicator.isInstanceOf[IndicatorBase[TradeBar]]) TestHelper.testTradeBarIndicatorReset(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName)
-      else if(indicator.isInstanceOf[IndicatorBase[IndicatorDataPoint]]) TestHelper.testIndicatorReset(indicator.asInstanceOf[IndicatorBase[IndicatorDataPoint]],testFileName)
-      else println("不支持的指标")
+      TestHelper.testTradeBarIndicatorReset(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName)
+//      if(indicator.isInstanceOf[IndicatorBase[TradeBar]]) TestHelper.testTradeBarIndicatorReset(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName)
+//      else if(indicator.isInstanceOf[IndicatorBase[IndicatorDataPoint]]) TestHelper.testIndicatorReset(indicator.asInstanceOf[IndicatorBase[IndicatorDataPoint]],testFileName)
+//      else println("不支持的指标")
     }
   }
 
   describe("用外部数据文件进行测试") {
     it("测试， reset，测试") {
       val indicator = createIndicator
+      // fixme: 此处类型擦除需要解决
       TestHelper.testTradeBarIndicatorReset(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName)
 //      testIndicator(indicator)
       indicator.reset
@@ -35,9 +37,12 @@ abstract class CommonIndicatorSpec[T <: BaseData] extends QuanterUnitSpec {
   }
 
   private def testIndicator(indicator: IndicatorBase[T]) = {
-    if(indicator.isInstanceOf[IndicatorBase[TradeBar]]) TestHelper.testTradeBarIndicator(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName, testColumnName, (indi, expected) => indi.current.value should be (expected +- epsilon))
-    else if(indicator.isInstanceOf[IndicatorBase[IndicatorDataPoint]]) TestHelper.testIndicator(indicator.asInstanceOf[IndicatorBase[IndicatorDataPoint]],testFileName, testColumnName, (indi, expected) => indi.current.value should be (expected +- epsilon))
-    else println("不支持的指标")
+//    if(! manifest[T].erasure.isInstanceOf[TradeBar]) TestHelper.testIndicator(indicator.asInstanceOf[IndicatorBase[IndicatorDataPoint]],testFileName, testColumnName, (indi, expected) => indi.current.value should be (expected +- epsilon))
+//    else TestHelper.testTradeBarIndicator(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName, testColumnName, (indi, expected) => indi.current.value should be (expected +- epsilon))
+    TestHelper.testTradeBarIndicator(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName, testColumnName, (indi, expected) => indi.current.value should be (expected +- epsilon))
+//    if(indicator.isInstanceOf[IndicatorBase[TradeBar]]) TestHelper.testTradeBarIndicator(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName, testColumnName, (indi, expected) => indi.current.value should be (expected +- epsilon))
+//    else if(indicator.isInstanceOf[IndicatorBase[IndicatorDataPoint]]) TestHelper.testIndicator(indicator.asInstanceOf[IndicatorBase[IndicatorDataPoint]],testFileName, testColumnName, (indi, expected) => indi.current.value should be (expected +- epsilon))
+//    else println("不支持的指标")
   }
 
   protected def createIndicator: IndicatorBase[T]
