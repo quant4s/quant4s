@@ -1,6 +1,7 @@
 package quanter.indicators
 
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.{Calendar, Date}
 
 import com.github.tototoshi.csv.CSVReader
@@ -15,13 +16,13 @@ import scala.collection.mutable.ArrayBuffer
   *
   */
 object TestHelper extends Matchers{
-  def getDataStream(pcount: Int, pvalueProducer: (Int) => Double) = {
+  def getDataStream(pcount: Int, pvalueProducer: (Int) => Double = null) = {
     val calendar = Calendar.getInstance()
     val valueProducer =  if (pvalueProducer == null) (x: Int) => (x+0.0) else pvalueProducer
 
     val ret = for (i <- 1 to pcount)yield {
       calendar.add(Calendar.SECOND, 1)
-      new IndicatorDataPoint(calendar.getTime(), valueProducer(i))
+      new IndicatorDataPoint(calendar.getTime, valueProducer(i))
     }
     ret
   }
@@ -44,6 +45,10 @@ object TestHelper extends Matchers{
         low = m("Low").toDouble
         open = m("Open").toDouble
         close = m("Close").toDouble
+        val format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss") //3/8/2013 12:00:00 AM
+        time = format.parse(m("Date"))
+        volume = BigDecimal.apply(m("Volume")).toLong
+
       }
       indicator.update(tradebar)
 
@@ -82,6 +87,9 @@ object TestHelper extends Matchers{
   {
     testTradeBarIndicator(indicator, externalDataFilename, targetColumn, (i, expected) => i.current.value should be(expected +- epsilon))
   }
+
+//  def testIndicator[T](indicator: T, externalFilename: String, targetColumn: String, epsilon: Double = 1e-3): Unit = {
+//  }
 
   def testTradeBarIndicatorReset(indicator: IndicatorBase[TradeBar], externalDataFilename: String) = {
     for(bar <- getTradeBarStream(externalDataFilename))

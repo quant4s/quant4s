@@ -20,11 +20,14 @@ class MoneyFlowIndex(pname: String, pperiod: Int) extends TradeBarIndicator(pnam
   private var _previousTypicalPrice: Double = 0.0
   def previousTypicalPrice = _previousTypicalPrice
 
+  private var _previousMoneyFlow: Double = 0.0
+
 
   override def isReady: Boolean = positiveMoneyFlow.isReady && negativeMoneyFlow.isReady
 
   override def reset: Unit = {
     _previousTypicalPrice = 0.0
+    _previousMoneyFlow =0.0
     negativeMoneyFlow.reset
     positiveMoneyFlow.reset
     super.reset
@@ -35,8 +38,12 @@ class MoneyFlowIndex(pname: String, pperiod: Int) extends TradeBarIndicator(pnam
     val moneyFlow = typicalPrice*input.volume
 
     positiveMoneyFlow.update(input.time, if(typicalPrice > previousTypicalPrice) moneyFlow else 0 )
-    negativeMoneyFlow.update(input.time, if(typicalPrice > previousTypicalPrice) 0 else moneyFlow)
+    negativeMoneyFlow.update(input.time, if(typicalPrice < previousTypicalPrice) moneyFlow else 0 )
+    // FIXME: 需要确认MFI 的计算方法
+//    positiveMoneyFlow.update(input.time, if(moneyFlow > _previousMoneyFlow) moneyFlow else 0 )
+//    negativeMoneyFlow.update(input.time, if(moneyFlow < _previousMoneyFlow) moneyFlow else 0)
     _previousTypicalPrice = typicalPrice
+    _previousMoneyFlow = moneyFlow
 
     val totalMoneyFlow = positiveMoneyFlow.current.value + negativeMoneyFlow.current.value
 
