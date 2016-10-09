@@ -10,7 +10,6 @@ import quanter.indicators.IndicatorExtensions._
 /**
   *
   */
-// TODO: 这个类的主构造函数为什么不能有默认参数
 class RelativeStrengthIndex(pname: String, pperiod: Int, pmovingAverageType: MovingAverageType) extends Indicator(pname) {
 
   private var _previousInput: IndicatorDataPoint = null
@@ -45,12 +44,10 @@ class RelativeStrengthIndex(pname: String, pperiod: Int, pmovingAverageType: Mov
 
   override def computeNextValue(input: IndicatorDataPoint): Double = {
     var nextValue: Double = 0.0
-    if(_previousInput != null && input.value >= _previousInput.value) {
-      averageGain.update(input.time, input.value - _previousInput.value)
-      averageLoss.update(input.time, 0)
-    } else if(_previousInput != null && input.value < _previousInput.value) {
-      averageGain.update(input.time, 0)
-      averageLoss.update(input.time, _previousInput.value - input.value)
+
+    if(_previousInput != null) {
+      averageGain.update(input.time, math.max(input.value - _previousInput.value, 0))
+      averageLoss.update(input.time, math.abs(input.value - _previousInput.value))
     }
 
     _previousInput = input
@@ -61,13 +58,14 @@ class RelativeStrengthIndex(pname: String, pperiod: Int, pmovingAverageType: Mov
     }
 
     nextValue
-
   }
-
 
   override def reset: Unit = {
     averageGain.reset
     averageLoss.reset
     super.reset
   }
+
+  override def toJson: String = "{\"symbol\":%s,\"rsi\":%f, \"time\":%d}"
+    .format(symbol, current.value, time.getTime())
 }
