@@ -26,9 +26,11 @@ abstract class CommonIndicatorSpec[T <: BaseData] extends QuanterUnitSpec {
   describe("用外部数据文件进行测试") {
     it("测试， reset，测试") {
       val indicator = createIndicator
-      testIndicator(indicator)
+      TestHelper.testTradeBarIndicatorReset(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName)
+//      testIndicator(indicator)
       indicator.reset
-      testIndicator(indicator)
+      TestHelper.testTradeBarIndicatorReset(indicator.asInstanceOf[ IndicatorBase[TradeBar]],testFileName)
+//      testIndicator(indicator)
     }
   }
 
