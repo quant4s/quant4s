@@ -30,10 +30,18 @@ abstract class CandlestickPattern(pname: String, pperiod: Int) extends WindowInd
     else false
   }
 
+  def getCandleAverage(settingType: CandleSettingType, sum: Double, tradeBar: TradeBar): Double = {
+    val defaultSetting = CandleSettings.get(settingType)
+
+    val t = if(defaultSetting.averagePeriod != 0) sum / defaultSetting.averagePeriod else getCandleRange(settingType, tradeBar)
+    val t1 = if(defaultSetting.rangeType == CandleRangeType.Shadows)  2.0 else 1.0
+    defaultSetting.factor * t / t1
+  }
+
   def getHighLowRange(tradeBar: TradeBar) = tradeBar.high - tradeBar.low
 
   def getCandleRange(settingType: CandleSettingType, tradeBar: TradeBar): Double = {
-    CandleSetting.get(settingType).rangeType match {
+    CandleSettings.get(settingType).rangeType match {
       case CandleRangeType.HighLow => getHighLowRange(tradeBar)
       case CandleRangeType.RealBody => getRealBody(tradeBar)
       case CandleRangeType.Shadows => getLowerShadow(tradeBar) + getUpperShadow(tradeBar)
