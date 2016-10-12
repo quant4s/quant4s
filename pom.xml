@@ -25,6 +25,7 @@
         <slf4s.version>1.7.13</slf4s.version>
         <slick.version>2.1.0</slick.version>
         <scalatest.version>3.0.0</scalatest.version>
+        <quartz.version>2.2.3</quartz.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -36,9 +37,16 @@
         <surefire.plugin.version>2.19.1</surefire.plugin.version>
         <sbt-compiler.plugin.version>1.0.0-beta8</sbt-compiler.plugin.version>
         <scoverage.plugin.version>1.2.0-SNAPSHOT</scoverage.plugin.version>
+
+        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.jzeromq</groupId>
             <artifactId>zmq-jni</artifactId>
@@ -194,6 +202,11 @@
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>2.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -202,32 +215,61 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${compiler.plugin.version}</version>
-                <configuration>
-                    <skipMain>true</skipMain> <!-- skip compile -->
-                    <skip>true</skip> <!-- skip testCompile -->
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>com.google.code.sbt-compiler-maven-plugin</groupId>
-                <artifactId>sbt-compiler-maven-plugin</artifactId>
-                <version>${sbt-compiler.plugin.version}</version>
+                <artifactId>maven-shade-plugin</artifactId>
                 <executions>
                     <execution>
+                        <phase>package</phase>
                         <goals>
-                            <goal>compile</goal>
-                            <goal>testCompile</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                                <artifactSet>
+                                <includes>
+                                    <include>*:*</include>
+                                </includes>
+                            </artifactSet>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>reference.conf</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>quanter.MainApp</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire.plugin.version}</version>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler.plugin.version}</version>
+                <configuration>
+                    <skipMain>true</skipMain>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/lib
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -258,16 +300,20 @@
                 </configuration>
             </plugin>
 
-            
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${compiler.plugin.version}</version>
-                <configuration>
-                    <skipMain>true</skipMain>
-                    <skip>true</skip>
-                </configuration>
+                <groupId>com.google.code.sbt-compiler-maven-plugin</groupId>
+                <artifactId>sbt-compiler-maven-plugin</artifactId>
+                <version>${sbt-compiler.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+
 
             <!--
             <plugin>
@@ -303,7 +349,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <skipTests>${skipTests}</skipTests>
                 </configuration>
             </plugin>
             <!-- enable scalatest -->
@@ -315,6 +361,7 @@
                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
                     <junitxml>.</junitxml>
                     <filereports>WDF TestSuite.txt</filereports>
+                    <skipTests>${skipTests}</skipTests>
                 </configuration>
                 <executions>
                     <execution>
@@ -327,6 +374,7 @@
             </plugin>
 
         </plugins>
+ <!--
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -363,6 +411,7 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        -->
     </build>
 
     <reporting>
