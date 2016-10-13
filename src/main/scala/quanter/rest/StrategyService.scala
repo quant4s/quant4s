@@ -122,6 +122,11 @@ trait StrategyService extends HttpService {
         complete {
           _deleteStrategy(id)
         }
+      } ~
+      path("strategy" / IntNumber / "order" / IntNumber) {
+        (sid, oid) => complete {
+          _cancelOrder(sid, oid)
+        }
       }
     }
   }
@@ -310,6 +315,10 @@ trait StrategyService extends HttpService {
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
     }
+  }
+
+  private def _cancelOrder(sid: Int, oid: Int): String = {
+    """{"code":0}"""
   }
 
 

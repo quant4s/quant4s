@@ -30,7 +30,7 @@ class T2Brokerage(pname: String) extends Brokerage(pname){
   override def buy(code: String, price: Double, quantity: Int): Unit = ???
 
   override def sell(code: String, price: Double, quantity: Int): Unit = ???
-  override var accountInfo: Trader = _
+  override var accountInfo: Trader = new Trader(Some(1), "T2 TEST", "BROKERTYPE", "TPY", "0030", "00250010", Some("tpyzq88888888"), "180.169.57.86:9999", None, 0)
 
   override def connect: Unit = {
     logger.info("链接T2后台服务 订阅主推消息")

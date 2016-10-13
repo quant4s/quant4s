@@ -6,7 +6,7 @@ package quanter.actors.securitySelection
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.routing.{RoundRobinPool, RoundRobinRouter}
 import quanter.actors.zeromq.{PublishData, ZeroMQServerActor}
-import quanter.rest.{FinanceIndi, SecurityPicker}
+import quanter.rest.{FinanceIndi, SecurityPicker, TechIndi}
 import quanter.securitySelection.{Instrument, Selector}
 
 /**
@@ -21,6 +21,7 @@ class SelectionInterpreterActor(cmds: SecurityPicker, topic: String, selector: S
   val pubRef = context.actorSelection("/user/" + ZeroMQServerActor.path)
   val finIndiRouter = context.actorOf(RoundRobinPool(5).props(Props.create(classOf[FinanceIndiActor],selector)))
   val secIndiRouter = context.actorOf(RoundRobinPool(5).props(Props.create(classOf[SectorIndiActor],selector)))
+  // val techIndiRouter = context.actorOf(RoundRobinPool(5).props(Props.create(classOf[SectorIndiActor],selector)))
 
   _parse()
 
@@ -81,13 +82,20 @@ class SelectionInterpreterActor(cmds: SecurityPicker, topic: String, selector: S
 
     if(cmds.techIndi.isDefined) {
       for(cmd <- cmds.techIndi.get) {
-        // 技术指标选股
+        // 技术指标选股， 仅仅支持有限的指标
+        // 第一阶段的目标， 备份数据
+        // TODO:
+        // 1. 创建Actor
+        // 2. 执行Actor，并推送30个周期的数据
+        // 3. 接收到历史数据
+        // 4. 根据时间来判断
+        // 5. 来一个reset
       }
     }
   }
 
   def _countCmd(): Int = {
-    cmds.financeIndi.length + cmds.sectorIndi.getOrElse(List[String]()).length
+    cmds.financeIndi.length + cmds.sectorIndi.getOrElse(List[String]()).length + cmds.techIndi.getOrElse(List[TechIndi]()).length
   }
 }
 

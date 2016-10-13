@@ -1,5 +1,7 @@
 package quanter.indicators.window
 
+import quanter.indicators.IndicatorDataPoint
+
 import scala.collection.immutable.Iterable
 
 /**

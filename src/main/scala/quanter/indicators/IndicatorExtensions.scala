@@ -20,11 +20,18 @@ object IndicatorExtensions {
       val constantIndicator = new ConstantIndicator[IndicatorDataPoint](constant.toString(), constant)
       indicator.times(constantIndicator)
     }
-    def times(right: IndicatorBase[IndicatorDataPoint]): CompositeIndicator[IndicatorDataPoint] = {
-      new CompositeIndicator[IndicatorDataPoint](indicator, right, (l, r) => l * r);
-    }
 
+    def times(right: IndicatorBase[IndicatorDataPoint]): CompositeIndicator[IndicatorDataPoint] = {
+      new CompositeIndicator[IndicatorDataPoint](indicator, right, (l, r) => l * r)
+    }
   }
+
+//  implicit class IndicatorBaseExt2[T](indicator: IndicatorBase[T]) {
+//    def weightBy[TWeight](weight: TWeight, period: Int) = {
+//
+//    }
+//  }
+
   implicit class BaseDataExt(data: BaseData) {
     def +(right: BaseData) = data.value + right.value
     def +(right: Double) = data.value + right

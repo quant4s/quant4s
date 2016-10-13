@@ -47,7 +47,7 @@ object TestHelper extends Matchers{
         close = m("Close").toDouble
         val format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss") //3/8/2013 12:00:00 AM
         time = format.parse(m("Date"))
-        volume = BigDecimal.apply(m("Volume")).toLong
+        if (lines.head.get("Volume") != None) volume = BigDecimal.apply(m("Volume")).toLong
 
       }
       indicator.update(tradebar)

@@ -9,8 +9,8 @@ import quanter.indicators.window.{ReadOnlyWindow, WindowIndicator}
   *
   */
 class KaufmanAdaptiveMovingAverage(pname: String, pperiod: Int) extends WindowIndicator[IndicatorDataPoint](pname, pperiod + 1){
-  def this (pperiod: Int) {
-    this("KAMA_" + pperiod, pperiod)
+  def this (period: Int) {
+    this("KAMA_" + period, period)
   }
 
   private final val ConstMax: Double = 2 / (30 + 1)

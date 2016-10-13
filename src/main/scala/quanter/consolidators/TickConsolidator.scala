@@ -24,7 +24,7 @@ class TickConsolidator(pmaxCount: Option[Int] = None, ptimespan: Option[TimeSpan
         volume = data.quantity
         dataType = data.dataType
       }
-    } else {
+    } else if(data.time.after(workingBar.time)){ // 防止意外情况下，发送过来的数据错误
       workingBar.close = data.value
       workingBar.volume += data.quantity
       if (data.value < workingBar.low) workingBar.low = data.value

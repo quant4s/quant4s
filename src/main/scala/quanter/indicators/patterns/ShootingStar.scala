@@ -66,9 +66,6 @@ class ShootingStar(pname: String) extends CandlestickPattern(pname,  math.max(ma
       else
       value = 0.0
 
-      // add the current range and subtract the first range: this is done after the pattern recognition
-      // when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
-
       _bodyShortPeriodTotal += getCandleRange(CandleSettingType.BodyShort, input) -
         getCandleRange(CandleSettingType.BodyShort, window.get(_bodyShortAveragePeriod))
 
@@ -80,6 +77,6 @@ class ShootingStar(pname: String) extends CandlestickPattern(pname,  math.max(ma
 
       value
     }
-
   }
+
 }

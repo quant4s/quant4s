@@ -12,7 +12,7 @@ import quanter.data.market.TradeBar
   *
   */
 class AverageTrueRangeSpec extends QuanterUnitSpec {
-  describe ("用外部文件测试 EMA") {
+  describe ("用外部文件测试 ATR") {
     it("spy_atr.txt ATR14 列") {
       val atr = new AverageTrueRange(14, MovingAverageType.Simple)
       TestHelper.testTradeBarIndicator(atr, "spy_atr.txt", "ATR14")

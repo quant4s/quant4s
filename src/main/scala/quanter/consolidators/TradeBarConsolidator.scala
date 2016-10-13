@@ -24,7 +24,7 @@ class TradeBarConsolidator(pmaxCount: Option[Int] = None, ptimespan: Option[Time
         dataType = MarketDataType.TradeBar
         period = data.period
       }
-    } else {
+    } else if(data.time.after(workingBar.time)){ // 防止意外情况下，发送过来的数据错误
       workingBar.close = data.close
       workingBar.volume += data.volume
       workingBar.period += data.period // TODO: data.period is null

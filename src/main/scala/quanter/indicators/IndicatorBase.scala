@@ -76,9 +76,10 @@ abstract class IndicatorBase[T <: BaseData] (pname: String) extends Comparable[I
     _current.value.toString()
   }
 
-  override def equals(obj: scala.Any): Boolean =  {
+  override def equals(obj: Any): Boolean =  {
     var ret: Boolean = false
     if(obj == null) ret = false
+    //if(obj.isInstanceOf)
     //    if (obj.GetType().IsSubclassOf(typeof (IndicatorBase<>))) return ReferenceEquals(this, obj);
 
     val converted = obj.toString().toDouble
@@ -89,7 +90,7 @@ abstract class IndicatorBase[T <: BaseData] (pname: String) extends Comparable[I
     "%s - %s".format(name, this.toString())
   }
 
-  def toJson = "{\"symbol\":%s,\"value\":%f%f}".format(symbol,  current.value)
+  def toJson = "{\"symbol\":\"%s\",\"value\":%f,\"time\":%d}".format(symbol,  current.value, current.time.getTime)
 
   // ================== override operator ===============================
   def +(right: IndicatorBase[IndicatorDataPoint]) = {
