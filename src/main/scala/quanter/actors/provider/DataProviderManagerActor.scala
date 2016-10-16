@@ -35,6 +35,7 @@ class DataProviderManagerActor extends Actor with ActorLogging {
       val path =(provider.asInstanceOf[HashMap[String, String]]).get("path")
 
       val ref = context.actorOf(Props(Class.forName(clazz)), path)
+      ref ! new ConnectDataProvider()
       _providerRefs.put(path, ref)
     }
   }

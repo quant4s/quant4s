@@ -34,30 +34,20 @@ class SinaL1Actor extends DataProviderActor with ActorLogging {
   var aliases = new ArrayBuffer[String]()
   addSymbol("000002.XSHE")
   addSymbol("000001.XSHE")
+
+  log.info("启动Sina L1 行情获取......")
  // context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
-  @scala.throws[Exception](classOf[Exception])
-  override def preStart(): Unit = {
-    super.preStart()
-    log.info("启动Sina L1 行情获取......")
-    //_run()
-  }
-
-  override def receive: Receive =  {
-    case ask: AskListenedSymbol => addSymbol(ask.symbol)
-    case query: QuerySnapData => _querySnapData()
-    case job: ExecuteJob => log.debug("sina job 执行")
-    case _ => log.warning("不支持的消息")
-  }
-
-  private def _run(): Unit = {
-    context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
-  }
 
   override protected def addSymbol(symbol: String): Unit = {
     super.addSymbol(symbol)
     if (!symbolSelections.contains(symbol)) {
       aliases += _symbol2Alias(symbol)
     }
+  }
+
+  override protected def executeJob(): Unit = {
+    _querySnapData()
+    log.info("开始Sina L1 定时行情获取......")
   }
 
   private def _symbol2Alias(symbol: String): String = {
