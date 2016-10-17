@@ -29,11 +29,13 @@ class SecuritiesManagerActor extends Actor with ActorLogging {
 
   /**
     *  chuli dingyue
+    *
     * @return
     */
   override def receive: Receive = {
     case SubscriptionSymbol(symbol) => _subscribe(SubscriptionSymbol(symbol))
     case UnsubscriptionSymbol(symbol) => _unsubscribe(UnsubscriptionSymbol(symbol))
+    case sec: Security => _createSecurityActor(sec)
     case _ =>
   }
 
@@ -55,6 +57,13 @@ class SecuritiesManagerActor extends Actor with ActorLogging {
     for((k, v) <- manager) {
       val ref = context.actorOf(SecurityActor.props(v), k)
       secActors += ( k -> ref)
+    }
+  }
+
+  private def _createSecurityActor(sec: Security): Unit = {
+    if(!secActors.contains(sec.symbol)) {
+      val ref = context.actorOf(SecurityActor.props(sec), sec.symbol)
+      secActors += (sec.symbol -> ref)
     }
   }
 }
