@@ -93,7 +93,7 @@ class TradeRouteActor extends Actor with ActorLogging{
     try {
       val c = Class.forName(clazz).newInstance().asInstanceOf[TBrokerage]
       c.accountInfo = trader
-      context.actorOf(BrokerageActor.props(c),trader.id.get.toString())
+//      context.actorOf(BrokerageActor.props(c),trader.id.get.toString())
     }catch  {
       case ex: Throwable => log.error(ex, ex.getMessage())
     }

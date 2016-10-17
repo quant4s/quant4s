@@ -2,6 +2,7 @@ package quanter.actors.trade
 
 import akka.actor.{Actor, ActorLogging, FSM, Props}
 import quanter.actors.trade.BrokerageActor._
+import quanter.actors.trade.TradeAccountEvent.TradeAccountEvent
 import quanter.actors.{Connect, Disconnect, KeepAlive}
 import quanter.interfaces.TBrokerage
 import quanter.persistence.EOrder
@@ -16,7 +17,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
   */
 
 
-class BrokerageActor(brokerage: TBrokerage) extends FSM[BrokerageState, BrokerageData] with ActorLogging{
+abstract class BrokerageActor(/*brokerage: TBrokerage*/) extends FSM[BrokerageState, BrokerageData] with ActorLogging{
+
+  var accountInfo: Trader = null
+
+  protected var _isConnected = false
+  def isConnected = _isConnected
+
+  protected var _logined = false
+  def isLogined = _isConnected
 
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {
@@ -56,23 +65,36 @@ class BrokerageActor(brokerage: TBrokerage) extends FSM[BrokerageState, Brokerag
 
   private def _handleOrder(order: EOrder): Unit = {
     if(order.side == 0) {
-      brokerage.buy(order.symbol, order.price, order.quantity)
+      //brokerage.buy(order.symbol, order.price, order.quantity)
     } else if(order.side == 1) {
-      brokerage.sell(order.symbol, order.price, order.quantity)
+      //brokerage.sell(order.symbol, order.price, order.quantity)
     }
   }
 
   private def _refresh(): Unit = {
-    brokerage.keep
+    //brokerage.keep
   }
 
   private def _connect(): Unit = {
     log.info("连接交易帐号")
-    brokerage.connect
   }
 
   private def _disconnect(): Unit = {
-    brokerage.disconnect
+    //brokerage.disconnect
+  }
+
+  /**
+    * 通知其他Actor账户的事件， 主要是为了通知到UI，显示给用户
+    */
+  def fireEvent(event: TradeAccountEvent): Unit = {
+    new TradeAccountMessage(event, accountInfo.id.get)
+  }
+
+  /**
+    * 回报到达处理
+    */
+  def fireResp(): Unit = {
+    // TODO: 保存到数据库
   }
 }
 
