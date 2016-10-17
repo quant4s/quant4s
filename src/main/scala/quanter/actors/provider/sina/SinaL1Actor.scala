@@ -12,7 +12,7 @@ import akka.actor.{ActorLogging, Props}
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.DefaultHttpClient
 import quanter.actors.AskListenedSymbol
-import quanter.actors.provider.{DataProviderActor, QuerySnapData}
+import quanter.actors.provider._
 import quanter.data.market.SnapData
 import quanter.CommonExtensions._
 import quanter.actors.scheduling.ExecuteJob
@@ -36,7 +36,16 @@ class SinaL1Actor extends DataProviderActor with ActorLogging {
   addSymbol("000001.XSHE")
 
   log.info("启动Sina L1 行情获取......")
+//  self ! new ConnectDataProvider()
+//  self ! new LoginSuccess()
  // context.system.scheduler.schedule(0 seconds, 3 seconds, self, new QuerySnapData())
+
+  override def connect(): Unit = {
+    self ! new ConnectedSuccess()
+  }
+  override def login(): Unit = {
+    self ! new LoginSuccess()
+  }
 
   override protected def addSymbol(symbol: String): Unit = {
     super.addSymbol(symbol)

@@ -22,16 +22,9 @@ import scala.collection.mutable
   */
 class CsvDataProviderActor extends DataProviderActor {
 
-  override def receive: Receive =  {
-    case ask: AskListenedSymbol => addSymbol(ask.symbol)
-    case query: QuerySnapData => _querySnapData()
-    case Execute => _run()
-    case _ =>
-  }
-
   var openFiles = new mutable.HashMap[CSVReader, ActorSelection]
-  // var openFiles = new ArrayBuffer[CSVReader]()
-  private def _run(): Unit = {
+
+  override def connect(): Unit = {
     // 打开所有的csv 文件
     for(ss <- symbolSelections) {
       val file = new File(ss._1 + ".csv")
@@ -39,9 +32,8 @@ class CsvDataProviderActor extends DataProviderActor {
       openFiles.put(reader, ss._2)
       reader.readNext() // 读取标题行
     }
-
-    context.system.scheduler.schedule(0 seconds, 10 milliseconds, self, new QuerySnapData())
-
+    // 采用外部job 来定时处理
+    // context.system.scheduler.schedule(0 seconds, 10 milliseconds, self, new QuerySnapData())
   }
 
   private def _querySnapData(): Unit = {
