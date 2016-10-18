@@ -8,7 +8,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import quanter.actors._
 import quanter.actors.persistence.PersistenceActor
-import quanter.rest.{CancelOrder, Strategy, Trader}
+import quanter.rest.{CancelOrder, HttpServer, Strategy, Trader}
 import quanter.strategies.StrategyCache
 
 import scala.concurrent.Await
@@ -22,50 +22,24 @@ case class UpdatePortfolio(strategy: Strategy)
   * 3、
   */
 class StrategiesManagerActor extends Actor{
-  val strategyCache = new StrategyCache()
+//  val strategyCache = new StrategyCache()
 //  val portfolioCache = new Portfolio()
   val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
+  val restRef = context.actorSelection("/user/" + HttpServer.path)
 
   override def receive: Receive = {
     case s: NewStrategy => _createStrategy(s.strategy)
-    case s: DeleteStrategy => _deleteStrategy(s.id)
-    case ListStrategies => _listStrategies()
+    case s: DeleteStrategy => persisRef ! DeleteStrategy(s.id)
+    case s: ListStrategies => persisRef ! new ListStrategies()
+
+    // 持久化层返回的一步消息
+    case s: Array[Strategy] => restRef ! s
+    case s: Strategy => restRef ! s
   }
 
   private def _createStrategy(strategy: Strategy) = {
-    // 保存到数据库
-//    val es = EStrategy(None, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
     context.actorOf(StrategyActor.props(strategy.id), strategy.id.toString)
-//    strategyCache.addStrategy(strategy)
     persisRef ! new NewStrategy(strategy)
-  }
-
-  private def _listStrategies() = {
-    // 从数据库 读取
-    // persisRef ? ListStrategies
-    implicit val timeout = Timeout(5 seconds)
-    val future = persisRef ? new ListStrategies()
-    val result = Await.result(future, timeout.duration).asInstanceOf[Array[Strategy]]
-    sender ! Some(result)
-
-  }
-
-
-  private def _deleteStrategy(id: Int) = {
-    // TODO: 处理cache
-    strategyCache.removeStrategy(id)
-    persisRef ! DeleteStrategy(id)
-  }
-
-  private def _runStrategy(id: Int): Unit = {
-    val strategy = strategyCache.getStrategy(id)
-    strategy.get.status = 1
-
-    // TODO: 保存到数据库
-  }
-
-  private def _getPortfolio(id: Int): Unit = {
-
   }
 
   private def _cancelOrder(order: CancelOrder): Unit = {

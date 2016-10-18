@@ -1,325 +1,183 @@
 package quanter.rest
 
 import akka.actor.ActorSelection
-import org.json4s.{DefaultFormats, Extraction, Formats}
-import spray.routing.HttpService
+import akka.event.LoggingAdapter
 import org.json4s.jackson.JsonMethods._
-import quanter.actors.strategy._
-import akka.pattern.ask
-import akka.util.Timeout
+import org.json4s.{DefaultFormats, Extraction, Formats}
 import quanter.actors._
+import quanter.actors.strategy._
+import spray.routing.HttpService
 
-import scala.concurrent.{Await, ExecutionContext}
-import scala.concurrent.duration._
+import scala.collection.mutable
 
 /**
   *
   */
 trait StrategyService extends HttpService {
 //  val strategiesManager = new StrategiesManager()
+  implicit def _log: LoggingAdapter
   val manager = actorRefFactory.actorSelection("/user/" + StrategiesManagerActor.path)
+  var strategyCache = new mutable.HashMap[Int, Strategy]()
+
+  manager ! new ListStrategies()
   val strategyServiceRoute = {
     get {
-      path("strategy") {
-        complete("""{"code":404}""")
-      } ~
-      path("strategy" / "list") {
+      path("strategy" / "list") {   // 获取策略列表
         complete {
-          _getAllStrategies()
+          implicit val formats = DefaultFormats
+          val result = if(strategyCache.size == 0) None else Some(strategyCache.values.toArray)
+          val retStrategyList = RetStrategyList(0, "成功", result)
+          val json = Extraction.decompose(retStrategyList)
+          compact(render(json))
         }
       } ~
-      path("strategy" / "history" / IntNumber) {
+      path("strategy" / IntNumber) {  // 获取指定策略
         id =>
           complete {
-            _readHistoryStrategy(id)
-          }
-      } ~
-      path("strategy" / "real" / IntNumber) {
-        id =>
-          complete {
-            "历史实盘"
-          }
-      } ~
-      path("strategy" / IntNumber) {
-        id =>
-          complete {
-            _getStrategy(id)
-          }
-      }~
-      path("strategy"/ IntNumber / "portfolio") {
-        id =>
-          complete {
-            """{"code":0, "portfolio":{"cash":10000, "frozen":0, "available":10000,"assets":300000, "positions":[{"symbol":"000001.XSHE","price":13, "cost": 10.3},{"symbol":"000002.XSHE","price":13, "cost": 9.3}]}}"""
+            val result = strategyCache.get(id)
+            if(result == None)  """{"code":1}"""
+            else {
+              implicit val formats: Formats = DefaultFormats
+              val retStrategy = RetStrategy(0, "获取成功", result)
+              val json = Extraction.decompose(retStrategy)
+              compact(render(json))
+            }
+
           }
       }
     }  ~
     post {
-      path("strategy" / "addrisk" / IntNumber / Segment / Segment) {
+      path("strategy" / "addrisk" / IntNumber / Segment / Segment) { // 增加一个风控规则
         (id, risk, rule) =>
             complete {
-              _addRiskRule(id, risk, rule)
+              val strategyRef = _findStrategyActor(id)
+              strategyRef ! new AddRisk(risk, rule)
+              """{"code":0}"""
             }
       } ~
-      path("strategy") {
+      path("strategy") {  // 创建一个新的策略
         requestInstance {
           request =>
             complete {
-              _createStrategy(request.entity.data.asString)
+              try {
+               implicit val formats = DefaultFormats
+                val jv = parse(request.entity.data.asString)
+                val strategy = jv.extract[Strategy]
+                manager ! NewStrategy(strategy)
+                """{"code":0}"""
+              }catch {
+                case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+              }
             }
         }
       }~
-      path("strategy" / IntNumber / "order") {
+      path("strategy" / IntNumber / "order") {  // 接受一个订单
         id =>
           requestInstance { request =>
             complete {
-              _createOrder(id, request.entity.data.asString)
+              try {
+                implicit val formats = DefaultFormats
+                val jv = parse(request.entity.data.asString)
+                val transaction = jv.extract[Transaction]
+
+                val strategyRef = _findStrategyActor(id)
+                strategyRef ! transaction
+                """{"code":0}"""
+              }catch {
+                case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+              }
+
             }
           }
       }
     } ~
     put {
-      path("strategy" / IntNumber) {
+      path("strategy" / IntNumber) { // 更新一个策略
         id=>
         requestInstance {
           request =>
             complete {
-              _updateStrategy(id, request.entity.data.asString)
+              try {
+                implicit val formats = DefaultFormats
+                val strategyRef = _findStrategyActor(id)
+                val jv = parse(request.entity.data.asString)
+                val strategy = jv.extract[Strategy]
+
+                strategyRef ! new UpdateStrategy(strategy)
+                """{"code":0}"""
+              }catch {
+                case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
+              }
             }
         }
       } ~
       path("strategy" / "start" / IntNumber) {
         id => {
           complete {
-            _startStrategy(id)
+            val strategyRef = _findStrategyActor(id)
+            strategyRef ! new StartStrategy(id)
+            """{"code":0}"""
           }
         }
       }~
-      path("strategy" / "stop" / IntNumber) {
+      path("strategy" / "stop" / IntNumber) {     // 停止一个策略
         id => {
           complete {
-            _stopStrategy(id)
+            val strategyRef = _findStrategyActor(id)
+            strategyRef ! new StopStrategy(id)
+            """{"code":0}"""
           }
         }
       }~
-      path("strategy"/"enablerisk"/IntNumber) {
+      path("strategy"/"enablerisk"/IntNumber) { // 允许风控
         id => {
           complete {
-            _enableRiskControl(id)
+            val strategyRef = _findStrategyActor(id)
+            strategyRef ! new OpenRiskControl(id)
+            """{"code":0}"""
           }
         }
       }~
-      path("strategy"/"disablerisk"/IntNumber) {
+      path("strategy"/"disablerisk"/IntNumber) { // 净值风控
         id => {
           complete {
-            _disableRiskControl(id)
+            val strategyRef = _findStrategyActor(id)
+            strategyRef ! new CloseRiskControl(id)
+            """{"code":0}"""
           }
         }
       }
     } ~
     delete {
-      path("strategy" /IntNumber) {
+      path("strategy" /IntNumber) {   // 删除一个策略
         id =>
         complete {
-          _deleteStrategy(id)
+          strategyCache.remove(id)
+          manager ! DeleteStrategy(id)
+          """{"code":0, "message":"成功删除"}"""
         }
       } ~
-      path("strategy" / IntNumber / "order" / IntNumber) {
+      path("strategy" / IntNumber / "order" / IntNumber) { // 撤单
         (sid, oid) => complete {
-          _cancelOrder(sid, oid)
+          """{"code":0}"""
         }
       }
     }
   }
 
-  /**
-    * 从数据库中读取所有的策略
-    *
-    * @return
-    */
-  private def _getAllStrategies(): String = {
-    try {
-      implicit val timeout = Timeout(5 seconds)
-      val future = manager ? ListStrategies
 
-      val result = Await.result(future, timeout.duration).asInstanceOf[Option[Array[Strategy]]]
-      implicit val formats: Formats = DefaultFormats
-      val retStrategyList = RetStrategyList(0, "成功", result)
-      val json = Extraction.decompose(retStrategyList)
-      compact(render(json))
-    }  catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
-  }
-
-  /**
-    * 创建一个策略
-    *
-    * @param json
-    * @return
-    */
-  private def _createStrategy(json: String): String = {
-    // 将JSON转换为strategy，加入到strategy
-    implicit val formats = DefaultFormats
-    try {
-      val jv = parse(json)
-      val strategy = jv.extract[Strategy]
-
-      manager ! NewStrategy(strategy)
-      """{"code":0}"""
-    }catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
-  }
-
-
-  private def _getStrategy(id: Int): String = {
-    try {
-      implicit val timeout = Timeout(5 seconds)
-
-      val strategyRef = _findStrategyActor(id)
-      val future = strategyRef ? new GetStrategy(id)
-      var  ret = ""
-      val result = Await.result(future, timeout.duration).asInstanceOf[Option[Strategy]]
-      if(result == None) ret = """{"code":1}"""
-      else {
-        implicit val formats: Formats = DefaultFormats
-        val retStrategy = RetStrategy(0, "获取成功", result)
-        val json = Extraction.decompose(retStrategy)
-        ret = compact(render(json))
-      }
-
-      ret
-    } catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
-  }
-
-  private def _updateStrategy(id: Int, json: String): String = {
-    implicit val formats = DefaultFormats
-    try {
-      val strategyRef = _findStrategyActor(id)
-      val jv = parse(json)
-      val strategy = jv.extract[Strategy]
-
-      strategyRef ! new UpdateStrategy(strategy)
-      """{"code":0}"""
-    }catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
-
-  }
-
-  private def _deleteStrategy(id: Int): String = {
-    try {
-      //      strategiesManager.removeStrategy(id)
-      manager ! DeleteStrategy(id)
-      """{"code":0, "message":"成功删除"}"""
-    }catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
-  }
-
-  /**
-    * 启动策略
-    *
-    * @param id
-    * @return
-    */
-  private def _startStrategy(id: Int): String = {
-    try {
-      val strategyRef = _findStrategyActor(id)
-       strategyRef ! new StartStrategy(id)
-      """{"code":0}"""
-    } catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
-  }
-
-  /**
-    * 停止策略
-    *
-    * @param id
-    * @return
-    */
-  private def _stopStrategy(id: Int): String = {
-    try {
-      val strategyRef = _findStrategyActor(id)
-      strategyRef ! new StopStrategy(id)
-      """{"code":0}"""
-    } catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
-  }
-  /**
-    * 暂停策略运行
-    *
-    * @param id
-    * @return
-    */
-  private def _pause(id: Int) : String = {
-    try {
-      val strategyRef = _findStrategyActor(id)
-      strategyRef ! new PauseStrategy(id)
-      """{"code":0}"""
-    } catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
-  }
-
-  private def _readHistoryStrategy(id: Int): String = {
-    "历史信息，等待支持"
-  }
-
-  private def _addRiskRule(id: Int, risk: String, rule: String): String = {
-    try {
-      val strategyRef = _findStrategyActor(id)
-      strategyRef ! new AddRisk(risk, rule)
-      """{"code":0}"""
-    } catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
-  }
 
   private def _findStrategyActor(id: Int): ActorSelection = actorRefFactory.actorSelection("/user/%s/%d".format(StrategiesManagerActor.path, id))
 
-  private def _enableRiskControl(id: Int): String = {
-    try {
-      val strategyRef = _findStrategyActor(id)
-      strategyRef ! new OpenRiskControl(id)
-      """{"code":0}"""
-    } catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
+  protected def buildStrategyCache(strategies: Array[Strategy]): Unit = {
+    _log.debug("在Rest Service层创建策略缓存")
+    for(s <- strategies)
+      strategyCache += (s.id -> s)
   }
 
-  private def _disableRiskControl(id: Int): String = {
-    try {
-      val strategyRef = _findStrategyActor(id)
-      strategyRef ! new CloseRiskControl(id)
-      """{"code":0}"""
-    } catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
+  protected def updateStrategyCache(s: Strategy): Unit = {
+    _log.debug("在Rest Service层更新策略缓存")
+    strategyCache(s.id) = s
   }
-
-  private def _createOrder(id: Int, json: String): String = {
-    implicit val formats = DefaultFormats
-    try {
-      val jv = parse(json)
-      val transaction = jv.extract[Transaction]
-
-      val strategyRef = _findStrategyActor(id)
-      strategyRef ! transaction
-//      tradeRoute ! transaction
-      """{"code":0}"""
-    }catch {
-      case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
-    }
-  }
-
-  private def _cancelOrder(sid: Int, oid: Int): String = {
-    """{"code":0}"""
-  }
-
 
 }

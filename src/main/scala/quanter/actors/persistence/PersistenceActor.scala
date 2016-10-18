@@ -45,8 +45,8 @@ class PersistenceActor extends Actor with ActorLogging{
   // TODO: 如果是第一次启动
   if(true) {
     log.info("初始化数据库")
-    ddl.drop
-    ddl.create
+//    ddl.drop
+//    ddl.create
   }
 
 

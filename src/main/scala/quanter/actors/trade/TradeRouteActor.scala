@@ -7,7 +7,7 @@ import quanter.actors._
 import quanter.actors.persistence.PersistenceActor
 import quanter.config.Settings
 import quanter.interfaces.TBrokerage
-import quanter.rest.Trader
+import quanter.rest.{HttpServer, Trader}
 
 import scala.collection.mutable
 import scala.concurrent.Await
@@ -22,19 +22,16 @@ import scala.concurrent.duration._
 case class InitTradeRoute()
 class TradeRouteActor extends Actor with ActorLogging{
   val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
+  val restRef = context.actorSelection("/user/" + HttpServer.path)
+
   val providers = _initProviders()
+  var traderCache = new mutable.HashMap[Int, Trader]()
 
-
-  @scala.throws[Exception](classOf[Exception])
-  override def preStart(): Unit = {
-    super.preStart()
-    persisRef ! new ListTraders()
-    //context.system.scheduler.schedule(0 seconds, 3 seconds, self, new InitTradeRoute())
-  }
+  persisRef ! new ListTraders()
 
   override def receive: Receive = {
-    case t: ListTraders => _getAllTraders()
-    case t: NewTrader => _createTrader(t.trader)
+    case t: ListTraders => _listTraders()
+    case t: NewTrader => _saveTrader(t.trader)
     case t: UpdateTrader => _updateTrader(t.trader)
     case t: DeleteTrader => _deleteTrader(t.id)
 
@@ -57,29 +54,31 @@ class TradeRouteActor extends Actor with ActorLogging{
   }
 
   private def _createTradeAccountActor(traders: Array[Trader]): Unit = {
+    log.info("接收到回传的TraderList")
+
+    restRef ! traders
     for( t <- traders) {
-      val clazz = providers.get(t.brokerType).get
+      traderCache += (t.id.get -> t)
+
+      val clazz = providers.get(t.brokerType).getOrElse("quanter.actors.trade.ctp.CTPBrokerageActor")
 
       try {
-        val c = Class.forName(clazz).newInstance().asInstanceOf[TBrokerage]
-        c.accountInfo = t
-        context.actorOf(BrokerageActor.props(c),t.id.get.toString())
+        val c = Class.forName(clazz)
+        context.actorOf(Props(c), t.id.get.toString)
+//        c.accountInfo = t
+//        context.actorOf(BrokerageActor.props(c),t.id.get.toString())
       }catch  {
         case ex: Throwable => log.error(ex, ex.getMessage())
       }
-
     }
   }
 
-  // CRUD 的操作
-  private def _getAllTraders(): Unit = {
-    implicit val timeout = Timeout(5 seconds)
-    val future = persisRef ? new ListTraders()
-    val result = Await.result(future, timeout.duration).asInstanceOf[Array[Trader]]
-    sender ! Some(result)
+  private def _listTraders(): Unit = {
+    log.debug("获取交易账户缓存")
+    sender ! traderCache
   }
-
-  private def _createTrader(trader: Trader): Unit = {
+  private def _saveTrader(trader: Trader): Unit = {
+    log.info("创建一个Trader")
     persisRef ! NewTrader(trader)
   }
 
@@ -100,19 +99,12 @@ class TradeRouteActor extends Actor with ActorLogging{
   }
 
   private def _updateTrader(trader: Trader): Unit = {
-    //cache.modifyTrader(trader)
     persisRef ! new UpdateTrader(trader)
   }
 
   private def _deleteTrader(id: Int): Unit = {
-   //cache.removeTrader(id)
     persisRef ! new DeleteTrader(id)
   }
-
-//  private def _getTrader(id: Int): Unit = {
-//    sender ! cache.getTrader(id)
-//  }
-
 
 }
 
