@@ -35,8 +35,12 @@ class SecurityActor(security: Security) extends Actor with ActorLogging{
   }
 
   private def _dataArrived(data: SnapData): Unit = {
-    for(suber <- _subscribers)
+    val writerRef = context.actorSelection("/user/%s/cdw%s".format(SecuritiesManagerActor.path, data.symbol))
+    writerRef ! data
+
+    for(suber <- _subscribers) {
       suber ! data
+    }
   }
 }
 

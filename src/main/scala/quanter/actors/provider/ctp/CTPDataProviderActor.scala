@@ -36,12 +36,6 @@ class CTPDataProviderActor extends DataProviderActor with CThostFtdcMdSpi {
     reqUserLogin.Password = "123456"
     log.info(this + "[CTP MDS Login] start login")
     mds.ReqUserLogin(reqUserLogin, requestId)
-//    log.info(this + ", ToC:" + join(new Object[] { Integer.valueOf(1055), requestId, account.getQuotaUrl(), account.getBrokerCode(), account.getAccountID(), "****" }));
-//    LoginResult result = (LoginResult)waitForObjectResult("0", 20000L);
-//    if (result == null) {
-//      result = new LoginResult(-1, "��������");
-//    }
-//    self ! new LoginSuccess()
   }
 
   override def connect(): Unit = {
@@ -50,6 +44,7 @@ class CTPDataProviderActor extends DataProviderActor with CThostFtdcMdSpi {
     mds.RegisterFront(url)
     mds.Init()
   }
+
   def unsubQuota(contractCode: String): Unit = {
     mds.UnSubscribeMarketData(Array(contractCode), 1)
   }

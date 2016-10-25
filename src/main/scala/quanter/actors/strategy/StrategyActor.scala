@@ -25,6 +25,7 @@ import scala.concurrent.duration._
   */
 class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with ActorLogging {
   val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
+  val restRef = context.actorSelection("/user/" + HttpServer.path)
   val strategyContext: StrategyContext = null
   val riskRules = new mutable.HashMap[String, BaseRisk]()
 
@@ -45,24 +46,18 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
       _pauseStrategy(id)
       goto(Suspended)
     }
-    case Event(t: Transaction, _) => {
-      _handleOrder(t)
-      stay()
-    }
-    case Event(OpenRiskControl(sid), _) => {
-      log.debug("策略%d, 启动风险控制".format(id))
-      goto(RunningWithRiskControl) using stateData.copy(riskControll = true)
-    }
-  }
-  when(RunningWithRiskControl) {
-    case Event(t: Transaction, _) => {
+    case Event(t: Transaction, _) => {    // 逐条处理订单的时候，进行风控检查
       log.debug("策略%d, 接受到订单".format(id))
       _handleOrder(t)
       stay()
     }
-    case Event(CloseRiskControl(sid), _) => {
+    case Event(OpenRiskControl(sid), StrategyData(false)) => {
+      log.debug("策略%d, 启动风险控制".format(id))
+      stay() using stateData.copy(riskControll = true)
+    }
+    case Event(CloseRiskControl(sid), StrategyData(true)) => {
       log.debug("策略%d, 关闭风险控制".format(id))
-      goto(Running) using stateData.copy(riskControll = false)
+      stay() using stateData.copy(riskControll = false)
     }
   }
   when(Stopped) {
@@ -80,13 +75,14 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
   }
   whenUnhandled {
     case Event(GetStrategy(sid), _) => {
-      _getStrategy(id)
+      persisRef ! new GetStrategy(id)
       stay()
     }
-    case Event(UpdateStrategy(strategy), _) =>
-      _updateStrategy(strategy)
+    case Event(UpdateStrategy(strategy), _) => {
+      persisRef ! new UpdateStrategy(strategy)
       stay()
-    case Event(UpdateRiskControlInfo, _) =>     stay()
+    }
+    case Event(UpdateRiskControlInfo, _) => stay()
     case Event(UpdateTradeAccount, _) => stay()
     case Event(AddRisk(risk, rule), _) => {
       _addRiskRule(risk, rule)
@@ -96,32 +92,11 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
       if(stateData.riskControll) goto(RunningWithRiskControl)
       else goto(Running)
     }
+    case Event(s:Strategy, _) => {
+      restRef ! s
+      stay
+    }
   }
-
-  /**
-    * 更新策略
-    *
-    * @param strategy
-    */
-  private def _updateStrategy(strategy: Strategy) = {
-    // TODO: 处理cache
-    persisRef ! UpdateStrategy(strategy)
-  }
-
-  /**
-    * 获取策略, 包括当日持仓信息，当日委托信息，当日成交信息
-    *
-    * @param id
-    */
-  private def _getStrategy(id: Int): Unit = {
-    // 从数据库中获取数据
-    implicit val timeout = Timeout(10 seconds)
-    val future = persisRef ? new GetStrategy(id)
-    val result = Await.result(future, timeout.duration).asInstanceOf[Option[Strategy]]
-
-    sender ! result
-  }
-
 
   /**
     * 将订单发送给合适的交易通道
@@ -135,14 +110,14 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
         if(stateData.riskControll){
          rc = _riskMatch(order)
         }
+
         if(rc) {
           log.info("风控禁止买入")
-        }
-        else {
+        } else {
           order.strategyId = id
           // 发送到相应的交易接口
-          persisRef ! new NewOrder(order)
           _getBrokerageActor(order.tradeAccountId) ! order
+          persisRef ! new NewOrder(order)
           log.debug("接收到策略%d订单%d, 交易接口为%d".format(id, order.orderNo, order.tradeAccountId))
         }
       }
@@ -153,8 +128,8 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
       val order = tran.cancelOrder.get
       order.strategyId = tran.strategyId
       // 将取消订单保存到数据库，并发送到交易接口
+      _getBrokerageActor(order.tradeAccountId) ! order
       persisRef ! new RemoveOrder(order)
-      _getBrokerageActor(accountId) ! order
       log.info("取消策略%d订单%d,交易接口为%d".format(order.strategyId, order.cancelOrderNo, order.tradeAccountId))
     }
   }
@@ -182,7 +157,6 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
     }
     ret
   }
-
 }
 
 object StrategyActor {

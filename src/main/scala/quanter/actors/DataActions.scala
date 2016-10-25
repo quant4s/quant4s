@@ -29,8 +29,10 @@ import quanter.rest._
   case class DeleteTrader(id: Int){}
   case class GetTrader(id: Int){}
 
-  case class KeepAlive()
   case class Connect()
+  case class ConnectedSuccess()
+  case class LoginSuccess()
+  case class KeepAlive()
   case class Disconnect()
 
   case class AskListenedSymbol(symbol: String)

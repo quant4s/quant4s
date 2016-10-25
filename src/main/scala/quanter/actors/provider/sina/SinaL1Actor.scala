@@ -43,14 +43,16 @@ class SinaL1Actor extends DataProviderActor with ActorLogging {
   override def connect(): Unit = {
     self ! new ConnectedSuccess()
   }
+
   override def login(): Unit = {
     self ! new LoginSuccess()
   }
 
   override protected def addSymbol(symbol: String): Unit = {
     super.addSymbol(symbol)
-    if (!symbolSelections.contains(symbol)) {
-      aliases += _symbol2Alias(symbol)
+    val alias = _symbol2Alias(symbol)
+    if (!aliases.contains(alias)) {
+      aliases += alias
     }
   }
 

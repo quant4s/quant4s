@@ -6,6 +6,8 @@ package quanter.actors.trade.ctp
 import java.util.Date
 
 import jctp.struct.{CThostFtdcSettlementInfoField, _}
+import quanter.actors.LoginSuccess
+import quanter.actors.provider.ConnectedSuccess
 import quanter.actors.strategy.StrategiesManagerActor
 import quanter.actors.trade.{BrokerageActor, LoginResult, OrderStatusResult, TradeAccountEvent}
 
@@ -18,8 +20,9 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi {
   var frontId = ""
   var sessionId = ""
   var requestId = 1
+  val url = "tcp://180.168.146.187:10031"
 
-  private def _login: Unit = {
+  override protected def login(): Unit = {
     val reqUser = new CThostFtdcReqUserLoginField()
 
     reqUser.BrokerID = accountInfo.brokerCode
@@ -29,23 +32,21 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi {
 
     requestId += 1
     trader.ReqUserLogin(reqUser, requestId)
+  }
 
-    // FIXME: 登录超时检查
-    //    val result = (LoginResult)waitForObjectResult(requestId, 20000L)
-    //
-    //    if (result == null) {
-    //      result = new LoginResult(-1, "登录超时")
-    //    }
-    //    updateLoginResult(account, result.getId());
-    //    return result;
-
+  override def connect(): Unit = {
+    trader.RegisterSpi(this)
+    trader.SubscribePrivateTopic(2)
+    trader.SubscribePublicTopic(2)
+    trader.RegisterFront(url)
+    trader.Init()
   }
 
   override def OnFrontConnected(): Unit = {
     _isConnected = true
     log.info("CTP Trader 连接成功！")
-    _login
 
+    self ! new ConnectedSuccess()
     fireEvent(TradeAccountEvent.Connected_Success)
   }
 
@@ -56,8 +57,48 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi {
     fireEvent(TradeAccountEvent.Disconnected)
   }
 
+  override def OnRspUserLogin(pRspUserLogin: CThostFtdcRspUserLoginField, pRspInfo: CThostFtdcRspInfoField, nRequestID: Int, bIsLast: Boolean): Unit = {
+    log.info("CTP Trader 登录成功！")
+    _isLogin = true
+    var result: LoginResult = null
+    if (_isError(pRspInfo))
+    {
+      result = new LoginResult(pRspInfo.ErrorID, pRspInfo.ErrorMsg)
+    }
+    else
+    {
+      self ! new LoginSuccess()
+      if (pRspUserLogin != null)
+      {
+        this.frontId = String.valueOf(pRspUserLogin.FrontID)
+        this.sessionId = String.valueOf(pRspUserLogin.SessionID)
+      }
+      log.info(s"CTP %s 登录成功".format(accountInfo.name))
+      result = new LoginResult(0, "登录成功")
+      if (pRspUserLogin.FFEXTime.startsWith("-")) {
+        pRspUserLogin.FFEXTime = pRspUserLogin.LoginTime
+      }
+
+      val cqs = new CThostFtdcQrySettlementInfoConfirmField()
+      cqs.BrokerID = accountInfo.brokerCode
+      cqs.InvestorID = accountInfo.brokerAccount
+      trader.ReqQrySettlementInfoConfirm(cqs, nRequestID + 1)
+      val cs = new CThostFtdcSettlementInfoConfirmField()
+      cs.BrokerID = accountInfo.brokerCode
+      cs.InvestorID = accountInfo.brokerAccount
+      trader.ReqSettlementInfoConfirm(cs, nRequestID + 2)
+    }
+  }
+
+  override def OnRspUserLogout(pRspUserLogout: CThostFtdcUserLogoutField, pRspInfo: CThostFtdcRspInfoField, nRequestID: Int, bIsLast: Boolean): Unit = {
+    log.info("OnRspUserLogout : " + pRspUserLogout + ", pRspInfo=" + pRspInfo + ", nRequestID=" + nRequestID + ", bIsLast=" + bIsLast)
+    _isLogin = false
+  }
+
+
   /**
     * 报单录入错误回报。由交易托管系统主动通知客户端，该方法会被调用。
+ *
     * @param pInputOrder
     * @param pRspInfo
     */
@@ -75,6 +116,7 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi {
 
   /**
     * 报单录入应答。当客户端发出过报单录入指令后，交易托管系统返回响应时，该方法会被调用。
+ *
     * @param pInputOrder
     * @param pRspInfo
     * @param nRequestID
@@ -96,6 +138,7 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi {
   /**
     * 报单回报。当客户端进行报单录入、报单操作及其它原因（如部分成交）导致报单状态发生变化时，
     * 交易托管系统会主动通知客户端，该方法会被调用
+ *
     * @param pOrder
     */
   override def OnRtnOrder(pOrder: CThostFtdcOrderField): Unit = {
@@ -119,6 +162,7 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi {
 
   /**
     * 成交回报。当发生成交时交易托管系统会通知客户端，该方法会被调用。
+ *
     * @param cThostFtdcTradeField
     */
   override def OnRtnTrade(cThostFtdcTradeField: CThostFtdcTradeField): Unit = {
@@ -153,54 +197,10 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi {
 
   override def OnRspSettlementInfoConfirm(cThostFtdcSettlementInfoConfirmField: CThostFtdcSettlementInfoConfirmField, cThostFtdcRspInfoField: CThostFtdcRspInfoField, i: Int, b: Boolean): Unit = {}
 
-  override def OnRspUserLogin(pRspUserLogin: CThostFtdcRspUserLoginField, pRspInfo: CThostFtdcRspInfoField, nRequestID: Int, bIsLast: Boolean): Unit = {
-    log.info("OnRspUserLogin : " + pRspUserLogin + ", pRspInfo=" + pRspInfo + ", nRequestID=" + nRequestID + ", bIsLast=" + bIsLast)
-    _logined = true
-    var result: LoginResult = null
-    if (_isError(pRspInfo))
-    {
-      result = new LoginResult(pRspInfo.ErrorID, pRspInfo.ErrorMsg)
-    }
-    else
-    {
-      if (pRspUserLogin != null)
-      {
-        this.frontId = String.valueOf(pRspUserLogin.FrontID)
-        this.sessionId = String.valueOf(pRspUserLogin.SessionID)
-      }
-      log.info(s"CTP %s 登录成功".format(accountInfo.name))
-      result = new LoginResult(0, "登录成功")
-      //      Account account = Account.getTmpAccount(pRspUserLogin.UserID)
-      //      if (account == null) {
-      //        return;
-      //      }
-      if (pRspUserLogin.FFEXTime.startsWith("-")) {
-        pRspUserLogin.FFEXTime = pRspUserLogin.LoginTime
-      }
-      //      trySetExchangeTime(account.getAccountID(), pRspUserLogin.DCETime, pRspUserLogin.SHFETime, pRspUserLogin.FFEXTime, pRspUserLogin.CZCETime);
-      //
-      //      updateLoginResult(account, result.getId());
-      //      accountStatusContext().addByLoginResult(account.getAccountID(), result);
-
-      val cqs = new CThostFtdcQrySettlementInfoConfirmField()
-      cqs.BrokerID = accountInfo.brokerCode
-      cqs.InvestorID = accountInfo.brokerAccount
-      trader.ReqQrySettlementInfoConfirm(cqs, nRequestID + 1)
-      val cs = new CThostFtdcSettlementInfoConfirmField()
-      cs.BrokerID = accountInfo.brokerCode
-      cs.InvestorID = accountInfo.brokerAccount
-      trader.ReqSettlementInfoConfirm(cs, nRequestID + 2)
-    }
-    //    this.response.put(nRequestID + "", result);
-  }
-
-  override def OnRspUserLogout(pRspUserLogout: CThostFtdcUserLogoutField, pRspInfo: CThostFtdcRspInfoField, nRequestID: Int, bIsLast: Boolean): Unit = {
-    log.info("OnRspUserLogout : " + pRspUserLogout + ", pRspInfo=" + pRspInfo + ", nRequestID=" + nRequestID + ", bIsLast=" + bIsLast)
-    _logined = false
-  }
 
   /**
     * 请求查询行情响应。当客户端发出请求查询行情指令后，交易托管系统返回响应时，该方法会被调用。
+ *
     * @param cThostFtdcDepthMarketDataField
     * @param cThostFtdcRspInfoField
     * @param i

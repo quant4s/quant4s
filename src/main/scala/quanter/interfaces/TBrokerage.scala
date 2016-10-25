@@ -7,9 +7,13 @@ import quanter.rest.Trader
   */
 trait TBrokerage {
   var name: String
-  var accountInfo: Trader
+  var accountInfo: Trader = null
 
-  def isConnected: Boolean
+  protected var _isConnected = false
+  def isConnected = _isConnected
+
+  protected var _logined = false
+  def isLogined = _isConnected
 
   def connect
   def disconnect

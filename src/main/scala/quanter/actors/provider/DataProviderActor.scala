@@ -19,7 +19,7 @@ case class Execute()
 /**
   *
   */
-abstract class DataProviderActor extends FSM[DataProviderState, DataProviderData] with ActorLogging {
+trait DataProviderActor extends FSM[DataProviderState, DataProviderData] with ActorLogging {
   var symbolSelections = new mutable.HashMap[String, ActorSelection]
   var smRef = context.actorSelection("/user/" + SecuritiesManagerActor.path)
   var connected = false

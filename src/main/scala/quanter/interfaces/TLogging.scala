@@ -10,5 +10,5 @@ import org.slf4s.Logger
   *
   */
 trait TLogging {
-  val logger = Logger(LoggerFactory.getLogger(this.getClass))
+  val log = Logger(LoggerFactory.getLogger(this.getClass))
 }

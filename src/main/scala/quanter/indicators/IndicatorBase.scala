@@ -16,7 +16,7 @@ abstract class IndicatorBase[T <: BaseData] (pname: String) extends Comparable[I
 
   val updatedHandlers = ListBuffer.empty[IndicatorUpdatedHandler]
 
-  private var _previousInput = null.asInstanceOf[T]
+  private var _previousInput =  null.asInstanceOf[T]
   def name = pname
   def isReady: Boolean
   private var _current: IndicatorDataPoint = new IndicatorDataPoint(new Date(0), 0.0)

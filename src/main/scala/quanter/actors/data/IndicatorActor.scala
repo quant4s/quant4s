@@ -22,8 +22,16 @@ object IndicatorActor {
   }
 }
 
+/**
+  * 创建一个指标，指标有多种
+  * @param symbol
+  * @param duration
+  * @param name
+  * @param param
+  * @param topic
+  */
 class IndicatorActor(symbol: String, duration: Int, name: String, param: String, topic: String) extends BaseIndicatorActor with ActorLogging {
-  val _consolidator = _initIndicator
+  val _consolidator = _init()
   var _subscribers = new ArrayBuffer[ActorRef]()
 
 
@@ -35,7 +43,7 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String,
   /**
     * 初始化指标, TODO: 用型变处理泛型化继承
     */
-  private def _initIndicator : TDataConsolidator = {
+  private def _init() : TDataConsolidator = {
 
     val indicator = new IndicatorFactory().createDataPointIndicator(name, param)
     val consolidator = _resolveConsolidators(symbol, duration)

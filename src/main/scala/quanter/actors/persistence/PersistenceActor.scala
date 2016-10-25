@@ -7,13 +7,14 @@ import java.sql.Timestamp
 
 import scala.collection.mutable.ArrayBuffer
 import scala.slick.driver.MySQLDriver.simple._
+//import scala.slick.driver.H2Driver.simple._
 import akka.actor.{Actor, ActorLogging, Props}
 import quanter.actors._
 import quanter.persistence._
 import quanter.rest._
 import quanter.strategies.StrategyCache
 
-// import scala.slick.driver.H2Driver.simple._
+
 
 
 /**
@@ -30,7 +31,7 @@ object PersistenceActor {
     Props(classOf[PersistenceActor])
   }
 
-  def path = "persistence"
+  val path = "persistence"
 }
 class PersistenceActor extends Actor with ActorLogging{
 //  val dbUrl = "jdbc:mysql://172.16.240.1:3306/quant4s?user=root&password=root&useUnicode=true&characterEncoding=UTF8"

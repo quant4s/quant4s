@@ -11,6 +11,6 @@ import quanter.interfaces.TLogging
   */
 class TestLogJob extends Job with TLogging{
   override def execute(context: JobExecutionContext): Unit = {
-    logger.info("测试JOB")
+    log.info("测试JOB")
   }
 }

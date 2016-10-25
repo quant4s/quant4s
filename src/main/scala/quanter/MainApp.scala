@@ -26,7 +26,7 @@ object MainApp extends App {
   implicit val system = ActorSystem("server-system")
 
   // MARKET actor
-  val httpServer = system.actorOf(HttpServer.props)
+  val httpServer = system.actorOf(HttpServer.props, HttpServer.path)
   val persistenceRef = system.actorOf(PersistenceActor.props, PersistenceActor.path)
   val tradeRouteRef = system.actorOf(TradeRouteActor.props, TradeRouteActor.path)
   system.actorOf(SIManagerActor.props, SIManagerActor.path)
@@ -44,12 +44,12 @@ object MainApp extends App {
   //
   val pub = system.actorOf(ZeroMQServerActor.props, ZeroMQServerActor.path)
 
-  _createStrategy("""{"id": 1,"name": "测试数据","runMode":1, "lang": "C#", "status": 1, "portfolio": {"cash":120000, "date":"2004-09-04T18:06:22Z"}}""")
-  _createStrategy("""{"id": 2,"name": "带资金组合","runMode":1, "lang": "C#", "status": 1，"portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}""")
+//  _createStrategy("""{"id": 1,"name": "测试数据","runMode":1, "lang": "C#", "status": 1, "portfolio": {"cash":120000, "date":"2004-09-04T18:06:22Z"}}""")
+//  _createStrategy("""{"id": 2,"name": "带资金组合","runMode":1, "lang": "C#", "status": 1，"portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}""")
 
   _initTrader()
-  _createTrader("""{"name": "SHSE","brokerType":"SIM", "brokerName":"仿真接口", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
-  _createTrader("""{"name": "SHSE","brokerType":"CTP", "brokerName":"THS", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
+//  _createTrader("""{"name": "SHSE","brokerType":"SIM", "brokerName":"仿真接口", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
+//  _createTrader("""{"name": "SHSE","brokerType":"CTP", "brokerName":"THS", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
 
   // 启动REST 服务
   IO(Http) ! Http.Bind(httpServer, "127.0.0.1", port = 8888)

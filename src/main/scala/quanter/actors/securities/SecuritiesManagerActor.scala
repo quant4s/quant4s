@@ -1,6 +1,7 @@
 package quanter.actors.securities
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import quanter.actors.provider.csv.CsvDataWriterActor
 import quanter.securities.{Security, SecurityManager}
 
 import scala.collection.mutable
@@ -51,12 +52,14 @@ class SecuritiesManagerActor extends Actor with ActorLogging {
 
 
   /**
-    * 读取文件，创建所有的证券Actor
+    * 读取文件，创建所有的证券Actor, 所有的证券CsvWriterActor
     */
   private def _init = {
     for((k, v) <- manager) {
       val ref = context.actorOf(SecurityActor.props(v), k)
       secActors += ( k -> ref)
+
+      val writerRef = context.actorOf(CsvDataWriterActor.props(k), s"cdw${k}")
     }
   }
 
