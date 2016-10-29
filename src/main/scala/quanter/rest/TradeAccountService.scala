@@ -1,6 +1,7 @@
 package quanter.rest
 
 
+import akka.actor.Actor.Receive
 import akka.actor.ActorSystem
 import akka.event.LoggingAdapter
 import org.json4s.jackson.JsonMethods._
@@ -9,6 +10,7 @@ import quanter.actors._
 import quanter.actors.trade._
 import quanter.config.Settings
 import spray.routing.HttpService
+import spray.util.LoggingContext
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
@@ -21,7 +23,6 @@ import scala.collection.mutable.ArrayBuffer
   *   b. 状态消息（10：连接成功|11：失败，20：登录成功|21：失败）
   */
 trait TradeAccountService extends HttpService {
-  implicit def _log: LoggingAdapter
   implicit def systemRef: ActorSystem
 
   val traderManager = actorRefFactory.actorSelection("/user/" + TradeRouteActor.path)
@@ -31,7 +32,7 @@ trait TradeAccountService extends HttpService {
   // 获取列表
   traderManager ! new ListTraders()
 
-  val tradeAccountServiceRoute = {
+  def tradeAccountServiceRoute(implicit log: LoggingContext)  = {
     get {
       path("account" / "list") {
         complete {
@@ -97,21 +98,30 @@ trait TradeAccountService extends HttpService {
     }
   }
 
+  def respTradeAccountReceive(implicit log: LoggingContext): Receive = {
+    case t: Array[Trader] => {
+      _buildTraderAccountCache(t)
+    }
+    case t: Trader => {
+      _updateTraderAccountCache(t)
+    }
+  }
 
-  protected def buildTraderAccountCache(traders: Array[Trader]): Unit = {
-    _log.debug("在Rest Service层创建交易账号缓存")
+  protected def _buildTraderAccountCache(traders: Array[Trader])(implicit log: LoggingContext) : Unit = {
+    log.debug("在Rest Service层创建交易账号缓存")
     for(trader <- traders) {
        tradeAccountCache +=(trader.id.get -> trader)
     }
   }
 
-  protected def updateTraderAccountCache(trader: Trader): Unit = {
-    _log.debug("在Rest Service层更新交易账号缓存")
+  protected def _updateTraderAccountCache(trader: Trader)(implicit log: LoggingContext) : Unit = {
+    log.debug("在Rest Service层更新交易账号缓存")
     tradeAccountCache(trader.id.get) = trader
   }
 
   /**
     * 获取所有支持的通道类型
+ *
     * @return
     */
   private def _initChannelTypes() = {
@@ -140,6 +150,7 @@ trait TradeAccountService extends HttpService {
 
   /**
     * 创建交易账户
+ *
     * @param json
     * @return
     */

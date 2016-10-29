@@ -5,6 +5,7 @@ import org.json4s.jackson.JsonMethods._
 import quanter.actors.SecuritySelection
 import quanter.actors.securitySelection.SIManagerActor
 import spray.routing.HttpService
+import spray.util.LoggingContext
 
 /**
   *
@@ -12,7 +13,7 @@ import spray.routing.HttpService
 trait PickerService extends HttpService {
 
   val simRef = actorRefFactory.actorSelection("/user/" + SIManagerActor.path)
-  val pickerServiceRoute = {
+  def pickerServiceRoute(implicit log: LoggingContext)  = {
     post {
       path("picker" / Rest) { topic =>
         requestInstance { request =>

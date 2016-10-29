@@ -1,5 +1,6 @@
 package quanter.rest
 
+import akka.actor.Actor._
 import akka.actor.ActorSelection
 import akka.event.LoggingAdapter
 import org.json4s.jackson.JsonMethods._
@@ -7,6 +8,7 @@ import org.json4s.{DefaultFormats, Extraction, Formats}
 import quanter.actors._
 import quanter.actors.strategy._
 import spray.routing.HttpService
+import spray.util.LoggingContext
 
 import scala.collection.mutable
 
@@ -15,12 +17,12 @@ import scala.collection.mutable
   */
 trait StrategyService extends HttpService {
 //  val strategiesManager = new StrategiesManager()
-  implicit def _log: LoggingAdapter
+//  implicit def _log: LoggingAdapter
   val manager = actorRefFactory.actorSelection("/user/" + StrategiesManagerActor.path)
   var strategyCache = new mutable.HashMap[Int, Strategy]()
 
   manager ! new ListStrategies()
-  val strategyServiceRoute = {
+  def strategyServiceRoute(implicit log: LoggingContext) = {
     get {
       path("strategy" / "list") {   // 获取策略列表
         complete {
@@ -165,18 +167,27 @@ trait StrategyService extends HttpService {
     }
   }
 
-
-
   private def _findStrategyActor(id: Int): ActorSelection = actorRefFactory.actorSelection("/user/%s/%d".format(StrategiesManagerActor.path, id))
 
-  protected def buildStrategyCache(strategies: Array[Strategy]): Unit = {
-    _log.debug("在Rest Service层创建策略缓存")
+  def respStrategyReceive(implicit log: LoggingContext): Receive = {
+    // 策略缓存处理
+    // 1. 构建策略缓存 2. 更新策略 3. 更新资金组合
+    case t: Array[Strategy] => {
+      _buildStrategyCache(t)
+    }
+    case t: Strategy => {
+      _updateStrategyCache(t)
+    }
+  }
+
+  private def _buildStrategyCache(strategies: Array[Strategy])(implicit log: LoggingContext) : Unit = {
+    log.debug("在Rest Service层创建策略缓存")
     for(s <- strategies)
       strategyCache += (s.id -> s)
   }
 
-  protected def updateStrategyCache(s: Strategy): Unit = {
-    _log.debug("在Rest Service层更新策略缓存")
+  private def _updateStrategyCache(s: Strategy)(implicit log: LoggingContext) : Unit = {
+    log.debug("在Rest Service层更新策略缓存")
     strategyCache(s.id) = s
   }
 

@@ -15,7 +15,6 @@ import spray.http.{AllOrigins, StatusCodes}
   */
 class HttpServer extends Actor with StrategyService with TradeAccountService with DataService with PickerService with ActorLogging {
   def actorRefFactory = context
-  def _log = log
   def systemRef = context.system
   implicit def executionContext = actorRefFactory.dispatcher
   private val allowOriginHeader = `Access-Control-Allow-Origin`(AllOrigins)
@@ -26,18 +25,7 @@ class HttpServer extends Actor with StrategyService with TradeAccountService wit
 
   def receive = runRoute( respondWithHeaders(`Access-Control-Allow-Methods`(OPTIONS, GET, POST, DELETE, PUT) ::  allowOriginHeader :: optionsCorsHeaders){
     optionsRoute ~ strategyServiceRoute ~ tradeAccountServiceRoute ~ dataServiceRoute ~ pickerServiceRoute
-  }) orElse {
-    // 策略缓存处理
-    // 1. 构建策略缓存 2. 更新策略 3. 更新资金组合
-    case s: Array[Strategy] => buildStrategyCache(s)
-    case s: Strategy => updateStrategyCache(s)
-
-    // TODO: 当日委托单缓存处理
-
-    // 交易账户缓存处理
-    case t: Array[Trader] => buildTraderAccountCache(t)
-    case t: Trader => updateTraderAccountCache(t)
-  }
+  }) orElse respTradeAccountReceive orElse respStrategyReceive
 
   val optionsRoute = {
     options {
