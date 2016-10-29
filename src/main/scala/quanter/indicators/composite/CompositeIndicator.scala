@@ -10,8 +10,6 @@ import quanter.indicators.{IndicatorBase, IndicatorDataPoint}
   */
 
 class CompositeIndicator[T <: BaseData](pname: String, pleft: IndicatorBase[T], pright: IndicatorBase[T], pcomposer: (IndicatorBase[T], IndicatorBase[T]) => Double) extends IndicatorBase[T](pname) {
-  type IndicatorComposer = (IndicatorBase[T], IndicatorBase[T]) => Double
-
   val left = pleft
   val right = pright
   val composer =  pcomposer
