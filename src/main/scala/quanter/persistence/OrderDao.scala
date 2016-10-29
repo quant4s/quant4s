@@ -3,13 +3,14 @@
   */
 package quanter.persistence
 
-import scala.slick.driver.MySQLDriver.simple._
+import profile.simple._
+
 //import scala.slick.driver.H2Driver.simple._
 
 /**
   * 对订单的数据库处理
   */
-class OrderDao (implicit session: Session)  extends BaseDao[EOrder] {
+class OrderDao (implicit session: Session)  extends BaseDao[EOrder]{
   override def getById(id: Int): Option[EOrder] = gOrders.filter(_.id === id).take(1).firstOption
 
   override def update(id: Int, entity: EOrder): Unit = {

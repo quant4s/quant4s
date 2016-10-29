@@ -2,8 +2,8 @@
   *
   */
 package quanter.persistence
-import scala.slick.driver.MySQLDriver.simple._
-//import scala.slick.driver.H2Driver.simple._
+import profile.simple._
+
 /**
   *
   */

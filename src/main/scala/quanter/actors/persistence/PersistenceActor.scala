@@ -6,9 +6,8 @@ package quanter.actors.persistence
 import java.sql.Timestamp
 
 import scala.collection.mutable.ArrayBuffer
-import scala.slick.driver.MySQLDriver.simple._
-//import scala.slick.driver.H2Driver.simple._
 import akka.actor.{Actor, ActorLogging, Props}
+import com.typesafe.config.ConfigFactory
 import quanter.actors._
 import quanter.persistence._
 import quanter.rest._
@@ -33,12 +32,22 @@ object PersistenceActor {
 
   val path = "persistence"
 }
-class PersistenceActor extends Actor with ActorLogging{
-//  val dbUrl = "jdbc:mysql://172.16.240.1:3306/quant4s?user=root&password=root&useUnicode=true&characterEncoding=UTF8"
-//  val jdbcDriver = "com.mysql.jdbc.Driver"
-//  var db = Database.forURL(dbUrl, driver=jdbcDriver)
-  var db = Database.forConfig("mysql")
+
+class PersistenceActor extends Actor with ActorLogging {
+  import profile.simple._
+
+  var db = _getDatabase
   implicit val session = db.createSession()
+
+  def _getDatabase: Database = {
+    val TEST = "test"
+    val DEV = "dev"
+    val PROD = "prod"
+    val config = ConfigFactory.load()
+    val runMode = config.getString("quant4s.runMode")
+    Database.forConfig(runMode)
+  }
+
 
   val strategyCache = new StrategyCache()
 
@@ -49,6 +58,7 @@ class PersistenceActor extends Actor with ActorLogging{
 //    ddl.drop
 //    ddl.create
   }
+
 
 
   @scala.throws[Exception](classOf[Exception])

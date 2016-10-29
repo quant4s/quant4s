@@ -1,8 +1,9 @@
 package quanter
 import java.sql.Timestamp
 
-import scala.slick.driver.MySQLDriver.simple._
-//import scala.slick.driver.H2Driver.simple._
+import com.typesafe.config.ConfigFactory
+
+import scala.slick.driver.{H2Driver, JdbcProfile, MySQLDriver, PostgresDriver}
 
 
 /**
@@ -10,95 +11,159 @@ import scala.slick.driver.MySQLDriver.simple._
   */
 package object persistence {
 
-  case class EStrategy (id: Int, name: String, runMode: Int, status: Int, lang: String) {
-    // def portfolio = portfolios.filter(_.strategyId === id.get).take(1).firstOption
+  def _getDriver = {
+    val TEST = "test"
+    val DEV = "dev"
+    val PROD = "prod"
+    val mode = ConfigFactory.load().getString("quant4s.runMode")
+    mode match {
+      case TEST => H2Driver
+      case DEV => MySQLDriver
+      case PROD => PostgresDriver
+      case _ => MySQLDriver
+    }
   }
+    val profile: JdbcProfile = _getDriver
 
-  class EStrategies(tag: Tag) extends Table[EStrategy](tag, "STRATEGIES") {
-    def id = column[Int]("ID", O.PrimaryKey)
-    def name = column[String]("NAME")
-    def runMode = column[Int]("RUNMODE")
-    def status = column[Int]("STATUS")
-    def lang = column[String]("LANG")
+    import profile.simple._
 
-    def * = (id, name, runMode, status, lang) <> (EStrategy.tupled, EStrategy.unapply)
-  }
-  val gStrategies = TableQuery[EStrategies]
+    case class EStrategy(id: Int, name: String, runMode: Int, status: Int, lang: String) {
+      // def portfolio = portfolios.filter(_.strategyId === id.get).take(1).firstOption
+    }
 
-  case class EPortfolio(id: Option[Int], cash: Double, date: Timestamp, strategyId: Int) {
-    // def holdings = stockHoldings.filter(_.portfolioId === id.get).list.toList
-  }
-  class EPortfolios(tag: Tag) extends Table[EPortfolio](tag, "PORTFOLIOS") {
-    def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
-    def cash = column[Double]("CASH")
-    def date = column[Timestamp]("HOLDINGDATE")
-    def strategyId = column[Int]("STRATEGY_ID")
+    class EStrategies(tag: Tag) extends Table[EStrategy](tag, "STRATEGIES") {
+      def id = column[Int]("ID", O.PrimaryKey)
 
-    def strategy = foreignKey("STRATEGY_FK", strategyId, gStrategies)(_.id)
-    def * = (id.?, cash, date, strategyId) <> (EPortfolio.tupled, EPortfolio.unapply)
-  }
-  val gPortfolios = TableQuery[EPortfolios]
+      def name = column[String]("NAME")
 
-  case class EStockHolding(id: Option[Int], portfolioId: Int, symbol: String, cost: Double)
-  class EStockHoldings(tag: Tag) extends Table[EStockHolding](tag, "STOCKHOLDINGS") {
-    def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
-    def portfolioId = column[Int]("PORTFOLIO_ID")
-    def symbol = column[String]("SYMBOL")
-    def cost = column[Double]("COST")
+      def runMode = column[Int]("RUNMODE")
 
-    def * = (id.?, portfolioId, symbol, cost) <> (EStockHolding.tupled, EStockHolding.unapply)
-  }
-  val gStockHoldings = TableQuery[EStockHoldings]
+      def status = column[Int]("STATUS")
 
-  case class ETransaction(id: Option[Int], strategyId: Int,symbol: String) {
-    def orders = gOrders.filter(_.strategyId === strategyId)
-  }
-  class ETransactions(tag: Tag) extends Table[ETransaction](tag, "TRANSACTION") {
-    def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
-    def symbol = column[String]("SYMBOL")
-    def strategyId = column[Int]("STRATEGY_ID")
+      def lang = column[String]("LANG")
 
-    def * = (id.?, strategyId, symbol) <> (ETransaction.tupled, ETransaction.unapply)
-  }
-  val gTransactions = TableQuery[ETransactions]
+      def * = (id, name, runMode, status, lang) <>(EStrategy.tupled, EStrategy.unapply)
+    }
 
-  case class EOrder(id: Option[Int], orderNo: Int, strategyId: Int, tradeAccountId: Int, symbol: String, orderType: Int, side: Int,
-                    transactTime: String, quantity: Int, openClose: String, price: Double, currency: String, securityExchange: String, status: Int)
-  class EOrders(tag: Tag) extends Table[EOrder](tag, "ORDER") {
-    def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
-    def orderNo = column[Int]("ORDER_NO")
-    def symbol = column[String]("SYMBOL")
-    def tradeAccountId = column[Int]("TRADE_ACCOUNT_ID")
-    def strategyId = column[Int]("STRATEGY_ID")
-    def orderType = column[Int]("ORDER_TYPE")
-    def side = column[Int]("SIDE")
-    def transactTime = column[String]("TRANSACT_TIME")
-    def quantity = column[Int]("QUANTITY")
-    def openClose = column[String]("OPEN_CLOSE")
-    def price = column[Double]("PRICE")
-    def currency = column[String]("CURRENCY")
-    def securityExchange = column[String]("SECURITY_EXCHANGE")
-    def status = column[Int]("STATUS")
+    val gStrategies = TableQuery[EStrategies]
 
-    def * = (id.?, orderNo,strategyId, tradeAccountId, symbol, orderType, side, transactTime, quantity, openClose, price, currency, securityExchange, status) <> (EOrder.tupled, EOrder.unapply)
-  }
-  val gOrders = TableQuery[EOrders]
+    case class EPortfolio(id: Option[Int], cash: Double, date: Timestamp, strategyId: Int) {
+      // def holdings = stockHoldings.filter(_.portfolioId === id.get).list.toList
+    }
 
-  case class ETrader(id: Option[Int], name: String, brokerType: String, brokerName: String, brokerCode: String, brokerAccount: String, brokerPassword: Option[String], brokerUri: String, brokerServicePwd: Option[String], status: Int = 0)
+    class EPortfolios(tag: Tag) extends Table[EPortfolio](tag, "PORTFOLIOS") {
+      def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
 
-  class ETraders(tag: Tag) extends Table[ETrader](tag, "TRADERS") {
-    def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
-    def name = column[String]("NAME")
-    def brokerType = column[String]("BROKERTYPE")
-    def brokerName = column[String]("BROKERNAME")
-    def brokerCode = column[String]("BROKERCODE")
-    def brokerAccount = column[String]("BROKERACCOUNT")
-    def brokerPassword = column[String]("BROKERPASSWORD", O.Nullable, O.Default[String](""))
-    def brokerUri = column[String]("BROKERURI")
-    def brokerServicePwd = column[String]("BROKERSERVICEPWD", O.Nullable, O.Default[String](""))
-    def status = column[Int]("STATUS")
+      def cash = column[Double]("CASH")
 
-    def * = (id.?, name, brokerType, brokerName, brokerCode, brokerAccount, brokerPassword?, brokerUri, brokerServicePwd?, status) <> (ETrader.tupled, ETrader.unapply)
-  }
-  val gTraders = TableQuery[ETraders]
+      def date = column[Timestamp]("HOLDINGDATE")
+
+      def strategyId = column[Int]("STRATEGY_ID")
+
+      def strategy = foreignKey("STRATEGY_FK", strategyId, gStrategies)(_.id)
+
+      def * = (id.?, cash, date, strategyId) <>(EPortfolio.tupled, EPortfolio.unapply)
+    }
+
+    val gPortfolios = TableQuery[EPortfolios]
+
+    case class EStockHolding(id: Option[Int], portfolioId: Int, symbol: String, cost: Double)
+
+    class EStockHoldings(tag: Tag) extends Table[EStockHolding](tag, "STOCKHOLDINGS") {
+      def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
+
+      def portfolioId = column[Int]("PORTFOLIO_ID")
+
+      def symbol = column[String]("SYMBOL")
+
+      def cost = column[Double]("COST")
+
+      def * = (id.?, portfolioId, symbol, cost) <>(EStockHolding.tupled, EStockHolding.unapply)
+    }
+
+    val gStockHoldings = TableQuery[EStockHoldings]
+
+    case class ETransaction(id: Option[Int], strategyId: Int, symbol: String) {
+      def orders = gOrders.filter(_.strategyId === strategyId)
+    }
+
+    class ETransactions(tag: Tag) extends Table[ETransaction](tag, "TRANSACTION") {
+      def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
+
+      def symbol = column[String]("SYMBOL")
+
+      def strategyId = column[Int]("STRATEGY_ID")
+
+      def * = (id.?, strategyId, symbol) <>(ETransaction.tupled, ETransaction.unapply)
+    }
+
+    val gTransactions = TableQuery[ETransactions]
+
+    case class EOrder(id: Option[Int], orderNo: Int, strategyId: Int, tradeAccountId: Int, symbol: String, orderType: Int, side: Int,
+                      transactTime: String, quantity: Int, openClose: String, price: Double, currency: String, securityExchange: String, status: Int)
+
+    class EOrders(tag: Tag) extends Table[EOrder](tag, "ORDER") {
+      def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
+
+      def orderNo = column[Int]("ORDER_NO")
+
+      def symbol = column[String]("SYMBOL")
+
+      def tradeAccountId = column[Int]("TRADE_ACCOUNT_ID")
+
+      def strategyId = column[Int]("STRATEGY_ID")
+
+      def orderType = column[Int]("ORDER_TYPE")
+
+      def side = column[Int]("SIDE")
+
+      def transactTime = column[String]("TRANSACT_TIME")
+
+      def quantity = column[Int]("QUANTITY")
+
+      def openClose = column[String]("OPEN_CLOSE")
+
+      def price = column[Double]("PRICE")
+
+      def currency = column[String]("CURRENCY")
+
+      def securityExchange = column[String]("SECURITY_EXCHANGE")
+
+      def status = column[Int]("STATUS")
+
+      def * = (id.?, orderNo, strategyId, tradeAccountId, symbol, orderType, side, transactTime, quantity, openClose, price, currency, securityExchange, status) <>(EOrder.tupled, EOrder.unapply)
+    }
+
+    val gOrders = TableQuery[EOrders]
+
+    case class ETrader(id: Option[Int], name: String, brokerType: String, brokerName: String, brokerCode: String, brokerAccount: String, brokerPassword: Option[String], brokerUri: String, brokerServicePwd: Option[String], status: Int = 0)
+
+    class ETraders(tag: Tag) extends Table[ETrader](tag, "TRADERS") {
+      def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
+
+      def name = column[String]("NAME")
+
+      def brokerType = column[String]("BROKERTYPE")
+
+      def brokerName = column[String]("BROKERNAME")
+
+      def brokerCode = column[String]("BROKERCODE")
+
+      def brokerAccount = column[String]("BROKERACCOUNT")
+
+      def brokerPassword = column[String]("BROKERPASSWORD", O.Nullable, O.Default[String](""))
+
+      def brokerUri = column[String]("BROKERURI")
+
+      def brokerServicePwd = column[String]("BROKERSERVICEPWD", O.Nullable, O.Default[String](""))
+
+      def status = column[Int]("STATUS")
+
+      def * = (id.?, name, brokerType, brokerName, brokerCode, brokerAccount, brokerPassword ?, brokerUri, brokerServicePwd ?, status) <>(ETrader.tupled, ETrader.unapply)
+    }
+
+    val gTraders = TableQuery[ETraders]
+
+
+
 }

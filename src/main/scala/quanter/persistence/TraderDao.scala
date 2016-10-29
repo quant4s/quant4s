@@ -3,7 +3,7 @@
   */
 package quanter.persistence
 
-import scala.slick.driver.MySQLDriver.simple._
+import profile.simple._
 /**
   *
   */
