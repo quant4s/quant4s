@@ -10,7 +10,9 @@ import spray.http.{HttpEntity, MediaTypes}
   */
 class OrderServiceSpec  extends RoutingSpec with StrategyService{
   implicit def actorRefFactory = system
+//  implicit def _log = null //akka.event.Logging(system, this)
 
+  // _log = akka.event.Logging(context.system, this)
   "订单提交," - {
     " 提交数据订阅请求" in {
       Post("/strategy/1/order", HttpEntity(MediaTypes.`application/json`,
