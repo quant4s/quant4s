@@ -48,5 +48,5 @@ class BaseData extends  TBaseData{
     value = lastTrade
   }
 
-  def toJson = """{"symbol":"%s"}""".format(this.symbol)
+  def toJson = """{"symbol":"%s", "value":"%d"}""".format(this.symbol, value)
 }

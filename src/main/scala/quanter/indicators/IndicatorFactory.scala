@@ -20,8 +20,8 @@ val params = param.split(IndicatorFactory.splitChar)
       case IndicatorFactory.RSI => _rsi(params(0).toInt)
       case _ => null
     }
-
   }
+
 
   def createTradeBarIndicator(name: String, param: String) : TradeBarIndicator = {
     val params = param.split(IndicatorFactory.splitChar)
@@ -67,7 +67,7 @@ val params = param.split(IndicatorFactory.splitChar)
 }
 
 object IndicatorFactory {
-  private val splitChar = "~"
+  val splitChar = "~"
 
   // DATAPOINT INDICATOR
   val MACD = "MACD"

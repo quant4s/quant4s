@@ -22,7 +22,7 @@ trait DataService extends HttpService {
       path("data"/ Rest) { topic =>
         requestInstance { request =>
           complete {
-            log.debug("接受到订阅数据指令")
+            log.debug("接受到订阅数据指令" +  request.entity.data.asString)
             _subscribe(topic, request.entity.data.asString)
           }
         }
