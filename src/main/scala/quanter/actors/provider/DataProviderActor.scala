@@ -47,10 +47,18 @@ trait DataProviderActor extends FSM[DataProviderState, DataProviderData] with Ac
     case Event(job: ExecuteJob, _) =>   // 定时作业
       executeJob()
       stay
+    case Event(DisConnectedSuccess(), _) =>
+      log.debug("断开连接")
+      goto(Disconnected)
+//    case Event(_,_) =>  // 订阅
+//      stay
   }
   when(Disconnected) {
-    case Event(Connected, _) =>
+    case Event(ConnectedSuccess(), _) =>{
+      log.debug("连接成功，准备登录")
+      login()
       goto(Connected)
+    }
   }
   whenUnhandled  {
     case Event(ask: AskListenedSymbol, _) => addSymbol(ask.symbol)

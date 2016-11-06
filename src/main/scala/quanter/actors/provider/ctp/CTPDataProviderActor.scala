@@ -5,6 +5,7 @@ package quanter.actors.provider.ctp
 
 import akka.actor.{ActorSelection, FSM, Props}
 import jctp.struct.{CThostFtdcForQuoteRspField, CThostFtdcRspInfoField, CThostFtdcRspUserLoginField, _}
+import quanter.actors.AskListenedSymbol
 import quanter.actors.provider._
 import quanter.actors.provider.ctp.CTPDataProviderActor._
 import quanter.actors.trade.{LoginResult, TradeAccountEvent, TradeAccountMessage}
@@ -20,7 +21,6 @@ class CTPDataProviderActor extends DataProviderActor with CThostFtdcMdSpi {
   val mds = CThostFtdcMdApi.CreateFtdcMdApi("./logs/ctp/mds/", false, false)
   val url = "tcp://180.168.146.187:10031"  //"tcp://218.202.237.33:10012"
   var requestId = 1
-  addSymbol("AG1612")
 
   override def addSymbol(contractCode:String): Unit = {
     log.debug("增加关注的证券代码")
@@ -49,6 +49,13 @@ class CTPDataProviderActor extends DataProviderActor with CThostFtdcMdSpi {
     mds.UnSubscribeMarketData(Array(contractCode), 1)
   }
 
+  def subQuote(): Unit = {
+    for(s <- symbolSelections.keys) {
+      mds.SubscribeMarketData(Array(s), 1)
+    }
+    // mds.SubscribeMarketData()
+  }
+
   private def _isError( pRspInfo: CThostFtdcRspInfoField) = (pRspInfo != null) && (pRspInfo.ErrorID != 0)
 
   def fireEvent(event: TradeAccountEvent): Unit = {
@@ -69,7 +76,7 @@ class CTPDataProviderActor extends DataProviderActor with CThostFtdcMdSpi {
   override def OnFrontDisconnected(nReason: Int): Unit = {
     connected = false
     logined = false
-
+    self ! new DisConnectedSuccess()
     log.info("断开CTP连接 nReason=" + nReason)
   }
 
@@ -86,6 +93,8 @@ class CTPDataProviderActor extends DataProviderActor with CThostFtdcMdSpi {
       logined = true
 
       self ! new LoginSuccess()
+
+      self ! new AskListenedSymbol("AG1612")
       // TODO: 通知登录事件
       fireEvent(TradeAccountEvent.Logined_Success)
     }
