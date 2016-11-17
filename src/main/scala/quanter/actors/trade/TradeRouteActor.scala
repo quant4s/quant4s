@@ -7,7 +7,7 @@ import quanter.actors._
 import quanter.actors.persistence.PersistenceActor
 import quanter.config.Settings
 import quanter.interfaces.TBrokerage
-import quanter.rest.{HttpServer, Trader}
+import quanter.rest.{HttpServer, TradeAccount}
 
 import scala.collection.mutable
 import scala.concurrent.Await
@@ -25,7 +25,7 @@ class TradeRouteActor extends Actor with ActorLogging{
   val restRef = context.actorSelection("/user/" + HttpServer.path)
 
   val providers = _initProviders()
-  var traderCache = new mutable.HashMap[Int, Trader]()
+  var traderCache = new mutable.HashMap[Int, TradeAccount]()
 
   persisRef ! new ListTraders()
 
@@ -36,8 +36,8 @@ class TradeRouteActor extends Actor with ActorLogging{
     case t: DeleteTrader => _deleteTrader(t.id)
 
     // return
-    case t: Array[Trader] => _createTradeAccountActor(t)
-    case t: Trader => _traderCreated(t)
+    case t: Array[TradeAccount] => _createTradeAccountActor(t)
+    case t: TradeAccount => _traderCreated(t)
   }
 
   /**
@@ -53,7 +53,7 @@ class TradeRouteActor extends Actor with ActorLogging{
     map
   }
 
-  private def _createTradeAccountActor(traders: Array[Trader]): Unit = {
+  private def _createTradeAccountActor(traders: Array[TradeAccount]): Unit = {
     log.info("接收到回传的TraderList")
 
     restRef ! traders
@@ -77,7 +77,7 @@ class TradeRouteActor extends Actor with ActorLogging{
     log.debug("获取交易账户缓存")
     sender ! traderCache
   }
-  private def _saveTrader(trader: Trader): Unit = {
+  private def _saveTrader(trader: TradeAccount): Unit = {
     log.info("创建一个Trader")
     persisRef ! NewTrader(trader)
   }
@@ -86,7 +86,7 @@ class TradeRouteActor extends Actor with ActorLogging{
     *
     * @param trader
     */
-  private def _traderCreated(trader: Trader): Unit = {
+  private def _traderCreated(trader: TradeAccount): Unit = {
     val clazz = providers.get(trader.brokerType).get
 
     try {
@@ -98,7 +98,7 @@ class TradeRouteActor extends Actor with ActorLogging{
     }
   }
 
-  private def _updateTrader(trader: Trader): Unit = {
+  private def _updateTrader(trader: TradeAccount): Unit = {
     persisRef ! new UpdateTrader(trader)
   }
 

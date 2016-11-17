@@ -5,22 +5,21 @@ package quanter.actors.trade.ctp
 
 import java.util.Date
 
+import akka.actor.Props
 import jctp.struct.{CThostFtdcSettlementInfoField, _}
 import quanter.actors.LoginSuccess
 import quanter.actors.provider.ConnectedSuccess
 import quanter.actors.strategy.StrategiesManagerActor
-import quanter.actors.trade.{BrokerageActor, LoginResult, OrderStatusResult, TradeAccountEvent}
+import quanter.actors.trade._
 
 /**
   *
   */
-class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi {
+class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Trader {
 
   val trader = CThostFtdcTraderApi.CreateFtdcTraderApi("./logs/ctp/trader/")
   var frontId = ""
   var sessionId = ""
-  var requestId = 1
-  val url = "tcp://180.168.146.187:10031"
 
   override protected def login(): Unit = {
     val reqUser = new CThostFtdcReqUserLoginField()
@@ -28,17 +27,25 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi {
     reqUser.BrokerID = accountInfo.brokerCode
     reqUser.UserID = accountInfo.brokerAccount
     reqUser.Password = accountInfo.brokerPassword.getOrElse("")
+    reqUser.UserProductInfo = "quant4s"
     log.info("[CTP Trader Login] start login")
 
-    requestId += 1
-    trader.ReqUserLogin(reqUser, requestId)
+    trader.ReqUserLogin(reqUser, nextRequestId)
+  }
+
+  override protected def logout(): Unit = {
+    val reqId = nextRequestId
+    val logout = new CThostFtdcUserLogoutField()
+    logout.BrokerID = accountInfo.brokerCode
+    logout.UserID = accountInfo.brokerAccount
+    trader.ReqUserLogout(logout, reqId)
   }
 
   override def connect(): Unit = {
     trader.RegisterSpi(this)
     trader.SubscribePrivateTopic(2)
     trader.SubscribePublicTopic(2)
-    trader.RegisterFront(url)
+    trader.RegisterFront(accountInfo.brokerUri)
     trader.Init()
   }
 
@@ -46,8 +53,8 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi {
     _isConnected = true
     log.info("CTP Trader 连接成功！")
 
-    self ! new ConnectedSuccess()
-    fireEvent(TradeAccountEvent.Connected_Success)
+    self ! new quanter.actors.ConnectedSuccess()
+//    fireEvent(TradeAccountEvent.Connected_Success)
   }
 
   override def OnFrontDisconnected(i: Int): Unit = {
@@ -142,35 +149,39 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi {
     * @param pOrder
     */
   override def OnRtnOrder(pOrder: CThostFtdcOrderField): Unit = {
-    // 保存数据到数据库
-    // case class OrderStatusResult(pid: String, plocalID: String, pmdDate: Date, paccountID: Option[String], pdirection: Int, porderSysID: String, val orderStatus: String)
+    // 根据本地委托ID，找到策略ID
+    val localId = pOrder.OrderRef
+    val strategyId =  getStrategyId(localId)
+    val strategyRef = context.actorSelection("/user/%s/%s".format(StrategiesManagerActor.path, strategyId))
 
-//    val orderResult = new OrderStatusResult()
-      val id = "" // 改为自动增加
-      val localId = pOrder.OrderRef
+    val id = nextResultId
     val orderSysID = pOrder.OrderSysID
     val direction = pOrder.Direction.toInt
     val mdDate = new Date()
     val status = pOrder.OrderStatus.toString
     val accountId = ""
 
-    val orderResult = new OrderStatusResult(id, localId, mdDate, Some(accountId), direction, orderSysID, status)
-    //
+    val result = new OrderStatusResult(id, localId, mdDate, Some(accountId), direction, orderSysID, status)
 
-
+    strategyRef ! result
   }
 
   /**
     * 成交回报。当发生成交时交易托管系统会通知客户端，该方法会被调用。
  *
-    * @param cThostFtdcTradeField
+    * @param pTrade
     */
-  override def OnRtnTrade(cThostFtdcTradeField: CThostFtdcTradeField): Unit = {
-    // TODO: 根据本地委托ID，找到策略ID
-    val strategyId = "1"
-    val strategyRef = context.actorSelection("/user/%s/%s".format(StrategiesManagerActor.path, strategyId) )
-    // TODO: 修改策略的内存持仓数据, 由策略负责更新到成交回报数据库
-    strategyRef ! ""
+  override def OnRtnTrade(pTrade: CThostFtdcTradeField): Unit = {
+    // 根据本地委托ID，找到策略ID
+    val localId = pTrade.OrderLocalID
+    val strategyId =  getStrategyId(localId)
+    val strategyRef = context.actorSelection("/user/%s/%s".format(StrategiesManagerActor.path, strategyId))
+
+    // 修改策略的内存持仓数据, 由策略负责更新到成交回报数据库
+    val result = new OrderDealResult(nextResultId, localId, new Date(), Some(accountInfo.brokerAccount), pTrade.InstrumentID, pTrade.Direction.toInt,
+      pTrade.OffsetFlag, pTrade.TradeID, pTrade.Price, pTrade.Volume, pTrade.OrderSysID)
+
+    strategyRef ! result
   }
 
   override def OnErrRtnOrderAction(cThostFtdcOrderActionField: CThostFtdcOrderActionField, cThostFtdcRspInfoField: CThostFtdcRspInfoField): Unit = {}
@@ -388,4 +399,72 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi {
 
   override def OnRspQryCombAction(cThostFtdcCombActionField: CThostFtdcCombActionField, cThostFtdcRspInfoField: CThostFtdcRspInfoField, i: Int, b: Boolean): Unit = {}
 
+
+  // ======================Trader Implement============================
+  override def queryCapital(): Unit = {
+    val reqId = nextRequestId
+    val req = new CThostFtdcQryTradingAccountField()
+    req.BrokerID = accountInfo.brokerCode
+    req.InvestorID = accountInfo.brokerAccount
+    trader.ReqQryTradingAccount(req, reqId)
+  }
+
+  override def queryPosition(symbol: String): Unit = {
+    val reqId = nextRequestId
+    val pos = new CThostFtdcQryInvestorPositionField()
+    pos.BrokerID = accountInfo.brokerCode
+    pos.InvestorID = accountInfo.brokerAccount
+    pos.InstrumentID = symbol
+    this.trader.ReqQryInvestorPosition(pos, reqId)
+    log.debug("账户%s, 查询%s持仓".format(accountInfo.name, symbol))
+  }
+
+  override def cancel(order: Order): Unit = {
+    val requestId = nextRequestId
+    val cancel = new CThostFtdcInputOrderActionField()
+    cancel.BrokerID = accountInfo.brokerCode
+    cancel.InvestorID = accountInfo.brokerAccount
+    cancel.InstrumentID = order.contractCode
+
+    cancel.OrderRef = order.localeId
+    cancel.FrontID = Integer.parseInt(order.frontId)
+    cancel.SessionID = Integer.parseInt(order.sessionId)
+    cancel.ActionFlag = '0'
+    trader.ReqOrderAction(cancel, requestId)
+    log.debug("账户%s, 取消%s订单".format(accountInfo.name, order.contractCode))
+  }
+
+  override def order(order: Order): Unit = {
+    order.frontId = frontId
+    order.sessionId = sessionId
+
+    val req = new CThostFtdcInputOrderField()
+    req.BrokerID = accountInfo.brokerCode
+    req.InstrumentID = order.contractCode
+    req.VolumeTotalOriginal = order.volume
+    req.Direction = if(order.direction == 0) '0' else '1'
+    req.CombOffsetFlag = order.COFlag.toString
+    req.CombHedgeFlag = "1"
+    req.ContingentCondition = '1'
+    req.VolumeCondition = '1'
+    req.MinVolume = 1
+    req.ForceCloseReason = '0'
+    req.IsAutoSuspend = false
+    req.UserForceClose = false
+    req.OrderRef = order.localeId
+
+    //
+    req.OrderPriceType = '1'
+    req.LimitPrice = 1.0
+    req.TimeCondition = '1'
+
+    trader.ReqOrderInsert(req, nextRequestId)
+  }
+
+}
+
+object CTPBrokerageActor {
+  def props: Props = {
+    Props(classOf[CTPBrokerageActor])
+  }
 }

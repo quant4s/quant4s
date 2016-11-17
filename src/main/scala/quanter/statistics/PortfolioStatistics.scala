@@ -40,13 +40,10 @@ object PortfolioStatistics {
     performance.variance(tradingDaysPerYear)
   }
 
-
   def getAnnualPerformance(performance: List[Double], tradingDaysPerYear: Int = 252) : Double = {
     val mean = new Mean()
     mean.evaluate(performance.toArray) * tradingDaysPerYear
   }
-
-
 
 }
 

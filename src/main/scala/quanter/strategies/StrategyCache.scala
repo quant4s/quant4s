@@ -3,7 +3,7 @@
   */
 package quanter.strategies
 
-import quanter.rest.{Trader, Strategy}
+import quanter.rest.{TradeAccount, Strategy}
 
 import scala.collection.mutable
 

@@ -19,7 +19,7 @@ import scala.collection.mutable
   */
 class CTPDataProviderActor extends DataProviderActor with CThostFtdcMdSpi {
   val mds = CThostFtdcMdApi.CreateFtdcMdApi("./logs/ctp/mds/", false, false)
-  val url = "tcp://180.168.146.187:10031"  //"tcp://218.202.237.33:10012"
+  val url = "tcp://180.168.146.187:10011"  //"tcp://218.202.237.33:10012"
   var requestId = 1
 
   override def addSymbol(contractCode:String): Unit = {
@@ -58,8 +58,6 @@ class CTPDataProviderActor extends DataProviderActor with CThostFtdcMdSpi {
 
   private def _isError( pRspInfo: CThostFtdcRspInfoField) = (pRspInfo != null) && (pRspInfo.ErrorID != 0)
 
-  def fireEvent(event: TradeAccountEvent): Unit = {
-  }
 
 
 
@@ -94,14 +92,13 @@ class CTPDataProviderActor extends DataProviderActor with CThostFtdcMdSpi {
 
       self ! new LoginSuccess()
 
-      self ! new AskListenedSymbol("AG1612")
-      // TODO: 通知登录事件
-      fireEvent(TradeAccountEvent.Logined_Success)
+//      self ! new AskListenedSymbol("rb1701")
+//      self ! new AskListenedSymbol("ni1701")
     }
   }
 
   override def OnRtnDepthMarketData(pDepthMarketData: CThostFtdcDepthMarketDataField): Unit = {
-    log.debug("数据到达")
+    log.debug("%s MD 数据到达,价格%f".format(pDepthMarketData.InstrumentID, pDepthMarketData.LastPrice))
     val bar = new TradeBar()
     bar.symbol = pDepthMarketData.InstrumentID
     bar.open = pDepthMarketData.OpenPrice

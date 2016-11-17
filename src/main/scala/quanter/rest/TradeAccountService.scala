@@ -26,7 +26,7 @@ trait TradeAccountService extends HttpService {
   implicit def systemRef: ActorSystem
 
   val traderManager = actorRefFactory.actorSelection("/user/" + TradeRouteActor.path)
-  var tradeAccountCache = new mutable.HashMap[Int, Trader]()
+  var accountsCache = new mutable.HashMap[Int, TradeAccount]()
   val channelTypes = _initChannelTypes()
 
   // 获取列表
@@ -41,7 +41,7 @@ trait TradeAccountService extends HttpService {
 //            traderManager ! new ListTraders()
 //          }
 
-          val retTraders = RetTraderList(0, "success", if(tradeAccountCache.size != 0) Some(tradeAccountCache.values.toArray) else None)
+          val retTraders = RetTradeAccountList(0, "success", if(accountsCache.size != 0) Some(accountsCache.values.toArray) else None)
           implicit val formats: Formats = DefaultFormats
           val json = Extraction.decompose(retTraders)
           compact(render(json))
@@ -99,24 +99,24 @@ trait TradeAccountService extends HttpService {
   }
 
   def respTradeAccountReceive(implicit log: LoggingContext): Receive = {
-    case t: Array[Trader] => {
+    case t: Array[TradeAccount] => {
       _buildTraderAccountCache(t)
     }
-    case t: Trader => {
+    case t: TradeAccount => {
       _updateTraderAccountCache(t)
     }
   }
 
-  protected def _buildTraderAccountCache(traders: Array[Trader])(implicit log: LoggingContext) : Unit = {
+  protected def _buildTraderAccountCache(accounts: Array[TradeAccount])(implicit log: LoggingContext) : Unit = {
     log.debug("在Rest Service层创建交易账号缓存")
-    for(trader <- traders) {
-       tradeAccountCache +=(trader.id.get -> trader)
+    for(acc <- accounts) {
+       accountsCache +=(acc.id.get -> acc)
     }
   }
 
-  protected def _updateTraderAccountCache(trader: Trader)(implicit log: LoggingContext) : Unit = {
+  protected def _updateTraderAccountCache(acc: TradeAccount)(implicit log: LoggingContext) : Unit = {
     log.debug("在Rest Service层更新交易账号缓存")
-    tradeAccountCache(trader.id.get) = trader
+    accountsCache(acc.id.get) = acc
   }
 
   /**
@@ -128,14 +128,16 @@ trait TradeAccountService extends HttpService {
     val setting = Settings(systemRef)
 
     val channelTypes = new ArrayBuffer[ChannelType]()
-    for(i <- 0 until setting.channelTypes.size()) {
-      val provider = setting.channelTypes.get(i).asInstanceOf[java.util.HashMap[String, String]]
-      val name = provider.get("name")
-      val title = provider.get("title")
-      val desc = provider.get("desc")
-      val driver = provider.get("driver")
 
-      val channelType = new ChannelType(name, title, desc, driver)
+    for(i <- 0 until setting.channelTypes.size()) {
+      val provider = setting.channelTypes.get(i).asInstanceOf[java.util.HashMap[String, Any]]
+      val name = provider.get("name").toString
+      val title = provider.get("title").toString
+      val desc = provider.get("desc").toString
+      val driver = provider.get("driver").toString
+      val _type = provider.get("type").toString
+
+      val channelType = new ChannelType(_type, name, title, desc, driver)
       channelTypes += channelType
     }
 
@@ -159,7 +161,7 @@ trait TradeAccountService extends HttpService {
     implicit val formats = DefaultFormats
     try {
       val jv = parse(json)
-      val trader = jv.extract[Trader]
+      val trader = jv.extract[TradeAccount]
 
       traderManager ! NewTrader(trader)
       """{"code":0}"""
@@ -172,19 +174,21 @@ trait TradeAccountService extends HttpService {
     implicit val formats = DefaultFormats
     try {
       val jv = parse(json)
-      val trader = jv.extract[Trader]
+      val trader = jv.extract[TradeAccount]
 
       traderManager ! new UpdateTrader(trader)
+      accountsCache.put(trader.id.get, trader)
       """{"code":0}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)
     }
   }
 
-  private def _deleteTrader(id: Int): String = {
+  private def _deleteTrader(id: Int)(implicit log: LoggingContext): String = {
     try {
       //      strategiesManager.removeStrategy(id)
       traderManager ! DeleteTrader(id)
+      accountsCache.remove(id)
       """{"code":0, "message":"成功删除"}"""
     }catch {
       case ex: Exception => """{"code":1, "message":"%s"}""".format(ex.getMessage)

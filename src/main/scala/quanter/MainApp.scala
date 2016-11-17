@@ -16,7 +16,7 @@ import quanter.actors.securitySelection.SIManagerActor
 import quanter.actors.strategy.StrategiesManagerActor
 import quanter.actors.trade.{InitTradeRoute, TradeRouteActor}
 import quanter.actors.zeromq.ZeroMQServerActor
-import quanter.rest.{HttpServer, Strategy, Trader}
+import quanter.rest.{HttpServer, Strategy, TradeAccount}
 import spray.can.Http
 
 /**
@@ -49,7 +49,7 @@ object MainApp extends App {
 
   _initTrader()
 //  _createTrader("""{"name": "SHSE","brokerType":"SIM", "brokerName":"仿真接口", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
-//  _createTrader("""{"name": "SHSE","brokerType":"CTP", "brokerName":"THS", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
+//  _createTrader("""{"name": "SHSE","brokerType":"CTP", "brokerName":"快期", "brokerCode":"9999","brokerAccount":"071003","brokerPassword": "123456", "brokerUri":"tcp://180.168.146.187:10030","status": 0}""")
 
   // 启动REST 服务
   IO(Http) ! Http.Bind(httpServer, "127.0.0.1", port = 8888)
@@ -81,7 +81,7 @@ object MainApp extends App {
     implicit val formats = DefaultFormats
     try {
       val jv = parse(json)
-      val trader = jv.extract[Trader]
+      val trader = jv.extract[TradeAccount]
 
       tradeRouteRef ! NewTrader(trader)
       """{"code":0}"""

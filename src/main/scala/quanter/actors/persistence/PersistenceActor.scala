@@ -4,6 +4,7 @@
 package quanter.actors.persistence
 
 import java.sql.Timestamp
+import java.util.Date
 
 import scala.collection.mutable.ArrayBuffer
 import akka.actor.{Actor, ActorLogging, Props}
@@ -13,17 +14,6 @@ import quanter.persistence._
 import quanter.rest._
 import quanter.strategies.StrategyCache
 
-
-
-
-/**
-  *
-  */
-
-
-//case class SavePortfolio(obj: EPortfolio)
-//case class UpdatePortfolio(id: Int, obj: EPortfolio)
-//case class GetPortfolio(id: Int)
 
 object PersistenceActor {
   def props = {
@@ -51,7 +41,7 @@ class PersistenceActor extends Actor with ActorLogging {
 
   val strategyCache = new StrategyCache()
 
-  val ddl = gStrategies.ddl ++ gPortfolios.ddl ++ gStockHoldings.ddl ++ gTransactions.ddl ++ gOrders.ddl ++ gTraders.ddl
+  val ddl = gStrategies.ddl ++ gPortfolios.ddl ++ gPositions.ddl ++ gTransactions.ddl ++ gOrders.ddl ++ gTraders.ddl
   // TODO: 如果是第一次启动
   if(true) {
     log.info("初始化数据库")
@@ -146,25 +136,25 @@ class PersistenceActor extends Actor with ActorLogging {
   }
 
   // Trader
-  private def _saveTrader(trader: Trader): Unit = {
+  private def _saveTrader(trader: TradeAccount): Unit = {
     val t = ETrader(None, trader.name, trader.brokerType, trader.brokerName, trader.brokerCode, trader.brokerAccount, trader.brokerPassword, trader.brokerUri, trader.brokerServicePwd, trader.status)
     val s1 = traderDao.insert(t)
 
-    val t1 = Trader(s1.id, s1.name, s1.brokerType, s1.brokerName, s1.brokerCode, s1.brokerAccount, s1.brokerPassword, s1.brokerUri, s1.brokerServicePwd, s1.status)
+    val t1 = TradeAccount(s1.id, s1.name, s1.brokerType, s1.brokerName, s1.brokerCode, s1.brokerAccount, s1.brokerPassword, s1.brokerUri, s1.brokerServicePwd, s1.status)
     sender ! t1
   }
 
   private def  _listTraders(): Unit = {
-    val traderArr = new ArrayBuffer[Trader]()
+    val traderArr = new ArrayBuffer[TradeAccount]()
     for(s <- traderDao.list) {
-      val trader = Trader(s.id, s.name, s.brokerType, s.brokerName, s.brokerCode, s.brokerAccount, s.brokerPassword, s.brokerUri, s.brokerServicePwd, s.status)
+      val trader = TradeAccount(s.id, s.name, s.brokerType, s.brokerName, s.brokerCode, s.brokerAccount, s.brokerPassword, s.brokerUri, s.brokerServicePwd, s.status)
       traderArr += trader
     }
 
     sender ! traderArr.toArray
   }
 
-  private def _updateTrader(trader: Trader): Unit = {
+  private def _updateTrader(trader: TradeAccount): Unit = {
     val s = ETrader(trader.id, trader.name,trader.brokerType, trader.brokerName, trader.brokerCode, trader.brokerAccount, trader.brokerPassword, trader.brokerUri, trader.brokerServicePwd, trader.status)
     val query = traderDao.update(s.id.get, s)
   }
@@ -175,7 +165,7 @@ class PersistenceActor extends Actor with ActorLogging {
 
   // Order
   private def _saveOrder(order: Order): Unit = {
-    val o = EOrder(None, order.orderNo, order.strategyId, order.tradeAccountId, order.symbol, order.orderType, order.side, "time", order.quantity, "", order.price.getOrElse(0), "RMB", order.securityExchange, 0)
+    val o = EOrder(None, order.orderNo, order.strategyId, order.tradeAccountId, order.symbol, order.orderType, order.side, 1, new Date(), order.quantity, order.price.getOrElse(0), "RMB", order.securityExchange, 0)
     val o1 = orderDao.insert(o)
 
     sender ! o1
@@ -183,7 +173,8 @@ class PersistenceActor extends Actor with ActorLogging {
 
   private def _cancelOrder(order: CancelOrder): Unit = {
     // FIXME: 保存委托单
-    val o = EOrder(None, order.orderNo, order.strategyId, order.tradeAccountId, "", 3, 3, "time", 100, "", 0, "RMB", "", 0)
+    val o = EOrder(None, order.orderNo, order.strategyId, order.tradeAccountId, "000001.shse", 3, 1,1, new Date(), 100, 100, "RMB", "", 0)
+
     orderDao.insert(o)
     orderDao.delete(order.orderNo)
   }

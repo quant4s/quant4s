@@ -8,7 +8,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import quanter.actors._
 import quanter.actors.persistence.PersistenceActor
-import quanter.rest.{CancelOrder, HttpServer, Strategy, Trader}
+import quanter.rest.{CancelOrder, HttpServer, Strategy, TradeAccount}
 import quanter.strategies.StrategyCache
 
 import scala.collection.mutable

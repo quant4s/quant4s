@@ -47,8 +47,6 @@ class RedisDataProviderActor (address: InetSocketAddress,channels: Seq[String], 
     val data = message.data.decodeString("utf8")
     println(s"message received: $data")
 
-    // todo: 保留历史ticket
-    // 写文件 是个耗时操作， 采用round-pool
   }
 
   /**

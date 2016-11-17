@@ -16,7 +16,6 @@ class StrategyPerformance(trades: List[Trade],
                           listPerformance: List[Double],
                           listBenchmark: List[Double],
                           startingCapital: Double) {
-
   val tradeStatistics: TradeStatistics = new TradeStatistics(trades)
   val portfolioStatistics: PortfolioStatistics = new PortfolioStatistics(profitLoss, equity, listPerformance, listBenchmark, startingCapital)
   val closedTrades = trades

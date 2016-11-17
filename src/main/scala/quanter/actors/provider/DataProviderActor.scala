@@ -22,20 +22,23 @@ case class Execute()
 trait DataProviderActor extends FSM[DataProviderState, DataProviderData] with ActorLogging {
   var symbolSelections = new mutable.HashMap[String, ActorSelection]
   var smRef = context.actorSelection("/user/" + SecuritiesManagerActor.path)
+  var listenerRef : List[ActorSelection] = List[ActorSelection]()
   var connected = false
   var logined = false
 
-  startWith(Initialized, new DataProviderData())
+  startWith(Initialized, new DataProviderData(Initialized))
   when(Initialized) {
     case Event(ConnectDataProvider(), _)=> {
       log.debug("开始连接数据源")
       connect
       stay
     }
-    case Event(ConnectedSuccess(), _) => {
+    case Event(ConnectedSuccess(), data) => {
       log.debug("连接成功，准备登录")
       login()
-      goto(Connected)
+      // TODO: 通知监听者，连接成功事件
+      fireEvent(data)
+      goto(Connected) using data.copy(state = Connected)
     }
   }
   when(Connected) {
@@ -50,8 +53,6 @@ trait DataProviderActor extends FSM[DataProviderState, DataProviderData] with Ac
     case Event(DisConnectedSuccess(), _) =>
       log.debug("断开连接")
       goto(Disconnected)
-//    case Event(_,_) =>  // 订阅
-//      stay
   }
   when(Disconnected) {
     case Event(ConnectedSuccess(), _) =>{
@@ -81,6 +82,10 @@ trait DataProviderActor extends FSM[DataProviderState, DataProviderData] with Ac
       symbolSelections += (symbol -> ref)
     }
   }
+
+  def fireEvent(data: DataProviderData): Unit = {
+    listenerRef.foreach( ref => ref ! data)
+  }
 }
 
 object DataProviderActor {
@@ -91,5 +96,5 @@ object DataProviderActor {
   case object Disconnected extends DataProviderState
   case object Logined extends DataProviderState
 
-  case class DataProviderData()
+  case class DataProviderData(state: DataProviderState)
 }

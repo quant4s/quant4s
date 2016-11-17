@@ -61,8 +61,8 @@ case class CancelOrder(orderNo: Int, cancelOrderNo: Int, tradeAccountId: Int) {
 
 case class Transaction(strategyId: Int, orders: Option[List[Order]], cancelOrder: Option[CancelOrder])
 
-case class Trader(id: Option[Int], name: String, brokerType: String, brokerName: String, brokerCode: String, brokerAccount: String, brokerPassword: Option[String], brokerUri: String, brokerServicePwd: Option[String], status: Int = 0)
-case class ChannelType(name: String, title: String, desc: String, driver: String)
+case class TradeAccount(id: Option[Int], name: String, brokerType: String, brokerName: String, brokerCode: String, brokerAccount: String, brokerPassword: Option[String], brokerUri: String, brokerServicePwd: Option[String], status: Int = 0)
+case class ChannelType(_type: String, name: String, title: String, desc: String, driver: String)
 
 case class FinanceIndi(name: String, op: String, value: Double )
 case class TechIndi(name: String, op: String, baseValue: Double )
@@ -71,8 +71,8 @@ case class SecurityPicker(financeIndi: List[FinanceIndi], techIndi: Option[List[
 
 // 返回的JSON CLASS
 case class RetCode(code: Int, message: String)
-case class RetStrategy(code: Int, message: String, strategy: Option[Strategy])
-case class RetStrategyList(code: Int, message: String, strategies: Option[Array[Strategy]])
-case class RetTrader(code: Int, message: String, trader: Option[Trader])
-case class RetTraderList(code: Int, message: String, traders: Option[Array[Trader]])
-case class RetChannelTypes(code: Int, message: String, channelTypes: Array[ChannelType])
+case class RetStrategy(code: Int, message: String, data: Option[Strategy])
+case class RetStrategyList(code: Int, message: String, data: Option[Array[Strategy]])
+case class RetTradeAccount(code: Int, message: String, data: Option[TradeAccount])
+case class RetTradeAccountList(code: Int, message: String, data: Option[Array[TradeAccount]])
+case class RetChannelTypes(code: Int, message: String, data: Array[ChannelType])

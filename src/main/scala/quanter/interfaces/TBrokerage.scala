@@ -1,13 +1,13 @@
 package quanter.interfaces
 
-import quanter.rest.Trader
+import quanter.rest.TradeAccount
 
 /**
   *
   */
 trait TBrokerage {
   var name: String
-  var accountInfo: Trader = null
+  var accountInfo: TradeAccount = null
 
   protected var _isConnected = false
   def isConnected = _isConnected

@@ -44,7 +44,106 @@ trait StrategyService extends HttpService {
               val json = Extraction.decompose(retStrategy)
               compact(render(json))
             }
-
+          }
+      }~
+      path("strategy" / IntNumber / "position") { // 获取持仓
+        id =>
+          complete {
+              """ {"code":0,"message":"成功","data":[{
+"exchange": "SHSE",
+"sec_id": "000002",
+"sec_name": "万科A",
+"side": 1,
+"volume": 30000,
+"volume_today": 3000,
+"price": 25.7,
+"vwap": 24.4,
+"fpnl": 3000,
+"transact_time": 1477535817429
+}]}"""
+          }
+      }~
+      path("strategy" / IntNumber / "trans" / IntNumber) { // 获取最近成交
+        (id, n) =>
+          complete {
+            """ {"code":0,"message":"成功","data":[{
+"sec_id": "000002",
+"sec_name": "万科A",
+"side": 1,
+"position_effect": 1,
+"volume": 30000,
+"price": 25.7,
+"amount": 2000,
+"transact_time": 1477535817429
+}]}"""
+          }
+      }~
+      path("strategy" / IntNumber / "order" / IntNumber) { // 获取订单
+        (id, n) =>
+          complete {
+            """ {"code":0,"message":"成功","data":[{
+"sec_id": "000002",
+"sec_name": "万科A",
+"side": 1,
+"position_effect": 1,
+"price": 25.7,
+"order_type": 0,
+"status": 2,
+"volume":2000,
+"filled_volume":355,
+"filled_vwap":533,
+"ord_rej_reason_detail": "-",
+"sending_time": 1477535817429
+}]}"""
+          }
+      }~
+      path("strategy" / IntNumber / "cash") { // 获取现金
+        id =>
+          complete {
+  """ {"code":0,"message":"成功","data":[{
+"cash": 10000,
+},{
+"cash": 200000,
+}]}"""
+          }
+      }~
+      path("strategy" / IntNumber / "indicators") {
+        id =>
+          complete {
+            """
+              |{"status":{"code":0,"msg":"RspStatusCode_Ok"},"data":[{"strategy_id":"3"
+              |,"nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count"
+              |:0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit"
+              |:0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value"
+              |:0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":1477535817429}]}
+            """.stripMargin
+          }
+      }~
+      path("strategy" / IntNumber / "last_n_dailyindicators" / IntNumber) {
+        (id, n) =>
+          complete {
+            """
+              |{"status":{"code":0,"msg":"RspStatusCode_Ok"},"data":[{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14792859310738826},{"strategy_id":"a8044da1-2d5-11e5-9283-000c29804e2a","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14791121299480444},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14790497785728484},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":1478955592192071},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14788603793071272},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14787817673247944},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14742101221469696},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":1474069499994286},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14697532593705106},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":1469608991968276},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14695469722154984},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14694385751431664},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14684851122132796},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14683112149984056},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":1468048500000663},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14678075056966068},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14673597551093452},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14673288778590848},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14672051905552242},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":1467121412943456},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":146555483499611},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14653853877487824},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14651973000008092},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14648774642878942},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14639935589311048},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":1463825578793749},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":1463216254948572},{"strategy_id":"3","nav":0,"pnl":0,"profit_ratio":0,"sharp_ratio":0,"risk_ratio":0,"trade_count":0,"win_count":0,"lose_count":0,"win_ratio":0,"max_profit":0,"min_profit":0,"max_single_trade_profit":0,"min_single_trade_profit":0,"daily_max_single_trade_profit":0,"daily_min_single_trade_profit":0,"max_position_value":0,"min_position_value":0,"max_drawdown":0,"daily_pnl":0,"daily_return":0,"annual_return":0,"transact_time":14568165000005}]}
+            """.stripMargin
+          }
+      }~
+      path("strategy" / IntNumber / "unfinished_orders") {
+        id =>
+          complete {
+            """ {"code":0,"message":"成功","data":[{
+"sec_id": "000002",
+"sec_name": "万科A",
+"side": 1,
+"position_effect": 1,
+"price": 25.7,
+"order_type": 0,
+"status": 2,
+"volume":2000,
+"filled_volume":355,
+"filled_vwap":533,
+"ord_rej_reason_detail": "-",
+"sending_time": 1477535817429
+}]}""".stripMargin
           }
       }
     }  ~
@@ -113,6 +212,17 @@ trait StrategyService extends HttpService {
             }
         }
       } ~
+      path("strategy" / IntNumber / "position") {
+        id => {
+          requestInstance {
+            request =>
+              complete { // 更新持仓
+                log.debug("接收到持仓信息")
+                ""
+              }
+          }
+        }
+      }~
       path("strategy" / "start" / IntNumber) {
         id => {
           complete {

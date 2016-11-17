@@ -8,6 +8,7 @@ import quanter.consolidators.{TDataConsolidator, TradeBarConsolidator}
 import quanter.data.BaseData
 import quanter.data.market.TradeBar
 import quanter.indicators._
+import quanter.indicators.composite.DoubleMovingAverageIndex
 import quanter.indicators.window.{ExponentialMovingAverage, SimpleMovingAverage}
 
 import scala.collection.mutable.ArrayBuffer
@@ -20,6 +21,10 @@ import scala.collection.mutable.ArrayBuffer
 object IndicatorActor {
   def props(symbol: String, duration: Int, indiName: String, param: String, topic: String) = {
     Props(classOf[IndicatorActor], symbol, duration, indiName, param, topic)
+  }
+
+  def props(symbol: String, duration: Int, indiName: String, param: String) = {
+    Props(classOf[IndicatorActor], symbol, duration, indiName, param)
   }
 
   val splitChar = "~"
@@ -51,6 +56,10 @@ object IndicatorActor {
   * @param topic
   */
 class IndicatorActor(symbol: String, duration: Int, name: String, param: String, topic: String) extends BaseIndicatorActor with ActorLogging {
+
+  def this(symbol: String, duration: Int, name: String, param: String) {
+    this(symbol, duration, name, param, "")
+  }
 //  val _consolidator = _init()
   var _subscribers = new ArrayBuffer[ActorRef]()
   val _consolidator = _resolveConsolidators(symbol, duration)
@@ -124,7 +133,10 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String,
       val value = selector(consolidated)
       indicator.update(value)
       log.debug("%s指标数据写入到MQ".format(topic))
-      pubRef ! PublishData(topic, indicator.toJson)
+      if(topic.length != 0)
+        pubRef ! PublishData(topic, indicator.toJson)
+
+      _subscribers.foreach( ref => ref ! indicator.toJson)
     }}
   }
 
@@ -170,6 +182,11 @@ class IndicatorActor(symbol: String, duration: Int, name: String, param: String,
   private def _obv() = {
     val obv = new OnBalanceVolume("OBV")
     _registerTradeBarIndicator(symbol, obv, _consolidator, {x => x.asInstanceOf[TradeBar]})
+  }
+
+  private def _dmai() =  {
+    val dmai = new DoubleMovingAverageIndex(5, 15)
+    _registerDataPointIndicator(symbol, dmai, _consolidator)
   }
 
 }

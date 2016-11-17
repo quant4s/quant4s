@@ -11,6 +11,8 @@ case class RequestBarData(topic: String, sub: String)
 case class RequestTickData(topic: String, sub: String)
 case class RequestFinanceData(topic: String, sub: String)
 
+case class  Subscribe(sub: String)
+
 /**
   * 订阅数据
   */
@@ -26,6 +28,17 @@ class DataManagerActor extends Actor with ActorLogging {
     case req: RequestTickData => _createTickActor(req.topic, req.sub)
     case req: RequestIndicatorData => _createIndicatorActor(req.topic, req.sub)
     case req: RequestFinanceData => _createFinanceActor(req.topic, req.sub)
+
+    case sub: Subscribe => {
+      val arr = sub.sub.split(",")
+      val symbol = arr(0)
+      val duration = arr(2).toInt
+      val indiName = arr(1)
+      val param = arr(3)
+      val ref = context.actorOf(IndicatorActor.props(symbol, duration, indiName, param), sub.sub)
+      indicatorRefs += (sub.sub -> ref)
+      // _subscribe(sub.sub)
+    }
     case _ =>
   }
 
@@ -34,9 +47,6 @@ class DataManagerActor extends Actor with ActorLogging {
       val ref = context.actorOf(BarActor.props(sub), topic)
       barRefs += (sub -> ref)
     }
-
-    // TODO: 保存历史数据
-    // barRefs.get(sub).get forward SubscriptionSymbol()
   }
 
   private def _createTickActor(topic: String, subscription: String): Unit = {
