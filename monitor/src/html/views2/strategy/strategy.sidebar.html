@@ -1,0 +1,117 @@
+<div id="sidebar-right" class="sidebar sidebar-right animated fadeIn" ng-controller="StrategySidebarCtrl">
+    <div custom-slimscroll="" data-height="100%">
+        <ul class="nav m-t-10 p-t-5 p-b-10">
+            <li class="nav-widget"><p class="m-b-5">风控状态<span><a ng-click="risk_config()"
+                                                                                           tooltip-placement="left"
+                                                                                           tooltip="风控设置"><i
+                    class="fa fa-gear"></i></a></span></p>
+                <div class="btn w-btn" ng-switch="1">
+                    <div ng-switch-when="1" class="btn-group pull-right">
+                        <button type="button" class="btn btn-success btn-xs active">风控</button>
+                        <button ng-if="strategy.risk_config.enable==true" type="button"
+                                class="btn btn-on btn-xs dropdown-toggle" ng-click="change_risk_onoff(strategy)">开
+                        </button>
+                        <button ng-if="strategy.risk_config.enable==false" type="button"
+                                class="btn btn-success btn-xs dropdown-toggle active"
+                                ng-click="change_risk_onoff(strategy)">关
+                        </button>
+                    </div>
+                    <div ng-switch-when="1" class="panel-heading-btn pull-left" ng-switch="strategy.risk_state"><span
+                            ng-switch-when="1"><a tooltip-placement="top" tooltip="正常状态"
+                                                  class="btn btn-xxs btn-icon btn-color"></a> <a
+                            class="btn btn-success btn-xxs btn-icon active2"></a> <a
+                            class="btn btn-success btn-xxs btn-icon active2"></a></span> <span ng-switch-when="2"><a
+                            class="btn btn-success btn-xxs btn-icon active2"></a> <a tooltip-placement="top"
+                                                                                     tooltip="禁止开仓状态"
+                                                                                     class="btn btn-xxs btn-icon btn-color2"></a> <a
+                            class="btn btn-success btn-xxs btn-icon active2"></a></span> <span ng-switch-when="3"><a
+                            class="btn btn-success btn-xxs btn-icon active2"></a> <a
+                            class="btn btn-success btn-xxs btn-icon active2"></a> <a tooltip-placement="top"
+                                                                                     tooltip="禁止交易状态"
+                                                                                     class="btn btn-xxs btn-icon btn-color3"></a></span>
+                        <span ng-switch-default=""><a class="btn btn-success btn-xxs btn-icon active2"></a> <a
+                                class="btn btn-success btn-xxs btn-icon active2"></a> <a
+                                class="btn btn-success btn-xxs btn-icon active2"></a></span></div>
+                </div>
+            </li>
+            <li class="nav-widget p-t-5 p-b-10"><p class="m-b-5">策略状态</p>
+                <div class="pull-left">
+                    <div class="pull-left p-r-20">
+                        <ul>
+                            <li ng-class="{'font-color': strategy.running_status.state == '1'}">
+                                {{categories[strategy.base.category]|available}}（{{ strategy.running_status |
+                                strategy_status }}）
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-widget p-t-5 p-b-10"><p class="m-b-5">关联账户<span><a ng-click="setting_account()"
+                                                                              tooltip-placement="left" tooltip="修改关联账户"><i
+                    class="fa fa-gear"></i></a></span></p>
+                <ul>
+                    <li ng-repeat="account in strategy.accounts | orderObjectBy:'account_name':false"
+                        ng-class="{'font-color': account.status.state==2, 'font-color2': account.status.state!=2}">
+                        <a ng-if="account.account_type == 3" tooltip-placement="right" tooltip="点击登录"
+                           ng-click="click_account(account)">{{account.account_name}}</a> <a
+                            ng-if="account.account_type < 3">{{account.account_name}}</a></li>
+                </ul>
+            </li>
+            <li class="nav-widget p-t-5 p-b-10">
+                <div class="panel-group m-b-0" id="accordion">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading"><h3 class="panel-title"><a
+                                class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse"
+                                data-parent="#accordion" href="#collapseOne"><i
+                                class="fa fa-plus-circle pull-right text-success"></i>资金出入</a></h3></div>
+                        <div id="collapseOne" class="panel-collapse ">
+                            <div class="panel-body">
+                                <ul>
+                                    <li>可用资金：{{strategy.cash.available|number:2|available}}</li>
+                                    <li>累计出入金：{{strategy.cash.cum_inout|number:2|available}}</li>
+                                    <li>赢亏：<span class="{{ strategy.indicators.pnl.color_class }}">{{strategy.indicators.pnl.value|number:2|available}}</span>
+                                    </li>
+                                </ul>
+                                <a ng-click="edit_strategy('cash_io')" class="btn btn-success btn-block">修改资金出入</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading"><h3 class="panel-title"><a
+                                class="accordion-toggle accordion-toggle-styled collapsed" data-toggle="collapse"
+                                data-parent="#accordion" href="#collapseTwo"><i
+                                class="fa fa-plus-circle pull-right text-success"></i>基本信息</a></h3></div>
+                        <div id="collapseTwo" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <ul>
+                                    <li>策略名称：{{strategy.name}}</li>
+                                    <li>编程语言：{{strategy.base.dev_lang|available}}</li>
+                                    <li>策略类型：{{categories[strategy.base.category]|available}}</li>
+                                    <li>策略风格：{{styles[strategy.base.style]|available}}</li>
+                                    <li>策略描述：{{strategy.base.description|available}}</li>
+                                </ul>
+                                <a ng-click="setting_base()" class="btn btn-success btn-block">修改基本信息</a></div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <ul style="height:60px"></ul>
+        <ul class="sidebar-button text-center">
+            <li tooltip-placement="top" tooltip="导出数据"><a ng-click="data_export()" class="btn btn-success m-r-5"><i
+                    class="fa fa-share"></i><font>导出数据</font></a></li>
+            <li tooltip-placement="top" tooltip="风控设置"><a
+                    ng-click="risk_config()" class="btn btn-success m-r-5"><i
+                    class="fa fa-umbrella"></i><font>风控设置</font></a></li>
+            <li tooltip-placement="top" tooltip="信号分析"><a
+                    ui-sref="app.analysis.detail({strategy_id: strategy.strategy_id})" class="btn btn-success m-r-5"><i
+                    class="fa fa-line-chart"></i><font>信号分析</font></a></li>
+            <li tooltip-placement="top" tooltip="同步账户"><a
+                    ng-click="sync_account()" class="btn btn-success m-r-5"><i
+                    class="fa fa-refresh"></i><font>同步账户</font></a></li>
+            <li tooltip-placement="top" tooltip="删除策略"><a ng-click="remove_strategy()" class="btn btn-danger m-r-5"><i
+                    class="fa fa-trash-o"></i><font>删除策略</font></a></li>
+        </ul>
+    </div>
+</div>
+<div class="sidebar-bg sidebar-right"></div>

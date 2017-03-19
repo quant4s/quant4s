@@ -3,7 +3,7 @@ package quanter.actors.data
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.actor.Actor.Receive
 import quanter.actors.securities.{SecuritiesManagerActor, SubscriptionSymbol}
-import quanter.actors.zeromq.{PublishData, ZeroMQServerActor}
+import quanter.actors.zeromq.{PublishData, ZeroMQSubPubServerActor$}
 import quanter.data.BaseData
 
 /**

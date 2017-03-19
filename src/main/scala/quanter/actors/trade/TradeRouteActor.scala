@@ -4,8 +4,7 @@ import akka.actor.{Actor, ActorLogging, Props}
 import akka.pattern.ask
 import akka.util.Timeout
 import quanter.actors._
-import quanter.actors.persistence.PersistenceActor
-import quanter.config.Settings
+import quanter.actors.persistence.{AccountPersistorActor, PersistenceActor}
 import quanter.interfaces.TBrokerage
 import quanter.rest.{HttpServer, TradeAccount}
 
@@ -21,12 +20,14 @@ import scala.concurrent.duration._
   */
 case class InitTradeRoute()
 class TradeRouteActor extends Actor with ActorLogging{
-  val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
+//  val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
+  val persisRef = context.actorSelection("/user/" + AccountPersistorActor.path)
   val restRef = context.actorSelection("/user/" + HttpServer.path)
 
   val providers = _initProviders()
   var traderCache = new mutable.HashMap[Int, TradeAccount]()
 
+  self ! new InitTradeRoute()
   persisRef ! new ListTraders()
 
   override def receive: Receive = {
@@ -48,7 +49,7 @@ class TradeRouteActor extends Actor with ActorLogging{
     val map = new mutable.HashMap[String, String]()
     for(i <- 0 until setting.channelTypes.size()) {
       val provider = setting.channelTypes.get(i).asInstanceOf[java.util.HashMap[String, String]]
-      map.put(provider.get("name"), provider.get("driver"))
+      map.put(provider.get("type"), provider.get("driver"))
     }
     map
   }
@@ -61,6 +62,7 @@ class TradeRouteActor extends Actor with ActorLogging{
       traderCache += (t.id.get -> t)
 
       val clazz = providers.get(t.brokerType).getOrElse("quanter.actors.trade.ctp.CTPBrokerageActor")
+      log.info("创建%s 交易通道 %s".format(t.brokerType, clazz))
 
       try {
         val c = Class.forName(clazz)
@@ -90,9 +92,12 @@ class TradeRouteActor extends Actor with ActorLogging{
     val clazz = providers.get(trader.brokerType).get
 
     try {
-      val c = Class.forName(clazz).newInstance().asInstanceOf[TBrokerage]
-      c.accountInfo = trader
-//      context.actorOf(BrokerageActor.props(c),trader.id.get.toString())
+      val c = Class.forName(clazz) //.newInstance().asInstanceOf[TBrokerage]
+      //c.accountInfo = trader
+      val brokerageRef = context.actorOf(Props(c),trader.id.get.toString())
+     // val brokerageRef = context.actorOf(Props(c), t.id.get.toString)
+      brokerageRef ! trader
+      brokerageRef ! new Connect()
     }catch  {
       case ex: Throwable => log.error(ex, ex.getMessage())
     }

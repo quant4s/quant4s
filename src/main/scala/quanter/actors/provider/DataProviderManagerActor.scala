@@ -7,7 +7,6 @@ import java.util.HashMap
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import quanter.actors.AskListenedSymbol
-import quanter.config.Settings
 
 import scala.collection.mutable
 

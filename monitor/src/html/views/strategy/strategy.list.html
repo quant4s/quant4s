@@ -1,0 +1,35 @@
+<div id="content" class="content animated fadeIn" >
+    <ol class="breadcrumb pull-right">
+        <li class="active">{{title}}</li>
+    </ol>
+    <h1 class="page-header">{{title}}</h1>
+    <div class="col-md-3 w-md-3 p-5" ng-repeat="strategy in strategies ">
+        <div class="panel-1 b-color">
+            <div class="panel-heading"><h4 class="panel-title span-a">{{ strategy.name }}
+                <span class="pull-right label" ui-sref="app.strategy.detail({id: strategy.id})">
+                    <a>详情</a>
+                </span>
+            </h4></div>
+            <div class="panel-footer text-center">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div flotchart="" style="height:150px" options="options" data="strategy.trends"></div>
+                    </div>
+                    <div class="col-md-5">
+                        <ul class="list-unstyled">
+                            <li>现金：{{strategy.portfolio.cash | number:2|available}}</li>
+                            <li>盈亏：{{strategy.indicators.pnl.value | number:2|available}}</li>
+                            <li>权益：{{strategy.indicators.nav.value | number:2|available}}</li>
+                            <li>绝对收益：{{strategy.indicators.profit_ratio.value | number:2|available}}</li>
+                            <li>年化收益：{{strategy.indicators.annual_return.value | number:2|available}} %</li>
+                            <li>胜率：{{strategy.indicators.win_ratio.value | number:2}} %</li>
+                            <li>风险比率：{{strategy.indicators.risk_ratio.value | number:2}} %</li>
+                            <li>最大回撤：{{strategy.indicators.max_drawdown.value | number:2 |available}} %</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

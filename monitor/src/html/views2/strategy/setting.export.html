@@ -1,0 +1,66 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+    <h4>导出数据</h4></div>
+<div class="modal-body">
+    <div class="alert alert-success anime-i-fadeIn" ng-if="modal.status===\'success\'"><i
+            class="fa fa-check fa-2x pull-left"></i>
+        <p>保存成功</p></div>
+    <div class="alert alert-error anime-i-fadeIn" ng-if="modal.status===\'error\'"><i
+            class="fa fa-times fa-2x pull-left"></i>
+        <p>保存失败</p></div>
+    <div class="alert alert-warning anime-i-fadeIn" ng-if="modal.status===\'invalid\'"><i
+            class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+        <p>请填写必须的选项</p></div>
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-pos" data-toggle="tab">当前持仓</a></li>
+            <li class=""><a href="#tab-ind" data-toggle="tab">历史绩效</a></li>
+            <li class=""><a href="#tab-tran" data-toggle="tab">历史成交</a></li>
+            <li class=""><a href="#tab-ord" data-toggle="tab">历史委托</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade active in" id="tab-pos"><p class="text-right m-b-0"><a class="btn btn-success"
+                                                                                             ng-click="modal.exportPosCsv()">导出CSV</a>
+                <a class="btn btn-success" ng-click="modal.exportPosJson()">导出JSON</a></p></div>
+            <div class="tab-pane fade" id="tab-ind">
+                <div class="horizon-flex-box"><span class="m-r-5 m-l-5">从</span> <input
+                        class="form-control text-right width-xs" date-time="" auto-close="true"
+                        ng-model="modal.indsStart" placeholder="开始日期" format="yyyy-MM-dd" view="date" min-view="date">
+                    <span class="m-r-5 m-l-5">到</span> <input class="form-control text-right width-xs" date-time=""
+                                                              auto-close="true" ng-model="modal.indsEnd"
+                                                              placeholder="结束日期" format="yyyy-MM-dd" view="date"
+                                                              min-view="date">
+                    <div class="m-l-10" ng-show="modal.indsError"><i class="fa fa-warning fa-lg text-warning"
+                                                                     tooltip-placement="top"
+                                                                     tooltip="{{modal.indsError}}"></i></div>
+                </div>
+                <p class="text-right m-b-0 m-t-10"><a class="btn btn-success" ng-click="modal.exportIndCsv()">导出CSV</a>
+                    <a class="btn btn-success" ng-click="modal.exportIndJson()">导出JSON</a></p></div>
+            <div class="tab-pane fade" id="tab-tran">
+                <div class="horizon-flex-box"><span class="m-r-5 m-l-5">从</span> <input
+                        class="form-control text-right width-xs" type="text" date-time="" auto-close="true"
+                        ng-model="modal.transStart" placeholder="开始时间" view="hours"> <span class="m-r-5 m-l-5">到</span>
+                    <input class="form-control text-right width-xs" type="text" date-time="" auto-close="true"
+                           ng-model="modal.transEnd" placeholder="结束时间" view="hours">
+                    <div class="m-l-10" ng-show="modal.transError"><i class="fa fa-warning fa-lg text-warning"
+                                                                      tooltip-placement="top"
+                                                                      tooltip="{{modal.transError}}"></i></div>
+                </div>
+                <p class="text-right m-b-0 m-t-10"><a class="btn btn-success" ng-click="modal.exportTranCsv()">导出CSV</a>
+                    <a class="btn btn-success" ng-click="modal.exportTranJson()">导出JSON</a></p></div>
+            <div class="tab-pane fade" id="tab-ord">
+                <div class="horizon-flex-box"><span class="m-r-5 m-l-5">从</span> <input
+                        class="form-control text-right width-xs" type="text" date-time="" auto-close="true"
+                        ng-model="modal.ordersStart" placeholder="开始时间" view="hours"> <span class="m-r-5 m-l-5">到</span>
+                    <input class="form-control text-right width-xs" type="text" date-time="" auto-close="true"
+                           ng-model="modal.ordersEnd" placeholder="结束时间" view="hours">
+                    <div class="m-l-10" ng-show="modal.ordersError"><i class="fa fa-warning fa-lg text-warning"
+                                                                       tooltip-placement="top"
+                                                                       tooltip="{{modal.ordersError}}"></i></div>
+                </div>
+                <p class="text-right m-b-0 m-t-10"><a class="btn btn-success"
+                                                      ng-click="modal.exportOrderCsv()">导出CSV</a> <a
+                        class="btn btn-success" ng-click="modal.exportOrderJson()">导出JSON</a></p></div>
+        </div>
+    </div>
+</div>

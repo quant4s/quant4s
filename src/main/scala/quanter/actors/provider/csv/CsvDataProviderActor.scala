@@ -12,7 +12,7 @@ import scala.concurrent.duration._
 import com.github.tototoshi.csv.CSVReader
 import quanter.actors.AskListenedSymbol
 import quanter.actors.provider.{DataProviderActor, Execute, QuerySnapData}
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 import quanter.CommonExtensions._
 
 import scala.collection.mutable

@@ -6,10 +6,10 @@ package quanter.actors.strategy
 import akka.actor.{ActorLogging, ActorSelection, FSM, Props}
 import akka.pattern.ask
 import akka.util.Timeout
-import quanter.actors.persistence.PersistenceActor
+import quanter.actors.persistence.{OrderPersistorActor, PersistenceActor, StrategyPersistorActor}
 import quanter.actors._
 import quanter.actors.strategy.StrategyActor._
-import quanter.actors.trade.TradeRouteActor
+import quanter.actors.trade.{OrderDealResult, OrderStatusResult, TradeRouteActor}
 import quanter.rest._
 import quanter.risk.BaseRisk
 
@@ -24,10 +24,12 @@ import scala.concurrent.duration._
   * 4、资金组合调整
   */
 class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with ActorLogging {
-  val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
+  val orderPersisRef = context.actorSelection("/user/" + OrderPersistorActor.path)
+  val strategyPersisRef = context.actorSelection("/user/" + StrategyPersistorActor.path)
   val restRef = context.actorSelection("/user/" + HttpServer.path)
   val strategyContext: StrategyContext = null
   val riskRules = new mutable.HashMap[String, BaseRisk]()
+  val accountRef = Array[ActorSelection]()    // TODO: 从数据库中读取策略绑定的账户信息
 
   // TODO: 从数据库中读取1、持仓信息 2、当日成交信息 3、当日委托信息
   val portfolio: Portfolio = null
@@ -46,9 +48,13 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
       _pauseStrategy(id)
       goto(Suspended)
     }
-    case Event(t: Transaction, _) => {    // 逐条处理订单的时候，进行风控检查
+    case Event(t: Transaction, StrategyData(true)) => {
       log.debug("策略%d, 接受到订单".format(id))
-      _handleOrder(t)
+      _handleOrderWithRiskControl(t)
+      stay()
+    }
+    case Event(t: Transaction, StrategyData(false)) => {
+      _handleOrderWithoutRiskControl(t)
       stay()
     }
     case Event(OpenRiskControl(sid), StrategyData(false)) => {
@@ -75,11 +81,11 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
   }
   whenUnhandled {
     case Event(GetStrategy(sid), _) => {
-      persisRef ! new GetStrategy(id)
+      strategyPersisRef ! new GetStrategy(id)
       stay()
     }
     case Event(UpdateStrategy(strategy), _) => {
-      persisRef ! new UpdateStrategy(strategy)
+      strategyPersisRef ! new UpdateStrategy(strategy)
       stay()
     }
     case Event(UpdateRiskControlInfo, _) => stay()
@@ -96,42 +102,78 @@ class StrategyActor(id: Int) extends FSM[StrategyState, StrategyData] with Actor
       restRef ! s
       stay
     }
+    case Event(r: OrderStatusResult, _) => {
+      _updateOrderStatus(r)
+      stay()
+    }
+    case Event(r: OrderDealResult, _) => {
+      _insertExecRpt(r)
+      stay()
+    }
   }
 
-  /**
-    * 将订单发送给合适的交易通道
-    *
-    * @param tran
-    */
-  private def _handleOrder(tran: Transaction): Unit = {
+  private def _handleOrderWithRiskControl(tran: Transaction): Unit = {
+    for (order <- tran.orders.get) {
+      var rc =  _riskMatch(order)
+      if(rc) {
+        log.info("风控禁止买入")
+        // 写入风控日志
+      } else {
+        // 下单
+        _handleOrder(order)
+      }
+    }
+
+  }
+
+  private def _handleOrderWithoutRiskControl(tran: Transaction): Unit = {
     if(tran.orders != None) {
       for (order <- tran.orders.get) {
-        var rc = false
-        if(stateData.riskControll){
-         rc = _riskMatch(order)
-        }
-
-        if(rc) {
-          log.info("风控禁止买入")
-        } else {
-          order.strategyId = id
-          // 发送到相应的交易接口
-          _getBrokerageActor(order.tradeAccountId) ! order
-          persisRef ! new NewOrder(order)
-          log.debug("接收到策略%d订单%d, 交易接口为%d".format(id, order.orderNo, order.tradeAccountId))
-        }
+        // 下单
+        _handleOrder(order)
       }
     }
 
     if(tran.cancelOrder != None) {
-      val accountId = 0
-      val order = tran.cancelOrder.get
-      order.strategyId = tran.strategyId
-      // 将取消订单保存到数据库，并发送到交易接口
-      _getBrokerageActor(order.tradeAccountId) ! order
-      persisRef ! new RemoveOrder(order)
-      log.info("取消策略%d订单%d,交易接口为%d".format(order.strategyId, order.cancelOrderNo, order.tradeAccountId))
+      _handleCancelOrder(tran.cancelOrder.get)
     }
+  }
+
+
+  /**
+    * 将订单发送给合适的交易通道
+    *
+    * @param order
+    */
+  private def _handleOrder(order: Order): Unit = {
+    order.strategyId = id
+
+    // 发送到相应的交易接口， 交易
+    _getBrokerageActor(order.tradeAccountId) ! order
+
+    // 持久化
+    orderPersisRef ! new NewOrder(order)
+    log.debug("接收到策略%d订单%d, 交易接口为%d".format(id, order.orderNo, order.tradeAccountId))
+  }
+
+  private def _handleCancelOrder(order: CancelOrder): Unit = {
+    // 将取消订单保存到数据库，并发送到交易接口
+    _getBrokerageActor(order.tradeAccountId) ! order
+    log.info("取消策略%d订单%d,交易接口为%d".format(order.strategyId, order.strategyId, order.tradeAccountId))
+  }
+
+  private def _updateOrderStatus(r: OrderStatusResult): Unit = {
+    // orderPersisRef
+    log.debug("[StrategyActor._updateOrderStatus]更新委托单状态")
+    orderPersisRef ! r
+  }
+
+  /**
+    * 插入成交回报
+    */
+  private def _insertExecRpt(r: OrderDealResult): Unit = {
+    log.debug("[StrategyActor._insertExecRpt]Strategy: %d, 插入交易回报".format(id))
+    orderPersisRef ! r
   }
 
   private def _pauseStrategy(id: Int) = {}

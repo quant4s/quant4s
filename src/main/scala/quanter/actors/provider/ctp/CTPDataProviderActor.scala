@@ -3,6 +3,8 @@
   */
 package quanter.actors.provider.ctp
 
+import java.util.Date
+
 import akka.actor.{ActorSelection, FSM, Props}
 import jctp.struct.{CThostFtdcForQuoteRspField, CThostFtdcRspInfoField, CThostFtdcRspUserLoginField, _}
 import quanter.actors.AskListenedSymbol
@@ -10,7 +12,7 @@ import quanter.actors.provider._
 import quanter.actors.provider.ctp.CTPDataProviderActor._
 import quanter.actors.trade.{LoginResult, TradeAccountEvent, TradeAccountMessage}
 import quanter.actors.trade.TradeAccountEvent.{Disconnected => _, _}
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 
 import scala.collection.mutable
 
@@ -104,7 +106,8 @@ class CTPDataProviderActor extends DataProviderActor with CThostFtdcMdSpi {
     bar.open = pDepthMarketData.OpenPrice
     bar.high = pDepthMarketData.HighestPrice
     bar.low = pDepthMarketData.LowestPrice
-    bar.value = pDepthMarketData.LastPrice
+    bar.update(pDepthMarketData.LastPrice, pDepthMarketData.BidPrice1, pDepthMarketData.AskPrice1, pDepthMarketData.Volume, pDepthMarketData.BidVolume1, pDepthMarketData.AskVolume1)
+    bar.endTime = new Date(pDepthMarketData.UpdateMillisec)
 
     // 把数据送到symbol actor
     symbolSelections(bar.symbol) ! bar

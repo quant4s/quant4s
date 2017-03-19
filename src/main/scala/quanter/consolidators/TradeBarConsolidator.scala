@@ -2,7 +2,7 @@ package quanter.consolidators
 
 import quanter.{MarketDataType, TimeSpan}
 import quanter.Resolution.Resolution
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 import quanter.CommonExtensions.ResolutionExt
 
 /**

@@ -1,0 +1,46 @@
+<div class="top-level-stats-container white-on-tour" id="headline-results">
+    <div class="top-level-stat">
+        <div class="stat-label">策略收益</div>
+        <div class="stat-value">{{backtest.indicator.profitRatio| percentage: 2 | available}}</div>
+    </div>
+    <div class="top-level-stat">
+        <div class="stat-label">基准收益</div>
+        <div class="stat-value">{{backtest.indicator.profitRatioBench | percentage: 2 | available}}</div>
+    </div>
+    <div class="top-level-stat">
+        <div class="stat-label">年化收益</div>
+        <div class="stat-value">{{backtest.indicator.annualReturn| percentage| available}}</div>
+    </div>
+    <div class="top-level-stat">
+        <div class="stat-label">夏普比率</div>
+        <div class="stat-value">{{backtest.indicator.sharpRatio| number:2 | available}}</div>
+    </div>
+    <div class="top-level-stat">
+        <div class="stat-label">最大回撤</div>
+        <div class="stat-value">{{btCtrl.$scope.backtest.indicator.maxDrawdown| percentage| available}}</div>
+    </div>
+    <div class="top-level-stat">
+        <div class="stat-label">交易费</div>
+        <div class="stat-value">{{backtest.indicator.cumCommission| number:0 | available}}</div>
+    </div>
+    <div class="top-level-stat">
+        <div class="stat-label">净值</div>
+        <div class="stat-value">{{backtest.indicator.nav| number:0 | available }}</div>
+    </div>
+    <div class="top-level-stat">
+        <div class="stat-label">净收益</div>
+        <div class="stat-value">{{backtest.indicator.pnl| number:0 | available}}</div>
+    </div>
+    <div class="top-level-stat">
+        <div class="stat-label">开仓次数</div>
+        <div class="stat-value">{{backtest.indicator.openCount| number:0| available}}</div>
+    </div>
+    <div class="top-level-stat">
+        <div class="stat-label">平仓次数</div>
+        <div class="stat-value">{{backtest.indicator.tradeCount| number:0| available}}</div>
+    </div>
+    <div class="top-level-stat">
+        <div class="stat-label">胜率</div>
+        <div class="stat-value">{{backtest.indicator.winRatio |percentage| available}}</div>
+    </div>
+</div>

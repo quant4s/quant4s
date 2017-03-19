@@ -1,0 +1,28 @@
+<assembly>
+    <id>src</id>
+    <formats>
+        <format>tar.gz</format>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>true</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>..</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>pom.xml</include>
+                <include>commons/**</include>
+                <include>dist/**</include>
+                <include>engine/**</include>
+                <include>mq/**</include>
+                <include>monitor/**</include>
+            </includes>
+            <excludes>
+                <exclude>**/target/**</exclude>
+                <exclude>.classpath</exclude>
+                <exclude>.project</exclude>
+                <exclude>.settings/**</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+</assembly>

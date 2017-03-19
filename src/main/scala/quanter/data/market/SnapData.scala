@@ -1,4 +1,4 @@
-package quanter.data.market
+package org.quant4s.data.market
 
 import quanter.data.BaseData
 

@@ -1,0 +1,31 @@
+<div ng-controller="StrategyExecRptsCtrl as execCtrl">
+    <table st-table="execCtrl.displayedCollection" st-safe-src="execCtrl.execrpts"
+           class="table table-condensed table-hover">
+        <thead>
+        <tr>
+            <th class="hand text-center" st-skip-natural="true" st-sort="execCtrl.getters.timestamp"
+                st-sort-default="reverse">时间
+            </th>
+            <th class="hand text-center" st-skip-natural="true" st-sort="sec_id">代码</th>
+            <th class="hand text-center" st-skip-natural="true" st-sort="side">方向</th>
+            <th class="hand text-right" st-skip-natural="true" st-sort="price">价格</th>
+            <th class="hand text-right" st-skip-natural="true" st-sort="volume">数量</th>
+            <th class="hand text-center" st-skip-natural="true" st-sort="execrpt">成交回报类型</th>
+            <th class="hand text-center" st-skip-natural="true" st-sort="reason">拒绝原因</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in execCtrl.displayedCollection | limitTo:execCtrl.limit">
+            <td class="hand text-center">{{ row.transact_time | date: 'yyyy-M-dd H:mm:ss'| available }}</td>
+            <td class="hand text-center">{{ row.sec_id |available}}</td>
+            <td class="hand text-center">{{ [row.side, row.position_effect] | direction | available }}</td>
+            <td class="hand text-right">{{ row.price|number:2 | available }}</td>
+            <td class="hand text-right">{{ row.volume | number:0 | available }}</td>
+            <td class="hand text-center">{{ row.exec_type | execrpt_type | available }}</td>
+            <td class="hand rej-reason"><a class="disable" tooltip-placement="left"
+                                           tooltip="{{row.ord_rej_reason_detail}}">{{ row.ord_rej_reason_detail |
+                str_len: 8| available }}</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,110 @@
+<div ng-cloak="">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">手动下单</h4></div>
+    <div class="modal-body">
+        <div class="alert alert-success fade in m-b-15" ng-if="submit_status=='success'">下单成功 <span class="close"
+                                                                                                    ng-click="hide_alert()">×</span>
+        </div>
+        <div class="alert alert-danger fade in m-b-15" ng-if="submit_status=='error'">下单失败 <span class="close"
+                                                                                                 ng-click="hide_alert()">×</span>
+        </div>
+        <div class="row place-order my-row">
+            <div class="col-md-7 pull-right">
+                <div class="order-form" ng-hide="is_index">
+                    <div class="strategy-info">
+                        <div class="col-md-12"><h2 class="text-center f-s-26 m-t-15 m-b-10">{{ strategy.base.name
+                            }}</h2></div>
+                        <div class="col-md-12 m-t-20">
+                            <div class="col-md-4 text-center">可用资金</div>
+                            <div class="col-md-8 money">{{ strategy.cash.available | number: 2 }}</div>
+                            <div class="row" ng-if="order.is_close">
+                                <div class="col-md-4 text-center">总仓位</div>
+                                <div class="col-md-8 money">{{ position.volume | number: 0 }}</div>
+                            </div>
+                            <div class="row" ng-if="order.is_close">
+                                <div class="col-md-4 text-center">今仓位</div>
+                                <div class="col-md-8 money">{{ position.volume_today | number: 0 }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <form class="form-place-order form-horizontal">
+                            <div class="form-group"><label class="control-label col-md-4">证券代码</label>
+                                <div class="col-md-8"><input id="place-order-symbol-input" class="form-control"
+                                                             type="text" value="{{::inst.sec_name}}"
+                                                             placeholder="请输入代码或拼音首字母"
+                                                             ng-readonly="order.position_effect !== 1"></div>
+                            </div>
+                            <div class="form-group"><label class="control-label col-md-4">方向</label>
+                                <div class="col-md-8"><label ng-repeat="g in buysells" class="side"><input type="radio"
+                                                                                                           name="side"
+                                                                                                           ng-model="order.buysell"
+                                                                                                           ng-value="g.id">{{g.name}}</label>
+                                </div>
+                            </div>
+                            <div class="form-group"><label class="control-label col-md-4">开平</label>
+                                <div class="col-md-8"><label ng-repeat="g in position_effects" class="side"><input
+                                        type="radio" name="position_effect" ng-model="order.position_effect"
+                                        ng-value="g.id">{{g.name}}</label> <label class="side"
+                                                                                  ng-if="inst.exchange=='SHFE'"><input
+                                        type="radio" name="position_effect" ng-model="order.position_effect"
+                                        ng-value="4">平昨</label></div>
+                            </div>
+                            <div class="form-group"><label class="control-label col-md-4">类型</label>
+                                <div class="col-md-8"><label ng-repeat="g in order_types" class="side"><input
+                                        type="radio" name="order_type" ng-model="order.order_type" ng-value="g.id">{{g.name}}</label>
+                                </div>
+                            </div>
+                            <div class="form-group"><label class="control-label col-md-4">价格</label>
+                                <div class="col-md-8"><input class="form-control" type="number" ng-model="order.price"
+                                                             ng-value="last_price"></div>
+                            </div>
+                            <div class="form-group"><label class="control-label col-md-4">数量</label>
+                                <div class="col-md-8"><input class="form-control" type="number" ng-model="order.volume"
+                                                             ng-value="100"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="stock-info"><h2>{{ inst.sec_name }}</h2>
+                    <ul class="summary">
+                        <li><span class="strong hand"
+                                  ng-class="{'green': last_price < pre_close, 'red': last_price > pre_close }"
+                                  ng-click="pick_price(last_price)">{{ last_price | number:pricePrecision }}</span></li>
+                        <li><span>涨幅</span> <span ng-class="{'green': gain < 0, 'red': gain > 0 }">{{ gain | number:2 }}%</span>
+                        </li>
+                        <li><span>涨停</span> <span class="high-limit red hand" ng-click="pick_price(upper_limit)">{{ upper_limit | number:pricePrecision }}</span>
+                        </li>
+                        <li><span>跌停</span> <span class="low-limit green hand" ng-click="pick_price(lower_limit)">{{ lower_limit | number:pricePrecision }}</span>
+                        </li>
+                    </ul>
+                    <div class="list">
+                        <ul>
+                            <li ng-repeat="ask in quotes.asks.slice().reverse()"><span class="col1">卖{{ numbers[quotes_len - 1 - $index] }}</span>
+                                <span class="col2 hand"
+                                      ng-class="{'green': ask.price < pre_close, 'red': ask.price > pre_close }"
+                                      ng-click="pick_price(ask.price)">{{ ask.price | number:pricePrecision }}</span>
+                                <span class="col3 blue">{{ ask.vol | number: 0}}</span></li>
+                        </ul>
+                        <ul>
+                            <li ng-repeat="bid in quotes.bids"><span class="col1">买{{ numbers[$index] }}</span> <span
+                                    class="col2 hand"
+                                    ng-class="{'green': bid.price < pre_close, 'red': bid.price > pre_close }"
+                                    ng-click="pick_price(bid.price)">{{ bid.price | number:pricePrecision }}</span>
+                                <span class="col3 blue">{{ bid.vol | number: 0 }}</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <checkbox ng-model="PlaceOrderCtrl.autoClose" class="btn-normal pull-left"
+                  ng-change="PlaceOrderCtrl.changeAutoCloseSetting(PlaceOrderCtrl.autoClose)"></checkbox>
+        <label class="pull-left">下单后自动关闭对话框</label>
+        <button class="btn btn-success" ng-hide="is_index" ng-click="place_order()">{{ ok_value }}</button>
+    </div>
+</div>

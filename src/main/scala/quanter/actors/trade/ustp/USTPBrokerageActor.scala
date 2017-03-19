@@ -5,11 +5,12 @@ package quanter.actors.trade.ustp
 
 import com.sun.jna.{Callback, Library, Native}
 import quanter.actors.trade.{BrokerageActor, CallBack}
+import quanter.rest.{CancelOrder, Order}
 
 /**
   *
   */
-class USTPBrokerageActor extends BrokerageActor with CallBack{
+class USTPBrokerageActor extends BrokerageActor with CallBack {
 
 
 
@@ -67,4 +68,17 @@ class USTPBrokerageActor extends BrokerageActor with CallBack{
   object CLibrary {
    val INSTANCE = Native.loadLibrary("", classOf[CLibrary]).asInstanceOf[CLibrary]
   }
+
+  // Trader implemention
+  override def queryCapital(): Unit = ???
+
+  override def queryOrders(): Unit = ???
+
+  override def cancel(order: CancelOrder): Unit = ???
+
+  override def order(order: Order): Unit = ???
+
+  override def queryPosition(symbol: String): Unit = ???
+
+  override def queryUnfinishOrders(): Unit = ???
 }

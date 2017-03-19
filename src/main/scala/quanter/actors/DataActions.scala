@@ -22,6 +22,7 @@ import quanter.rest._
 
   case class NewOrder(order: Order){}
   case class RemoveOrder(order: CancelOrder){}
+  case class UpdateOrderStatus(id: Int, status: String)
 
   case class NewTrader(trader: TradeAccount){}
   case class ListTraders(){}

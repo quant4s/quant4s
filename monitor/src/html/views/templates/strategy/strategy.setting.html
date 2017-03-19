@@ -1,0 +1,226 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+    <h4>{{ title_map[title] }}</h4></div>
+<div class="modal-body my-row">
+    <div>
+        <div ng-switch="title" class="strategy-wizard">
+            <div ng-switch-when="base_info" class="">
+                <form name="form" novalidate="novalidate" class="form-horizontal">
+                    <div class="form-group" ng-class="{ \'has-error\': form.name.$dirty && form.name.$error.required }">
+                        <label class="control-label col-md-2" for="name">策略名称</label>
+                        <div class="col-md-10"><input autofocus="" class="form-control" type="text" id="name"
+                                                      ng-model="modal.wizard.name" placeholder="您的策略名称"
+                                                      ng-required="true"></div>
+                    </div>
+                    <div class="form-group"><label class="control-label col-md-2" for="lang">编程语言</label>
+                        <div class="col-md-10"><input class="form-control" type="text" id="lang"
+                                                      ng-model="modal.wizard.dev_lang" placeholder="您的策略开发语言"></div>
+                    </div>
+                    <div class="form-group"><label class="control-label col-md-2" for="str-category">策略类型</label>
+                        <div class="col-md-10"><select class="form-control" id="str-category"
+                                                       data-ng-model="modal.wizard.category"
+                                                       ng-options="b.id as b.name for b in categories">
+                            <option value="" disabled="" selected="" ng-hide="modal.wizard.category">请选择您的策略类型</option>
+                        </select></div>
+                    </div>
+                    <div class="form-group"><label class="control-label col-md-2" for="str-style">策略风格</label>
+                        <div class="col-md-10"><select class="form-control" id="str-style"
+                                                       data-ng-model="modal.wizard.style"
+                                                       ng-options="b.id as b.name for b in styles">
+                            <option value="" disabled="" selected="" ng-hide="modal.wizard.category">请选择您的策略风格</option>
+                        </select></div>
+                    </div>
+                    <div class="form-group"><label class="control-label col-md-2" for="desc">策略描述</label>
+                        <div class="col-md-10"><textarea class="form-control" type="text" id="desc"
+                                                         ng-model="modal.wizard.description"
+                                                         placeholder="请简要描述您的策略">\n            </textarea></div>
+                    </div>
+                    <div class="col-md-12"><span ng-if="saving"><i
+                            class="fa fa-spinner fa-spin fa-lg"></i>正在保存...</span> <span ng-if="save_succeed"><i
+                            class="fa fa-check fa-lg text-primary">保存成功！</i></span></div>
+                </form>
+            </div>
+            <div ng-switch-when="account" class="form-horizontal">
+                <form novalidate="novalidate" class="form-horizontal">
+                    <div custom-slimscroll="" data-height="287px">
+                        <div class="form-group"
+                             ng-repeat="account in all_accounts | orderObjectBy:\'account_name\':false">
+                            <div class="row">
+                                <div class="col-md-11 col-md-offset-1">
+                                    <checkbox ng-model="account.isSelected" class="btn-normal"></checkbox>
+                                    <label>{{account.account_name}}</label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12"><span ng-if="saving"><i
+                            class="fa fa-spinner fa-spin fa-lg"></i>正在保存...</span> <span ng-if="account_save_succeed"><i
+                            class="fa fa-check fa-lg text-primary">保存成功！</i></span></div>
+                </form>
+            </div>
+            <div ng-switch-when="sync" class="form-horizontal" ng-show="show_sync">
+                <div ng-show="sync_error" class="alert alert-danger"><i class="fa fa-ban fa-lg"></i>{{ sync_error_msg }}
+                </div>
+                <div>
+                    <accordion close-others="true">
+                        <accordion-group is-open="accordion.cash">
+                            <accordion-heading>资金差额: {{cash_diff.available_diff | number : 2}} 元 <i
+                                    class="pull-right fa"
+                                    ng-class="{\'fa-chevron-down\': accordion.cash, \'fa-chevron-right\': !accordion.cash}"></i>
+                            </accordion-heading>
+                            <table st-table="cash_diff" class="table">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">策略可用资金</th>
+                                    <th class="text-center">账户可用资金</th>
+                                    <th class="text-center">差额</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="text-center">{{ cash_diff.strategy_available | number : 2 }}</td>
+                                    <td class="text-center">{{ cash_diff.account_available | number : 2 }}</td>
+                                    <td class="text-center">{{ cash_diff.available_diff | number : 2 }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </accordion-group>
+                        <accordion-group is-open="accordion.pos">
+                            <accordion-heading>持仓差异: {{position_diff.length}}条记录 <i class="pull-right fa"
+                                                                                    ng-class="{\'fa-chevron-down\': accordion.pos, \'fa-chevron-right\': !accordion.pos}"></i>
+                            </accordion-heading>
+                            <table st-table="position_diff_collection" st-safe-src="position_diff" class="table">
+                                <thead>
+                                <tr>
+                                    <th class="text-center" st-sort="sec_id">代<br>码</th>
+                                    <th class="text-center">方<br>向</th>
+                                    <th class="text-center" st-sort="strategy_volume">策略<br>持仓</th>
+                                    <th class="text-center" st-sort="account_volume">账户<br>持仓</th>
+                                    <th class="text-center" st-sort="volume_diff">持仓<br>差额</th>
+                                    <th class="text-center" st-sort="strategy_vwap">策略<br>均价</th>
+                                    <th class="text-center" st-sort="account_vwap">账户<br>均价</th>
+                                    <th class="text-center" st-sort="vwap_diff">均价<br>差额</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="pos in position_diff_collection">
+                                    <td class="text-center">{{ pos.sec_id }}</td>
+                                    <td class="text-center">{{ [pos.side, pos.position_effect] | direction }}</td>
+                                    <td class="text-center">{{ pos.strategy_volume }}</td>
+                                    <td class="text-center">{{ pos.account_volume }}</td>
+                                    <td class="text-center">{{ pos.volume_diff }}</td>
+                                    <td class="text-center">{{ pos.strategy_vwap | number : 2 }}</td>
+                                    <td class="text-center">{{ pos.account_vwap | number : 2 }}</td>
+                                    <td class="text-center">{{ pos.vwap_diff | number : 2 }}</td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <div st-pagination="" st-items-by-page="4" st-displayed-pages=""></div>
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </accordion-group>
+                    </accordion>
+                </div>
+                <form novalidate="novalidate" class="form-horizontal">
+                    <div class="col-md-12"><span ng-if="saving"><i
+                            class="fa fa-spinner fa-spin fa-lg"></i>正在同步...</span> <span ng-if="sync_save_succeed"><i
+                            class="fa fa-check fa-lg text-primary">同步成功！</i></span></div>
+                </form>
+            </div>
+            <div ng-switch-when="cash_io" class="strategy-setting" ng-disabled="!strategy.ready">
+                <div ng-show="cash_io_error" class="alert alert-danger"><i class="fa fa-ban fa-lg"></i> 转出金额大于可用资金，请重新输入
+                </div>
+                <form novalidate="novalidate" class="form-horizontal">
+                    <div class="form-group"><label class="control-label col-md-2">可用资金</label>
+                        <div class="col-md-10"><span class="form-control readonly">{{ strategy.cash.available | number:2 }}</span>
+                        </div>
+                    </div>
+                    <div class="form-group"><label class="control-label col-md-2">累计出入金</label>
+                        <div class="col-md-10"><span class="form-control readonly">{{ strategy.cash.cum_inout | number:2 }}</span>
+                        </div>
+                    </div>
+                    <div class="form-group"><label class="control-label col-md-2">赢亏</label>
+                        <div class="col-md-10"><span
+                                class="form-control readonly {{ strategy.indicators.pnl.color_class }}">{{ modal.indicators.pnl.value | number:2 }}</span>
+                        </div>
+                    </div>
+                    <div class="form-group"><label class="control-label col-md-2">资金操作</label>
+                        <div class="col-md-10"><select class="form-control" type="digit" ng-model="modal.cash_io_flag"
+                                                       ng-options="b.id as b.name for b in cash_inout_dir"></select>
+                        </div>
+                    </div>
+                    <div class="form-group"><label class="control-label col-md-2">金额</label>
+                        <div class="col-md-10"><input class="form-control input-xlarge" type="digit"
+                                                      ng-model="modal.cash_inout" value="modal.cash_inout | number:2"
+                                                      placeholder="请输入正确的金额数字"></div>
+                    </div>
+                    <div class="col-md-12"><span ng-if="saving"><i
+                            class="fa fa-spinner fa-spin fa-lg"></i>正在保存...</span> <span ng-if="cash_save_succeed"><i
+                            class="fa fa-check fa-lg text-primary">保存成功！</i></span></div>
+                </form>
+            </div>
+            <div ng-switch-when="position_io" class="" ng-disabled="!strategy.ready">
+                <div ng-show="pos_io_error" class="alert alert-danger"><i class="fa fa-ban fa-lg"></i>
+                    {{$scope.pos_io_error_msg}}
+                </div>
+                <form novalidate="novalidate" class="form-horizontal">
+                    <div style="min-height: 250px">
+                        <table st-table="st_position" class="table table-condensed table-hover"
+                               style="vertical-align:text-top;">
+                            <thead>
+                            <tr>
+                                <th class="hand" st-sort="exchange" st-skip-natural="true">交易所</th>
+                                <th class="hand" st-sort="sec_id" st-skip-natural="true">代码</th>
+                                <th class="hand" st-sort="sec_name" st-skip-natural="true">名称</th>
+                                <th class="hand" st-sort="side">方向</th>
+                                <th class="hand" st-sort="volume" st-skip-natural="true">数量</th>
+                                <th class="hand" st-sort="vwap" st-skip-natural="true">均价</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="pos in st_position">
+                                <td>{{ pos.exchange }}</td>
+                                <td>{{ pos.sec_id }}</td>
+                                <td>{{ pos.sec_name }}</td>
+                                <td>{{ [pos.side, pos.position_effect] | direction }}</td>
+                                <td>
+                                    <div class="form-group novalidate"><input name="volume" class="num"
+                                                                              ng-model="pos.input" type="number" min="0"
+                                                                              step="1"
+                                                                              value="{{ pos.volume | number: 0 }}">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group novalidate"><input name="vwap" class="num"
+                                                                              ng-model="pos.vwap_input" type="number"
+                                                                              min="0" step="1"
+                                                                              value="{{ pos.vwap | number: 2 }}"></div>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    <div st-pagination="" st-items-by-page="6" st-displayed-pages=""></div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="col-md-12">
+                        <button class="btn btn-sm btn-primary text-right col-md-offset-5" ng-disabled="saving"
+                                ng-click="position_io()"><i class="fa fa-check-square-o"></i>提交
+                        </button>
+                        <span ng-if="saving && st_position.length > 0"><i class="fa fa-spinner fa-spin fa-lg"></i>正在提交...</span>
+                        <span ng-if="pos_save_succeed && st_position.length > 0"><i
+                                class="fa fa-check fa-lg text-primary">提交成功！</i></span></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer"><a ng-if="title!=\'sync\'" class="btn btn-success" ng-click="modal.sure()">保存</a> <a
+        ng-if="title==\'sync\'" class="btn btn-success" ng-show="show_sync" ng-click="modal.sure()">保存</a></div>

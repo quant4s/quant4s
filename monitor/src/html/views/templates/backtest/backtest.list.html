@@ -1,0 +1,74 @@
+<div id="content" class="content animated fadeIn" ng-controller="BacktestListCtrl as btListCtrl">
+    <ol class="breadcrumb pull-right">
+        <li class="active">回测报告</li>
+    </ol>
+    <h1 class="page-header">回测报告</h1>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="hidden-sm hidden-xs">
+                <ul class="nav nav-pills nav-stacked nav-inbox">
+                    <li ng-repeat="strategy in btListCtrl.strategies|orderObjectBy:\'name\':false"
+                        ng-class="{\'active\':strategy.is_active}"><a ng-click="btListCtrl.select(strategy)"><i
+                            class="fa fa-inbox fa-fw m-r-5"></i>{{strategy.name}}<span
+                            ng-if="strategy.backtests.length > 0"
+                            class="badge pull-right">{{strategy.backtests.length}}</span></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div class="email-btn-row hidden-xs"><a
+                    ng-click="btListCtrl.deleteAllBacktestsOfStrategy(btListCtrl.currentStrategy.strategy_id)"
+                    class="btn btn-sm btn-inverse">删除策略所有回测</a> <a
+                    ng-click="btListCtrl.deleteSelected(btListCtrl.currentStrategy)"
+                    class="btn btn-sm btn-inverse">删除所选</a></div>
+            <div class="email-content">
+                <table st-table="current_strategy.backtests" class="table table-email">
+                    <thead>
+                    <tr ng-class="{\'active\':btListCtrl.currentStrategy.allSelected}">
+                        <th class="email-select text-center"><a
+                                ng-click="btListCtrl.toggleList(btListCtrl.currentStrategy)"><i
+                                class="fa fa-square-o fa-fw"></i></a></th>
+                        <th class="text-center">创建时间</th>
+                        <th class="text-center">收益率</th>
+                        <th class="text-center">最大回撤</th>
+                        <th class="text-center">夏普比率</th>
+                        <th class="text-center">回测进度</th>
+                        <th class="text-center">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="backtest in btListCtrl.currentStrategy.backtests"
+                        ng-class="{\'active\':backtest.selected}">
+                        <td class="email-select text-center"><a
+                                ng-click="btListCtrl.toggleItem(btListCtrl.currentStrategy, backtest)"><i
+                                class="fa fa-square-o fa-fw"></i></a></td>
+                        <td class="text-center"><a ui-sref="app.backtest.detail({backtest_id: backtest.id})"
+                                                   tooltip-placement="right"
+                                                   tooltip-template="\'app/backtest/backtest.list.tooltip.html\'">{{backtest.utc
+                            | date:\'yyyy-MM-dd HH:mm:ss\'|available}}</a></td>
+                        <td class="text-center">{{backtest.indicator.profitRatio | percentage|available}}</td>
+                        <td class="text-center">{{backtest.indicator.maxDrawdown | percentage |available}}</td>
+                        <td class="text-center">{{backtest.indicator.sharpRatio | number:2 |available}}</td>
+                        <td class="text-center">
+                            <div class="progress progress-striped progress-sm active m-0"
+                                 ng-show="backtest.progress==1||backtest.progress===undefined">
+                                <div class="progress-bar progress-bar-success" style="width: 100%">100%</div>
+                            </div>
+                            <div class="progress progress-striped progress-sm active m-0" ng-show="backtest.progress<1">
+                                <div class="progress-bar progress-bar-success"
+                                     style="width: {{backtest.progress*100}}%">
+                                    {{backtest.progress*100|number:0|available}}%
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center"><a ng-click="btListCtrl.deleteBacktest(backtest.id)">删除</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="email-footer clearfix">
+                    共计：{{btListCtrl.currentStrategy.backtests.length?btListCtrl.currentStrategy.backtests.length:0}}项
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

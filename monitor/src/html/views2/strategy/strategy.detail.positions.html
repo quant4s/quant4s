@@ -1,0 +1,36 @@
+<div ng-controller="StrategyPositionsCtrl">
+    <table st-table="displayedCollection" st-safe-src="positions" class="table table-condensed table-hover">
+        <thead>
+        <tr>
+            <th class="hand text-center" st-sort="exchange" st-skip-natural="true">交易所</th>
+            <th class="hand text-center" st-sort="sec_id" st-skip-natural="true">代码</th>
+            <th class="hand text-center" st-sort="sec_name" st-skip-natural="true">名称</th>
+            <th class="hand text-center" st-sort="side">方向</th>
+            <th class="hand text-right" st-sort="volume" st-skip-natural="true">数量</th>
+            <th class="hand text-right" st-sort="price" st-skip-natural="true">价格</th>
+            <th class="hand text-right" st-sort="vwap" st-skip-natural="true">成本</th>
+            <th class="hand text-right" st-sort="fpnl" st-skip-natural="true">浮盈</th>
+            <th class="hand text-center" st-sort="getters.timestamp" st-skip-natural="true" st-sort-default="reverse">
+                创建时间
+            </th>
+            <th class="hand text-center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in displayedCollection | limitTo:limit">
+            <td class="text-center">{{ row.exchange | exchange}}</td>
+            <td class="text-center">{{ row.sec_id }}</td>
+            <td class="text-center">{{ row.sec_name }}</td>
+            <td class="text-center">{{ [row.side, row.position_effect] | direction }}</td>
+            <td class="text-right"><a tooltip-placement="left"
+                                      tooltip="总仓:{{row.volume }} / 今仓:{{row.volume_today?row.volume_today:0}}">{{
+                [row.volume, row.volume_today] | position_volume }}</a></td>
+            <td class="text-right">{{ row.price | number:2 }}</td>
+            <td class="text-right">{{ row.vwap | number:2 | available}}</td>
+            <td class="text-right" ng-class="{'red':row.fpnl>0,'green':row.fpnl<0}">{{ row.fpnl | number:2 }}</td>
+            <td class="text-center">{{ row.transact_time | date: 'yyyy-M-dd H:mm:ss' }}</td>
+            <td class="text-center"><a ng-click="closePosition(row)">平仓</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

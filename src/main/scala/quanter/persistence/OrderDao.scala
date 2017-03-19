@@ -4,6 +4,8 @@
 package quanter.persistence
 
 import profile.simple._
+import quanter.actors.trade.{OrderCancelResult, OrderStatusResult}
+import quanter.rest.CancelOrder
 
 //import scala.slick.driver.H2Driver.simple._
 
@@ -17,9 +19,20 @@ class OrderDao (implicit session: Session)  extends BaseDao[EOrder]{
     // nothing to do
   }
 
+  def updateStatus(o: OrderStatusResult): Unit = {
+    val orderQuery = gOrders.filter(r => r.strategyId === o.strategyId && r.orderNo === o.orderNo)
+    orderQuery.map(p => (p.status)).update(o.orderStatus)
+  }
+
+
   override def insert(entity: EOrder): EOrder = {
-    val id = ( gOrders returning gOrders.map(_.id) += entity) //(strategy.name, strategy.runMode, strategy.status, strategy.lang))
+    val id = (gOrders returning gOrders.map(_.id) += entity) //(strategy.name, strategy.runMode, strategy.status, strategy.lang))
     entity.copy(id = Some(id))
+  }
+
+  def cancel(o: OrderCancelResult): Unit = {
+    val orderQuery = gOrders.filter(r => r.strategyId === o.strategyId && r.orderNo === o.orderNo)
+    orderQuery.map(p => (p.status)).update(o.orderStatus) // TODO: 更新撤单数量，状态 撤单| 部分撤单
   }
 
   override def delete(id: Int): Unit = {

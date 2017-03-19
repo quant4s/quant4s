@@ -1,0 +1,1050 @@
+$templateCache.put("app/account/disconnect.confirm.html", '
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">退出交易</h4></div>
+    <div class="modal-body my-row">
+        <div class="col-md-12"><h4>确认要退出这个交易账户？</h4></div>
+        <form class="form-horizontal account-form">
+            <div class="form-group readonly"><label class="control-label col-md-2">账户名称</label>
+                <div class="col-md-10">
+                    <div class="form-control readonly col-md-10">{{ account.account_name }}</div>
+                </div>
+            </div>
+            <div class="form-group readonly"><label class="control-label col-md-2">经纪商</label>
+                <div class="col-md-10">
+                    <div class="form-control readonly">{{ account.broker_name }}</div>
+                </div>
+            </div>
+            <div class="form-group readonly"><label class="control-label col-md-2">交易账号</label>
+                <div class="col-md-10">
+                    <div class="form-control readonly">{{ account.broker_username }}</div>
+                </div>
+            </div>
+            <div ng-show="errors" class="col-md-10 error-fail"><i class="fa fa-warning text-warning"></i> <span>{{ errors }}</span>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-warning" ng-click="ok()">退出交易</button>
+    </div>
+</div>'),
+$templateCache.put("app/account/remove.confirm.html", '
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">删除账户</h4></div>
+    <div class="modal-body">
+        <div class="alert alert-danger m-b-0"><h4>确认删除账户</h4>
+            <div class="row">
+                <div class="col-md-2 col-md-offset-1">账户名称</div>
+                <div class="col-md-9">{{ account.account_name }}</div>
+                <div class="col-md-2 col-md-offset-1">经纪商</div>
+                <div class="col-md-9">{{ account.broker_name }}</div>
+                <div class="col-md-2 col-md-offset-1">交易账号</div>
+                <div class="col-md-9">{{ account.broker_username }}</div>
+            </div>
+        </div>
+        <div ng-show="errors" class="col-md-10 error-fail"><i class="fa fa-warning text-warning"></i>
+            <span>{{ errors }}</span></div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" ng-click="ok()">删除</button>
+    </div>
+</div>'),
+$templateCache.put("app/account/setting.html", '
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">{{ ::title }}</h4></div>
+<div class="modal-body">
+    <form name="acc-form" novalidate="novalidate" class="form-horizontal account-form">
+        <div class="form-group"><label class="control-label col-md-2">账户名称:</label>
+            <div class="col-md-10"><input class="form-control" ng-model="acc.account_name" placeholder="请给您的交易账户取个名"
+                                          required=""></div>
+        </div>
+        <div class="form-group form-inline"><label class="control-label col-md-2">柜台类型:</label>
+            <div class="col-md-10"><select class="form-control full-width" ng-model="acc.broker_channel_id"
+                                           ng-options="b.id as b.title for b in brokerChannelTypes"
+                                           ng-change="onChannelSelect()">
+                <option class="full-width" value="" disabled="" selected="" ng-hide="acc.broker_channel_id">
+                    请选择您开户柜台的类型
+                </option>
+            </select></div>
+        </div>
+        <div class="form-group form-inline"><label class="control-label col-md-2">经纪机构:</label>
+            <div class="col-md-10" id="broker-select" ng-switch="" on="flags.editBrokerName"><input
+                    class="form-control full-width" ng-model="acc.broker_name"
+                    placeholder="请输入您开户的经纪机构名称或拼音缩写，如：‘上海中期\'、\'SHZQ\'"
+                    typeahead="broker.name for broker in getTypeaheads($viewValue)" typeahead-min-length="1"
+                    typeahead-on-select="onBrokerSelect($item)" required=""></div>
+        </div>
+        <div class="form-group"><label class="control-label col-md-2">机构代码:</label>
+            <div class="col-md-10"><input class="form-control" name="broker_id" ng-model="acc.broker_id"
+                                          placeholder="您开户公司的机构代码" required=""></div>
+        </div>
+        <div class="form-group"><label class="control-label col-md-2">柜台地址:</label>
+            <div class="col-md-10 vertical middle" ng-switch="" on="flags.editBrokerUri">
+                <div ng-switch-when="false">
+                    <div isteven-multi-select="" input-model="addrGrouped" output-model="addrChoosed"
+                         button-label="label" item-label="label" selection-mode="single" group-property="group"
+                         tick-property="selected" helper-elements="" translation="localLang" max-height="200px"
+                         class="inline float-left" id="acc-multi-select" on-item-click="onUriSelect( data )"></div>
+                    <div class="float-left m-l-5">
+                        <button class="btn btn-primary" ng-click="onUriBtnClick()">编辑</button>
+                    </div>
+                </div>
+                <div ng-switch-when="true"><input class="form-control" name="broker_addr" type="text"
+                                                  ng-model="acc.broker_uri" value="acc.broker_uri"
+                                                  placeholder="您开户柜台的交易服务IP和端口，格式: tcp://1.1.1.1:41205"></div>
+            </div>
+        </div>
+        <div class="form-group"><label class="control-label col-md-2">交易账号:</label>
+            <div class="col-md-10"><input class="form-control" name="acc_client_no" ng-model="acc.broker_username"
+                                          placeholder="您的交易账号（请注意：交易密码在连接柜台时输入）" required=""></div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <div ng-show="errors" class="alert alert-danger text-left">{{ errors }}</div>
+    <button class="btn btn-success" ng-click="ok()">保存</button>
+</div>'),
+$templateCache.put("app/create/create.base.html", '
+<div id="content" class="content animated fadeIn" ng-controller="CreateBaseCtrl">
+    <ol class="breadcrumb pull-right">
+        <li><a ui-sref="app.create.list">策略向导</a></li>
+        <li class="active">基本架构模板</li>
+    </ol>
+    <div style="float:left">
+        <h1 class="page-header">基本架构模板
+            <small>生成策略代码的基本架构，不实现具体算法</small>
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="panel-heading b-color">
+                    <div class="panel-heading-btn"><a class="btn btn-xs btn-success pull-right"
+                                                      ng-click="onRefreshClick()"><i class="fa fa-repeat"></i> 刷新</a>
+                    </div>
+                    <div class="progress progress-striped progress-sm active pull-right m-t-5">
+                        <div class="progress-bar progress-bar-success" style="width: {{ process }}%">{{process}}%</div>
+                    </div>
+                    <h4 class="panel-title text-white">构建向导</h4></div>
+                <div class="panel-body">
+                    <div class="bwizard clearfix">
+                        <ol class="bwizard-steps clearfix clickable" role="tablist">
+                            <li role="tab" ng-repeat="step in steps" ng-class="{\'active\': step.active}"
+                                ng-click="setStep(step.id)"><span class="label">{{::$index + 1}}</span> <a
+                                    class="hidden-phone">{{::step.title}}</a> <a class="hidden-phone">
+                                <small>{{::step.subtitle}}</small>
+                            </a></li>
+                        </ol>
+                        <div class="well">
+                            <div class="alert alert-warning fade in m-b-15" ng-show="has_error"><strong>参数错误!</strong>
+                                参数输入未完成或输入的值不符合要求 <span class="close" ng-click="has_error = null">×</span></div>
+                            <div class="row">
+                                <div class="col-md-6" ng-switch="current_step">
+                                    <div ng-switch-when="0" class="bwizard-activated anime-i-fadeIn">
+                                        <fieldset>
+                                            <div class="row">
+                                                <div class="form-group"
+                                                     ng-class="{\'has-error\':valid.name_valid===false&&has_error}">
+                                                    <label class="col-md-3 control-label bwizard-label">策略名称</label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group full-width"><input class="form-control"
+                                                                                                   ng-disabled="strategy.strategy_id"
+                                                                                                   type="text"
+                                                                                                   ng-model="strategy.name">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group"
+                                                     ng-class="{\'has-error\':valid.lang_valid===false&&has_error}">
+                                                    <label class="col-md-3 control-label bwizard-label">编程语言<a
+                                                            class="btn btn-xs btn-icon btn-circle btn-success"
+                                                            tooltip-placement="top" tooltip="SDK开发所使用的语言"><i
+                                                            class="fa fa-question"></i></a></label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group full-width"><select class="form-control"
+                                                                                                    ng-model="args.language"
+                                                                                                    ng-options="lang.type as lang.label for lang in languages"
+                                                                                                    ng-change="onDevLangChange()"></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group"
+                                                     ng-class="{\'has-error\':valid.td_addr_valid===false&&has_error}">
+                                                    <label class="col-md-3 control-label bwizard-label">交易路由<a
+                                                            class="btn btn-xs btn-icon btn-circle btn-success"
+                                                            tooltip-placement="top" tooltip="交易服务地址"><i
+                                                            class="fa fa-question"></i></a></label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group full-width"><select class="form-control"
+                                                                                                    ng-model="args.td_addr"
+                                                                                                    ng-options="router.addr as router.label for router in order_router"
+                                                                                                    ng-change="onRouterChange()"></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group"
+                                                     ng-class="{\'has-error\':valid.strategy_name_valid===false&&has_error}">
+                                                    <label class="col-md-3 control-label bwizard-label">项目名称</label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group full-width"><input class="form-control"
+                                                                                                   type="text"
+                                                                                                   ng-model="args.strategy_name">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row"
+                                                 ng-show="args.language==\'cpp\'||args.language==\'csharp\'">
+                                                <div class="form-group"
+                                                     ng-class="{\'has-error\':valid.project_valid===false&&has_error}">
+                                                    <label class="col-md-3 control-label bwizard-label">项目类型</label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group full-width"><select class="form-control"
+                                                                                                    ng-model="args.project"
+                                                                                                    ng-options="project.type as project.label for project in projects"
+                                                                                                    ng-change="onProjectChange()"></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <div ng-switch-when="1" class="bwizard-activated anime-i-fadeIn">
+                                        <div>
+                                            <div class="row form-group"
+                                                 ng-class="{\'has-error\':valid.mode_valid===false&&has_error}"><label
+                                                    class="col-md-3 control-label bwizard-label">运行模式<a
+                                                    class="btn btn-xs btn-icon btn-circle btn-success"
+                                                    tooltip-placement="top" tooltip="接收行情数据的模式"><i
+                                                    class="fa fa-question"></i></a></label>
+                                                <div class="col-md-9">
+                                                    <div class="input-group full-width"><select class="form-control"
+                                                                                                ng-model="args.mode"
+                                                                                                ng-options="mode.num as mode.label for mode in run_mode"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div ng-show="args.mode == 4">
+                                                <div class="row form-group"
+                                                     ng-class="{\'has-error\':valid.start_time_valid===false&&has_error}">
+                                                    <label class="col-md-3 control-label bwizard-label">开始时间<a
+                                                            class="btn btn-xs btn-icon btn-circle btn-success"
+                                                            tooltip-placement="top" tooltip="回测开始时间"><i
+                                                            class="fa fa-question"></i></a></label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group full-width"><input class="form-control"
+                                                                                                   type="text"
+                                                                                                   date-time=""
+                                                                                                   auto-close="true"
+                                                                                                   ng-model="datetime.start_time"
+                                                                                                   view="hours"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group"
+                                                     ng-class="{\'has-error\':valid.end_time_valid===false&&has_error}">
+                                                    <label class="col-md-3 control-label bwizard-label">结束时间<a
+                                                            class="btn btn-xs btn-icon btn-circle btn-success"
+                                                            tooltip-placement="top" tooltip="回测结束时间"><i
+                                                            class="fa fa-question"></i></a></label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group full-width"><input class="form-control"
+                                                                                                   type="text"
+                                                                                                   date-time=""
+                                                                                                   auto-close="true"
+                                                                                                   ng-model="datetime.end_time"
+                                                                                                   view="hours"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group"
+                                                     ng-class="{\'has-error\':valid.initial_cash_valid===false&&has_error}">
+                                                    <label class="col-md-3 control-label bwizard-label">初始资金<a
+                                                            class="btn btn-xs btn-icon btn-circle btn-success"
+                                                            tooltip-placement="top" tooltip="回测初始资金（元）"><i
+                                                            class="fa fa-question"></i></a></label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group full-width"><input class="form-control"
+                                                                                                   type="number" min="0"
+                                                                                                   ng-model="args.initial_cash">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group"
+                                                     ng-class="{\'has-error\':valid.transaction_ratio_valid===false&&has_error}">
+                                                    <label class="col-md-3 control-label bwizard-label">成交比率<a
+                                                            class="btn btn-xs btn-icon btn-circle btn-success"
+                                                            tooltip-placement="top" tooltip="委托成交比率，0~1"><i
+                                                            class="fa fa-question"></i></a></label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group full-width"><input class="form-control"
+                                                                                                   type="number" min="0"
+                                                                                                   max="1" step="0.01"
+                                                                                                   ng-model="args.transaction_ratio">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group"
+                                                     ng-class="{\'has-error\':valid.commission_ratio_valid===false&&has_error}">
+                                                    <label class="col-md-3 control-label bwizard-label">手续费率<a
+                                                            class="btn btn-xs btn-icon btn-circle btn-success"
+                                                            tooltip-placement="top" tooltip="单笔交易的手续费率，0~1"><i
+                                                            class="fa fa-question"></i></a></label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group full-width"><input class="form-control"
+                                                                                                   type="number" min="0"
+                                                                                                   max="1" step="0.0001"
+                                                                                                   ng-model="args.commission_ratio">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group"
+                                                     ng-class="{\'has-error\':valid.slippage_ratio_valid===false&&has_error}">
+                                                    <label class="col-md-3 control-label bwizard-label">滑点比率<a
+                                                            class="btn btn-xs btn-icon btn-circle btn-success"
+                                                            tooltip-placement="top" tooltip="滑点比率，0~1"><i
+                                                            class="fa fa-question"></i></a></label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group full-width"><input class="form-control"
+                                                                                                   type="number" min="0"
+                                                                                                   max="1" step="0.01"
+                                                                                                   ng-model="args.slippage_ratio">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group"
+                                                     ng-class="{\'has-error\':valid.price_type_valid===false&&has_error}">
+                                                    <label class="col-md-3 control-label bwizard-label">行情复权模式</label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group full-width"><select class="form-control"
+                                                                                                    ng-model="args.price_type"
+                                                                                                    ng-options="type.num as type.label for type in price_types"></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-switch-when="2" class="bwizard-activated anime-i-fadeIn">
+                                        <fieldset>
+                                            <div class="row">
+                                                <div class="col-md-12" id="tmpl-symbol-input">
+                                                    <div class="form-group">
+                                                        <div class="input-group full-width"><input type="text"
+                                                                                                   ng-model="symbol_input"
+                                                                                                   placeholder="股票、期货的代码/拼音缩写"
+                                                                                                   typeahead="symbol as symbol.exchange+\'.\'+symbol.sec_id+\' \'+symbol.sec_name for symbol in getSymbolsTypeahead($viewValue)"
+                                                                                                   class="form-control"
+                                                                                                   typeahead-on-select="selectSymbol($item)">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div custom-slimscroll="" data-height="348px">
+                                                <div class="row" ng-hide="selected_symbols.length === 0">
+                                                    <div class="col-md-12">
+                                                        <table st-table="selected_symbols_display"
+                                                               st-safe-src="selected_symbols" class="table table-hover">
+                                                            <tbody>
+                                                            <tr ng-repeat="symbol in selected_symbols_display"
+                                                                class="form-group">
+                                                                <td class="text-center">{{symbol.sec_name}}</td>
+                                                                <td class="text-left">
+                                                                    <div class="symbol-multi-select"
+                                                                         isteven-multi-select=""
+                                                                         input-model="symbol.sub_type"
+                                                                         output-model="sub_type_output"
+                                                                         button-label="label" item-label="label"
+                                                                         tick-property="selected" group-property="group"
+                                                                         helper-elements=""
+                                                                         on-item-click="onSubTypeChange()"
+                                                                         translation="translation" max-labels="1"></div>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <button type="button button-danger"
+                                                                            ng-click="removeSymbol(symbol)"
+                                                                            class="btn btn-danger">删除
+                                                                    </button>
+                                                                </td>
+                                                                <td ng-show="!symbol.is_ok&&has_error"><i
+                                                                        class="fa fa-warning fa-lg text-warning"
+                                                                        tooltip-placement="top" tooltip="未选择订阅数据"></i>
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <div ng-switch-when="3" class="bwizard-activated anime-i-fadeIn">
+                                        <div custom-slimscroll="" data-height="402px">
+                                            <div class="form-group" ng-repeat="event in events">
+                                                <div class="row" ng-hide="event.is_hided">
+                                                    <div class="col-md-11 col-md-offset-1">
+                                                        <checkbox ng-model="event.is_selected" name="custom-name"
+                                                                  class="btn-normal"
+                                                                  ng-change="onEventChecked()"></checkbox>
+                                                        <label>{{event.label}}</label></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div ng-switch-when="4" class="bwizard-activated anime-i-fadeIn">
+                                        <div class="jumbotron m-b-0 text-center" style="height:402px"
+                                             ng-if="process == 100"><h1>构建成功</h1>
+                                            <p>您能通过 SDK 进一步开发，以完成您的交易策略</p>
+                                            <p><a class="btn btn-success btn-lg" role="button"
+                                                  ng-click="downloadFile()">保存代码文件</a></p></div>
+                                        <div class="jumbotron m-b-0 text-center" style="height:402px"
+                                             ng-if="process != 100"><h1>未完成</h1>
+                                            <p>部分参数没有填写/选择，不能构成完整的策略</p>
+                                            <p><a class="btn btn-default btn-lg disabled" role="button">保存代码文件</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div ui-ace="aceOption" ng-model="code_display"></div>
+                                    <div class="text-center code-mask" ng-hide="code_display"><span>代码预览</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="pager bwizard-buttons">
+                            <li class="previous" ng-hide="isFirstStep()" role="button"><a ng-click="handlePrevious()"><i
+                                    class="fa fa-arrow-left"></i> 上一步</a></li>
+                            <li class="next" ng-hide="isLastStep()" role="button"><a ng-click="handleNext()">下一步 <i
+                                    class="fa fa-arrow-right"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>'),
+$templateCache.put("app/create/create.sidebar.html", '
+<div class="sidebar" ng-controller="TmplListCrtl">
+    <div custom-slimscroll="" data-height="100%">
+        <ul class="nav" ng-repeat="template in templates">
+            <li><a ng-click="onTmplClick(template.state)"><i class="fa fa-file"></i> <span>{{template.label}}<span
+                    ng-if="!template.state" class="label label-theme m-l-5">敬请期待</span></span></a></li>
+        </ul>
+    </div>
+</div>'),
+$templateCache.put("app/create/template.blank.modal.html", '
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+    <h3 class="modal-title">{{::msg}}</h3></div>
+<div class="modal-body">
+    <div class="note note-info" ng-show="strategy.strategy_id"><h4>关联终端与代码文件</h4>
+        <ul>
+            <li><span id="js-textareacopybtn">本策略的ID： <span class="semi-bold">{{::strategy.strategy_id}}</span> <a
+                    clipboard="" text="strategy.strategy_id" on-copied="on_copied()">[复制]</a></span></li>
+            <li><span>将策略ID填写到代码文件中的strategy_id处，即完成策略在终端与代码文件之间的关联</span></li>
+            <li><span>此策略ID将会是您的策略: "{{ ::strategy.name }}"，在回测、模拟交易、实盘交易时的唯一标识</span></li>
+        </ul>
+    </div>
+    <div class="note note-danger" ng-hide="strategy.strategy_id"><h4><i class="fa fa-exclamation-triangle"></i>
+        策略构建失败，请重新操作</h4></div>
+</div>
+<div class="modal-footer" ng-show="strategy.strategy_id"><a class="btn btn-white"
+                                                            ui-sref="app.strategy.detail({strategy_id: strategy.strategy_id})">查看策略详情</a>
+    <a class="btn btn-success" ng-click="$close()">确定</a></div>'),
+$templateCache.put("app/create/template.blank.partial.html", '<input type="text" class="width-full m-t-10"
+                                                                     placeholder="策略名称" ng-model="strategy.name">
+<button class="btn btn-sm btn-primary width-full m-t-5" ng-click="createStrategy()" ng-hide="strategy.strategy_id">确定
+</button>'),
+$templateCache.put("app/create/template.github.modal.html", '
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+    <h3 class="modal-title">掘金策略开源项目</h3></div>
+<div class="modal-body"><h3 class="m-t-10">项目访问和参与</h3>
+    <p style="text-indent:2em">为了方便策略代码的分享和展示， 以及Bug的管理， 我们决定在Github上用开源项目的方式把一些经典策略在掘金量化平台上的实现管理起来，方便大家学习和分享， 项目地址为
+        https://github.com/myquant/strategy <a clipboard="" text="\'https://github.com/myquant/strategy\'">[复制链接]</a>。
+    </p>
+    <p style="text-indent:2em">如果您有兴趣，可以直接Fork代码，自己再做修改；如果您愿意为开源社区贡献代码，欢迎在Github提交Pull
+        request；如果您有任何意见或建议，欢迎在Github提交Issue。</p></div>
+<div class="modal-footer"><a class="btn btn-success" ng-click="$close()">确定</a></div>'),
+$templateCache.put("app/create/template.list.html", '
+<div id="content" class="content animated fadeIn" ng-controller="TmplListCrtl">
+    <ol class="breadcrumb pull-right">
+        <li class="active">策略向导</li>
+    </ol>
+    <h1 class="page-header">策略向导</h1>
+    <div id="gallery" class="gallery">
+        <div class="image gallery-group-1 float-left" ng-repeat="template in templates"><a
+                ng-click="onTmplClick(template.state)">
+            <div class="image-inner"><h3>{{ template.label}}</h3><span>{{ template.description}}</span></div>
+            <div ng-if="template.id==1" class="image-info">
+                <div style="height:100px"><input type="text" class="width-full m-t-10" placeholder="策略名称"
+                                                 ng-model="strategy.name">
+                    <button class="btn btn-sm btn-success width-full m-t-5" ng-click="createStrategy()">确定</button>
+                </div>
+            </div>
+            <div ng-if="template.id<8&&template.id>1" class="image-info"><img src="{{template.img}}" width="356"
+                                                                              height="100"></div>
+            <div ng-if="template.id===8" class="image-info">
+                <div style="height:100px">
+                    <button class="btn btn-lg btn-success height-90" ng-click="open_github_modal()"><i
+                            class="fa fa-github fa-2x pull-left"></i> Myquant@Github<br>
+                        <small>github.com/myquant</small>
+                    </button>
+                </div>
+            </div>
+        </a></div>
+    </div>
+</div>'),
+$templateCache.put("app/risk/risk.edit.html", '
+<div ng-controller="RiskEditCtrl">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="$dismiss()">×</button>
+        <h4 class="modal-title">风控设置</h4></div>
+    <div class="modal-body">
+        <div class="alert alert-success anime-i-fadeIn" ng-if="submit_success===true"><i
+                class="fa fa-check fa-2x pull-left"></i>
+            <p>保存成功</p></div>
+        <div class="alert alert-error anime-i-bounceIn" ng-if="submit_success===false"><i
+                class="fa fa-times fa-2x pull-left"></i>
+            <p>保存失败</p></div>
+        <div class="alert alert-warning anime-i-flashIn" ng-if="submit_success===\'tobecompleted\'"><i
+                class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+            <p>存在不完整的规则，请填写/选择该规则的所有选项</p></div>
+        <div class="animate-slide">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-2 control-label">风控状态：</div>
+                    <div class="col-md-10">
+                        <div class="float-left"><span class="switch ng-valid" ng-click="target.flag = !target.flag"
+                                                      ng-class="{ \'checked\':target.flag }"><div
+                                class="circle"></div><input type="checkbox" ng-model="target.flag" style="display:none"
+                                                            class="ng-pristine ng-untouched ng-valid"></span></div>
+                        <div class="m-l-5 m-t-4"><a class="btn btn-xs btn-success disabled m-l-5"
+                                                    ng-class="{\'btn-success\':target.flag, \'btn-default\':!target.flag}"
+                                                    ng-bind="target.flag?\'开启\':\'关闭\'"></a></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2 control-label">指标限制：</div>
+                    <div class="col-md-10">
+                        <table>
+                            <tbody>
+                            <tr ng-repeat="item in indicator_rules">
+                                <td class="b-t-0">
+                                    <div class="input-group float-left"><select class="form-control"
+                                                                                ng-model="item.indicator"
+                                                                                ng-options="indicator as indicator.label for indicator in indicators">
+                                        <option value="">指标类型</option>
+                                    </select></div>
+                                    <div class="input-group float-left m-l-10"><select class="form-control"
+                                                                                       ng-model="item.operator"
+                                                                                       ng-options="operator as operator.type for operator in operators">
+                                        <option value="">操作符</option>
+                                    </select></div>
+                                    <div class="input-group float-left m-l-10"><input class="form-control"
+                                                                                      ng-model="item.threshold"
+                                                                                      type="number" placeholder="阈值">
+                                    </div>
+                                    <div class="input-group float-left m-l-10" tooltip-placement="top" tooltip="风控动作">
+                                        <select class="form-control" ng-model="item.action"
+                                                ng-options="action as action.label for action in actions"></select>
+                                    </div>
+                                    <div class="input-group float-left m-l-10" tooltip-placement="top" tooltip="状态变更">
+                                        <select class="form-control" ng-model="item.state"
+                                                ng-options="state as state.label for state in states"></select></div>
+                                    <div class="float-left m-l-10 m-t-5"><p><a ng-click="addIndicatorRulesItem()"
+                                                                               tooltip-placement="top" tooltip="增加规则"
+                                                                               class="btn btn-default btn-icon btn-circle btn-sm"><i
+                                            class="fa fa-plus"></i></a></p></div>
+                                    <div class="float-left m-l-10 m-t-5"><p><a ng-click="removeIndicatorRulesItem(item)"
+                                                                               tooltip-placement="top" tooltip="删除此项"
+                                                                               class="btn btn-default btn-icon btn-circle btn-sm"><i
+                                            class="fa fa-minus"></i></a></p></div>
+                                    <div class="float-left m-l-10 m-t-5 anime-s-flash"
+                                         ng-show="item.error_msg.length>0"><i class="fa fa-warning fa-lg text-warning"
+                                                                              tooltip-placement="top"
+                                                                              tooltip="{{item.error_msg}}"></i></div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2 control-label">持仓限制：</div>
+                    <div class="col-md-10">
+                        <table>
+                            <tbody>
+                            <tr ng-repeat="item in position_rules">
+                                <td class="b-t-0">
+                                    <div class="input-group float-left"><input class="form-control"
+                                                                               ng-model="item.symbol" type="text"
+                                                                               placeholder="代码/名称/拼音缩写"
+                                                                               value="item.sec_name"
+                                                                               typeahead="symbol as symbol.exchange+\'.\'+symbol.sec_id+\' \'+symbol.sec_name for symbol in getSymbolsTypeahead($viewValue)"
+                                                                               typeahead-on-select="selectSymbol($item)"
+                                                                               typeahead-no-results="{}"></div>
+                                    <div class="input-group float-left m-l-10"><select class="form-control"
+                                                                                       ng-model="item.side"
+                                                                                       ng-options="side as side.label for side in sides">
+                                        <option value="">方向</option>
+                                    </select></div>
+                                    <div class="input-group float-left m-l-10"><input class="form-control"
+                                                                                      ng-model="item.threshold"
+                                                                                      type="number"
+                                                                                      placeholder="最大允许持仓(股)"></div>
+                                    <div class="float-left m-l-10 m-t-5"><p><a ng-click="addPositionRulusItem()"
+                                                                               tooltip-placement="top" tooltip="增加规则"
+                                                                               class="btn btn-default btn-icon btn-circle btn-sm"><i
+                                            class="fa fa-plus"></i></a></p></div>
+                                    <div class="float-left m-l-10 m-t-5"><p><a ng-click="removePositionRulesItem(item)"
+                                                                               tooltip-placement="top" tooltip="删除此项"
+                                                                               class="btn btn-default btn-icon btn-circle btn-sm"><i
+                                            class="fa fa-minus"></i></a></p></div>
+                                    <div class="float-left m-l-10 m-t-5 anime-s-flash"
+                                         ng-show="item.error_msg.length>0"><i class="fa fa-warning fa-lg text-warning"
+                                                                              tooltip-placement="top"
+                                                                              tooltip="{{item.error_msg}}"></i></div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2 control-label">交易设置：</div>
+                    <div class="col-md-10">
+                        <div class="row"><label class="radio-inline"><input type="radio" ng-model="is_blacklist"
+                                                                            ng-value="false"> 允许交易</label> <label
+                                class="radio-inline"><input type="radio" ng-model="is_blacklist" ng-value="true">
+                            限制交易</label></div>
+                        <div class="row m-t-10">
+                            <div class="col-md-2 control-label">代码：</div>
+                            <div class="col-md-8 pull-left">
+                                <tags-input ng-model="symbols" display-property="sec_name" placeholder="代码/名称/拼音缩写">
+                                    <auto-complete source="getSymbolsTypeahead($query)" debounce-delay="0"
+                                                   min-length="1"></auto-complete>
+                                </tags-input>
+                            </div>
+                        </div>
+                        <div class="row m-t-5">
+                            <div class="col-md-2 control-label">交易所：</div>
+                            <div class="col-md-8">
+                                <div class="col-md-3 p-l-0" ng-repeat="exchange in exchanges">
+                                    <checkbox ng-model="exchange.is_selected" class="btn-normal"></checkbox>
+                                    <label>{{::exchange.type|exchange}}</label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer"><a ng-click="sure()" class="btn btn-success">保存</a></div>
+</div>'),
+$templateCache.put("app/risk/risk.log.html", '
+<div ng-controller="RiskLogCtrl">
+    <table st-table="displayedCollection" st-safe-src="logs" class="table table-hover">
+        <thead>
+        <tr>
+            <th class="hand text-center" st-sort="getter.utc" st-sort-default="reverse">时间</th>
+            <th st-skip-natural="true" st-sort="state" class="hand text-center">状态</th>
+            <th st-skip-natural="true" st-sort="action" class="hand text-center">动作</th>
+            <th st-skip-natural="true" st-sort="msg" class="hand text-center">消息</th>
+            <th st-skip-natural="true" st-sort="rule" class="hand text-center">规则</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in displayedCollection | limitTo:200" ng-class-even="even" ng-class-odd="odd">
+            <td class="text-center">{{row.utc | date:\'yyyy-MM-dd HH:mm:ss\'}}</td>
+            <td class="text-center">{{row.state|risk_state}}</td>
+            <td class="text-center">{{row.action|rick_action}}</td>
+            <td class="text-center"><a class="disable" tooltip-placement="left" tooltip="{{row.msg }}">{{ row.msg |
+                str_len: 20}}</a></td>
+            <td class="text-center"><a class="disable" tooltip-placement="left" tooltip="{{row.rule}}">{{ row.rule |
+                str_len: 20}}</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>'),
+$templateCache.put("app/backtest/backtest.list.tooltip.html", "
+<div class=\"text-left width-200 text-ellipsis\">
+<span>开始时间:{{backtest.req.startTime | date:'yyyy-MM-dd HH:mm:ss'}}</span><br><span>结束时间:{{backtest.req.endTime | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+<br>代码:{{backtest.req.symbols}}<br><span>初始资金:{{backtest.req.initialCash | number: 2 | available | cny}}</span><br>
+<span>成交比率:{{backtest.req.transactionRatio| percentage: 0}}</span><br><span>手续费率:{{backtest.req.commissionRatio * 10000 | number: 2}}‱</span>
+<br><span>滑点比率:{{backtest.req.slippageRatio | percentage : 0}}</span><br><span>行情复权模式:{{backtest.req.priceType|price_type|available}}</span></div>"),
+$templateCache.put("components/navbar/navbar.html", '
+<div id="header" class="header navbar navbar-default navbar-fixed-top" ng-controller="NavbarCtrl">
+    <div class="container-fluid">
+        <div class="navbar-header"><a class="navbar-brand"><img ng-src="{{profile.orginfo.logo_url}}"></a>
+            <button type="button" class="navbar-toggle" ng-click="on_sidebar_toggled()"><span class="icon-bar"></span>
+                <span class="icon-bar"></span> <span class="icon-bar"></span></button>
+        </div>
+        <ul class="nav navbar-nav navbar-right m-r-20">
+            <li class="dropdown" ng-class="{\'open\': dropdown}" dropdown="" on-toggle="drow_down()"><a
+                    dropdown-toggle="" href="javascript:;" class="dropdown-toggle f-s-14"><i class="fa fa-bell-o"></i>
+                <span ng-if="unread_msg.length>0" class="label">{{ unread_msg.length }}</span></a>
+                <ul class="dropdown-menu media-list pull-right animated fadeInDown">
+                    <li class="dropdown-header" style="display:flex;justify-content:space-between">未读消息({{
+                        unread_msg.length }})<span class="text-right" ng-if="unread_msg.length>0"><a
+                                ng-click="clearAllMsg()">清空</a></span></li>
+                    <li class="media" ng-repeat="msg in unread_msg"><a ng-click="read(msg)">
+                        <div class="media-left" ng-bind-html="msg.icon"></div>
+                        <div class="media-body"><h6 class="media-heading" ng-bind="msg.heading"></h6>
+                            <div class="text-muted f-s-11" ng-bind="msg.content"></div>
+                        </div>
+                    </a></li>
+                </ul>
+            </li>
+            <li class="dropdown navbar-user" ng-class="{\'open\': dropdown}" dropdown="" on-toggle="drow_down()"><a
+                    dropdown-toggle="" class="dropdown-toggle"><img ng-src="{{profile.avatar_file}}" alt=""> <span
+                    class="hidden-xs">{{ profile.username }}</span> <i class="fa fa-caret-down"></i></a>
+                <ul class="dropdown-menu animated fadeInLeft">
+                    <li ng-if="profile.orginfo.user_profile_entry == 1" ng-click="user_profile()"><a>用户中心</a></li>
+                    <li ng-if="profile.orginfo.about_software_entry == 1" ng-click="about()"><a>关于平台</a></li>
+                    <li ng-if="profile.orginfo.user_profile_entry == 1" class="divider"></li>
+                    <li ng-click="logout()"><a>退出系统</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>'),
+$templateCache.put("components/sidebar/sidebar.html", '
+<div id="sidebar" class="sidebar" ng-controller="SidebarCtrl">
+    <div custom-slimscroll="" data-height="100%">
+        <ul class="nav">
+            <li class="nav-profile">
+                <div class="info">{{profile.username}}
+                    <small ng-if="profile.orginfo.validity_period_tag == 1">有效期至：{{profile.out_of_date}}</small>
+                </div>
+            </li>
+        </ul>
+        <ul class="nav">
+            <li class="nav-header">策略研究</li>
+            <li ui-sref="app.create.list" ng-class="{ active: $state.includes(\'app.create\') }"><a
+                    tooltip-placement="right" tooltip="模板"><i class="fa fa-laptop"></i> <span>策略向导</span></a></li>
+            <li ui-sref="app.backtest.list" ng-class="{ active: $state.includes(\'app.backtest\') }"><a
+                    tooltip-placement="right" tooltip="回测"><i class="fa fa-align-left"></i> <span>回测报告</span></a></li>
+            <li class="nav-header">模拟交易</li>
+            <li ui-sref="app.simtrade.list"
+                ng-class="{ active: $state.includes(\'app.simtrade\') ||strategy_type==\'simtrade\' }"><a
+                    tooltip-placement="right" tooltip="模拟交易"><i class="fa fa-th"></i> <span>模拟交易</span></a></li>
+            <li ng-if="permissions.realTradePMSN!==\'0\'" class="nav-header">实盘交易</li>
+            <li ng-if="permissions.realTradePMSN===\'1\'" ui-sref="app.realtrade.list"
+                ng-class="{ active: $state.includes(\'app.realtrade\')||strategy_type==\'realtrade\' }"><a
+                    tooltip-placement="right" tooltip="实盘交易"><i class="fa fa-area-chart"></i> <span>实盘交易</span></a></li>
+            <li ng-if="permissions.realTradePMSN===\'2\'" ng-click="permission_deny()"><a tooltip-placement="right"
+                                                                                          tooltip="实盘交易"><i
+                    class="fa fa-area-chart"></i> <span>实盘交易</span></a></li>
+            <li ng-if="permissions.accountPMSN===\'1\'" ui-sref="app.account.list"
+                ng-class="{ active: $state.includes(\'app.account\') }"><a tooltip-placement="right" tooltip="实盘账户"><i
+                    class="fa fa-key"></i> <span>实盘账户</span></a></li>
+            <li ng-if="permissions.accountPMSN===\'2\'" ng-click="permission_deny()"><a tooltip-placement="right"
+                                                                                        tooltip="实盘账户"><i
+                    class="fa fa-key"></i> <span>实盘账户</span></a></li>
+            <li ng-if="permissions.analysisPMSN!==\'0\'" class="nav-header">信号分析</li>
+            <li ng-if="permissions.analysisPMSN===\'2\'" ng-click="permission_deny()"><a tooltip-placement="right"
+                                                                                         tooltip="信号分析"><i
+                    class="fa fa-line-chart"></i> <span>信号分析</span></a></li>
+            <li ng-if="permissions.analysisPMSN===\'1\'" ui-sref="app.analysis.list"
+                ng-class="{ active: $state.includes(\'app.analysis\') }"><a tooltip-placement="right" tooltip="信号分析"><i
+                    class="fa fa-line-chart"></i> <span>信号分析</span></a></li>
+            <li class="nav-header" ng-if="profile.orginfo.doc_entry == 1">帮助</li>
+            <li ui-sref="app.help" ng-if="profile.orginfo.doc_entry == 1"
+                ng-class="{ active: $state.is(\'app.help\') }"><a tooltip-placement="right" tooltip="文档中心"><i
+                    class="fa fa-book"></i> <span>文档中心</span></a></li>
+            <li><a class="sidebar-minify-btn" ng-click="sidebar_minify()"><i class="fa fa-angle-double-left"></i></a>
+            </li>
+        </ul>
+    </div>
+</div>'),
+$templateCache.put("app/strategy/detail.indicator.sort.html", '
+<div class="modal-header">
+    <button type="button" class="close" ng-click="save()" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">自定义指标显示顺序</h4></div>
+<div class="modal-body dndsort-list">
+    <div class="alert alert-info fade in m-b-15"><strong>说明:</strong> 拖拽与拖放表格单元格进行排序 <span class="close"
+                                                                                           data-dismiss="alert">×</span>
+    </div>
+    <ul dnd-list="indicators">
+        <li ng-repeat="item in indicators" class="cursor-pointer" dnd-draggable="item"
+            dnd-moved="indicators.splice($index, 1)" dnd-effect-allowed="move" dnd-selected="selected = item">
+            <span><span class="width-100 text-right">{{ item.name | indicator }}:</span> <span
+                    class="{{ item.color_class }}">{{ item.value |number:item.precision }}{{ item.unit }}</span></span>
+        </li>
+    </ul>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-success" ng-click="save()">保存</button>
+</div>'),
+$templateCache.put("app/strategy/setting.sync.html", '
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+    <h4>同步账户
+        <small>同步柜台交易账户的资金与持仓数据到本地策略子账户</small>
+    </h4>
+</div>
+<div class="modal-body">
+    <div class="alert alert-success anime-i-fadeIn" ng-if="modal.submit_status===\'success\'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-check fa-2x pull-left"></i>
+        <p>同步成功</p></div>
+    <div class="alert alert-danger anime-i-bounceIn" ng-if="modal.submit_status===\'error\'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-times fa-2x pull-left"></i>
+        <p>同步失败</p></div>
+    <div class="alert alert-danger anime-i-bounceIn" ng-if="modal.submit_status===\'pos_error\'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-times fa-2x pull-left"></i>
+        <p>仓位同步失败</p></div>
+    <div class="alert alert-danger anime-i-bounceIn" ng-if="modal.submit_status===\'cash_error\'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-times fa-2x pull-left"></i>
+        <p>资金同步失败</p></div>
+    <div class="alert alert-warning anime-i-flashIn" ng-if="modal.submit_status===\'stock_open_short\'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+        <p>不能卖空</p></div>
+    <div class="alert alert-warning anime-i-flashIn" ng-if="modal.submit_status===\'index_added\'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+        <p></p></div>
+    <div class="note note-info"><span>同步服务每秒一次比较两边账户的可用资金与持仓数据的差额，并将差额显示在下面列表中。</span><br><span>您点击同步按钮后，差额部分会自动同步到本地策略子账户。</span><br><span>注意：在交易时段，因为资金（包含浮动盈亏）不断变化，可能刚同步后又会看到有资金差异变动，这是正常的。</span>
+    </div>
+    <form class="">
+        <accordion close-others="true">
+            <accordion-group is-open="accordion.cash">
+                <accordion-heading>资金差额: {{modal.cashDiff.available_diff | number : 2}} 元 <i class="pull-right fa"
+                                                                                             ng-class="{\'fa-chevron-down\': accordion.cash, \'fa-chevron-right\': !accordion.cash}"></i>
+                </accordion-heading>
+                <table st-table="cash_diff" class="table">
+                    <thead>
+                    <tr>
+                        <th class="text-center">策略可用资金</th>
+                        <th class="text-center">账户可用资金</th>
+                        <th class="text-center">差额</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="text-center">{{ modal.cashDiff.strategy_available | number : 2 }}</td>
+                        <td class="text-center">{{ modal.cashDiff.account_available | number : 2 }}</td>
+                        <td class="text-center">{{ modal.cashDiff.available_diff | number : 2 }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </accordion-group>
+            <accordion-group is-open="accordion.pos">
+                <accordion-heading>持仓差异: {{modal.posDiff.length}}条记录 <i class="pull-right fa"
+                                                                        ng-class="{\'fa-chevron-down\': accordion.pos, \'fa-chevron-right\': !accordion.pos}"></i>
+                </accordion-heading>
+                <table st-table="modal.posDiffCollection" st-safe-src="modal.posDiff"
+                       class="table table-condensed table-hover">
+                    <thead>
+                    <tr>
+                        <th class="cursor-pointer text-center" st-sort="sec_id">代<br>码</th>
+                        <th class="text-center">方<br>向</th>
+                        <th class="cursor-pointer text-center" st-sort="strategy_volume">策略<br>总仓</th>
+                        <th class="cursor-pointer text-center" st-sort="account_volume">账户<br>总仓</th>
+                        <th class="cursor-pointer text-center" st-sort="volume_diff">总仓<br>差额</th>
+                        <th class="cursor-pointer text-center" st-sort="strategy_volume_today">策略<br>今仓</th>
+                        <th class="cursor-pointer text-center" st-sort="account_volume_today">账户<br>今仓</th>
+                        <th class="cursor-pointer text-center" st-sort="volume_today_diff">今仓<br>差额</th>
+                        <th class="cursor-pointer text-center" st-sort="strategy_available">策略<br>可用</th>
+                        <th class="cursor-pointer text-center" st-sort="account_available">账户<br>可用</th>
+                        <th class="cursor-pointer text-center" st-sort="available_diff">可用<br>差额</th>
+                        <th class="cursor-pointer text-center" st-sort="strategy_available_today">策略<br>今日<br>可用</th>
+                        <th class="cursor-pointer text-center" st-sort="account_available_today">账户<br>今日<br>可用</th>
+                        <th class="cursor-pointer text-center" st-sort="available_today_diff">今日<br>可用<br>差额</th>
+                        <th class="cursor-pointer text-right" st-sort="strategy_vwap">策略<br>均价</th>
+                        <th class="cursor-pointer text-right" st-sort="account_vwap">账户<br>均价</th>
+                        <th class="cursor-pointer text-right" st-sort="vwap_diff">均价<br>差额</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="pos in modal.posDiffCollection">
+                        <td class="text-center">{{ pos.sec_id }}</td>
+                        <td class="text-center">{{ [pos.side, pos.position_effect] | direction }}</td>
+                        <td class="text-center">{{ pos.strategy_volume }}</td>
+                        <td class="text-center">{{ pos.account_volume }}</td>
+                        <td class="text-center">{{ pos.volume_diff }}</td>
+                        <td class="text-center">{{ pos.strategy_volume_today }}</td>
+                        <td class="text-center">{{ pos.account_volume_today }}</td>
+                        <td class="text-center">{{ pos.volume_today_diff }}</td>
+                        <td class="text-center">{{ pos.strategy_available }}</td>
+                        <td class="text-center">{{ pos.account_available }}</td>
+                        <td class="text-center">{{ pos.available_diff }}</td>
+                        <td class="text-center">{{ pos.strategy_available_today }}</td>
+                        <td class="text-center">{{ pos.account_available_today }}</td>
+                        <td class="text-center">{{ pos.available_today_diff }}</td>
+                        <td class="text-right">{{ pos.strategy_vwap | number : 2 }}</td>
+                        <td class="text-right">{{ pos.account_vwap | number : 2 }}</td>
+                        <td class="text-right">{{ pos.vwap_diff | number : 2 }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </accordion-group>
+        </accordion>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" ng-disabled="modal.button_blocked" ng-click="modal.syncAccount()">
+        {{modal.button_blocked?\'同步中...\':\'同步\'}}
+    </button>
+</div>'),
+$templateCache.put("app/strategy/strategy.detail.execrpts.html", '
+<div ng-controller="StrategyExecRptsCtrl as execCtrl">
+    <table st-table="execCtrl.displayedCollection" st-safe-src="execCtrl.execrpts"
+           class="table table-condensed table-hover">
+        <thead>
+        <tr>
+            <th class="hand text-center" st-skip-natural="true" st-sort="execCtrl.getters.timestamp"
+                st-sort-default="reverse">时间
+            </th>
+            <th class="hand text-center" st-skip-natural="true" st-sort="sec_id">代码</th>
+            <th class="hand text-center" st-skip-natural="true" st-sort="side">方向</th>
+            <th class="hand text-right" st-skip-natural="true" st-sort="price">价格</th>
+            <th class="hand text-right" st-skip-natural="true" st-sort="volume">数量</th>
+            <th class="hand text-center" st-skip-natural="true" st-sort="execrpt">成交回报类型</th>
+            <th class="hand text-center" st-skip-natural="true" st-sort="reason">拒绝原因</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in execCtrl.displayedCollection | limitTo:execCtrl.limit">
+            <td class="hand text-center">{{ row.transact_time*1000 | date: \'yyyy-M-dd H:mm:ss\'| available }}</td>
+            <td class="hand text-center">{{ row.sec_id |available}}</td>
+            <td class="hand text-center">{{ [row.side, row.position_effect] | direction | available }}</td>
+            <td class="hand text-right">{{ row.price|number:2 | available }}</td>
+            <td class="hand text-right">{{ row.volume | number:0 | available }}</td>
+            <td class="hand text-center">{{ row.exec_type | execrpt_type | available }}</td>
+            <td class="hand rej-reason"><a class="disable" tooltip-placement="left"
+                                           tooltip="{{row.ord_rej_reason_detail}}">{{ row.ord_rej_reason_detail |
+                str_len: 8| available }}</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>'),
+$templateCache.put("app/strategy/strategy.placeorder.html", '
+<div ng-cloak="">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">手动下单</h4></div>
+    <div class="modal-body">
+        <div class="alert alert-success fade in m-b-15" ng-if="submit_status==\'success\'">下单成功 <span class="close"
+                                                                                                      ng-click="hide_alert()">×</span>
+        </div>
+        <div class="alert alert-danger fade in m-b-15" ng-if="submit_status==\'error\'">下单失败 <span class="close"
+                                                                                                   ng-click="hide_alert()">×</span>
+        </div>
+        <div class="row place-order my-row">
+            <div class="col-md-7 pull-right">
+                <div class="order-form" ng-hide="is_index">
+                    <div class="strategy-info">
+                        <div class="col-md-12"><h2 class="text-center f-s-26 m-t-15 m-b-10">{{ strategy.base.name
+                            }}</h2></div>
+                        <div class="col-md-12 m-t-20">
+                            <div class="col-md-4 text-center">可用资金</div>
+                            <div class="col-md-8 money">{{ strategy.cash.available | number: 2 }}</div>
+                            <div class="row" ng-if="order.is_close">
+                                <div class="col-md-4 text-center">总仓位</div>
+                                <div class="col-md-8 money">{{ position.volume | number: 0 }}</div>
+                            </div>
+                            <div class="row" ng-if="order.is_close">
+                                <div class="col-md-4 text-center">今仓位</div>
+                                <div class="col-md-8 money">{{ position.volume_today | number: 0 }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <form class="form-place-order form-horizontal">
+                            <div class="form-group"><label class="control-label col-md-4">证券代码</label>
+                                <div class="col-md-8"><input id="place-order-symbol-input" class="form-control"
+                                                             type="text" value="{{::inst.sec_name}}"
+                                                             placeholder="请输入代码或拼音首字母"
+                                                             ng-readonly="order.position_effect !== 1"></div>
+                            </div>
+                            <div class="form-group"><label class="control-label col-md-4">方向</label>
+                                <div class="col-md-8"><label ng-repeat="g in buysells" class="side"><input type="radio"
+                                                                                                           name="side"
+                                                                                                           ng-model="order.buysell"
+                                                                                                           ng-value="g.id">{{g.name}}</label>
+                                </div>
+                            </div>
+                            <div class="form-group"><label class="control-label col-md-4">开平</label>
+                                <div class="col-md-8"><label ng-repeat="g in position_effects" class="side"><input
+                                        type="radio" name="position_effect" ng-model="order.position_effect"
+                                        ng-value="g.id">{{g.name}}</label> <label class="side"
+                                                                                  ng-if="inst.exchange==\'SHFE\'"><input
+                                        type="radio" name="position_effect" ng-model="order.position_effect"
+                                        ng-value="4">平昨</label></div>
+                            </div>
+                            <div class="form-group"><label class="control-label col-md-4">类型</label>
+                                <div class="col-md-8"><label ng-repeat="g in order_types" class="side"><input
+                                        type="radio" name="order_type" ng-model="order.order_type" ng-value="g.id">{{g.name}}</label>
+                                </div>
+                            </div>
+                            <div class="form-group"><label class="control-label col-md-4">价格</label>
+                                <div class="col-md-8"><input class="form-control" type="number" ng-model="order.price"
+                                                             ng-value="last_price"></div>
+                            </div>
+                            <div class="form-group"><label class="control-label col-md-4">数量</label>
+                                <div class="col-md-8"><input class="form-control" type="number" ng-model="order.volume"
+                                                             ng-value="100"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="stock-info"><h2>{{ inst.sec_name }}</h2>
+                    <ul class="summary">
+                        <li><span class="strong hand"
+                                  ng-class="{\'green\': last_price < pre_close, \'red\': last_price > pre_close }"
+                                  ng-click="pick_price(last_price)">{{ last_price | number:pricePrecision }}</span></li>
+                        <li><span>涨幅</span> <span ng-class="{\'green\': gain < 0, \'red\': gain > 0 }">{{ gain | number:2 }}%</span>
+                        </li>
+                        <li><span>涨停</span> <span class="high-limit red hand" ng-click="pick_price(upper_limit)">{{ upper_limit | number:pricePrecision }}</span>
+                        </li>
+                        <li><span>跌停</span> <span class="low-limit green hand" ng-click="pick_price(lower_limit)">{{ lower_limit | number:pricePrecision }}</span>
+                        </li>
+                    </ul>
+                    <div class="list">
+                        <ul>
+                            <li ng-repeat="ask in quotes.asks.slice().reverse()"><span class="col1">卖{{ numbers[quotes_len - 1 - $index] }}</span>
+                                <span class="col2 hand"
+                                      ng-class="{\'green\': ask.price < pre_close, \'red\': ask.price > pre_close }"
+                                      ng-click="pick_price(ask.price)">{{ ask.price | number:pricePrecision }}</span>
+                                <span class="col3 blue">{{ ask.vol | number: 0}}</span></li>
+                        </ul>
+                        <ul>
+                            <li ng-repeat="bid in quotes.bids"><span class="col1">买{{ numbers[$index] }}</span> <span
+                                    class="col2 hand"
+                                    ng-class="{\'green\': bid.price < pre_close, \'red\': bid.price > pre_close }"
+                                    ng-click="pick_price(bid.price)">{{ bid.price | number:pricePrecision }}</span>
+                                <span class="col3 blue">{{ bid.vol | number: 0 }}</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <checkbox ng-model="PlaceOrderCtrl.autoClose" class="btn-normal pull-left"
+                  ng-change="PlaceOrderCtrl.changeAutoCloseSetting(PlaceOrderCtrl.autoClose)"></checkbox>
+        <label class="pull-left">下单后自动关闭对话框</label>
+        <button class="btn btn-success" ng-hide="is_index" ng-click="place_order()">{{ ok_value }}</button>
+    </div>
+</div>'),

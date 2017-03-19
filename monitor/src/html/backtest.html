@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh_CN" ng-app="quant4s">
+<head>
+    <meta charset="UTF-8">
+    <script src="http://code.angularjs.org/angular-1.0.1.min.js" ></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous" ></script>
+    <script src="./js/controllers.js" language="JavaScript" ></script>
+    <link rel="stylesheet" href="./css/main.css">
+    <title>回测</title>
+</head>
+<body>
+    <div id="header-view" ui-view="header">
+        <div id="header">
+            开源免费版
+            Your name: <input type="text" ng-model="yourname" placeholder="World">
+            Hello {{yourname || 'World'}}!
+        </div>
+    </div>
+
+    <div id="sidebar-view">
+        <div id="sidebar">
+            <ul>
+                <li>回测报告</li>
+                <li>模拟交易</li>
+                <li>实盘交易</li>
+                <li>实盘账户</li>
+                <li>信号分析</li>
+                <li>文档中心</li>
+            </ul>
+
+        </div>
+    </div>
+
+    <div id="content-view" >
+        <div id="content" ng-view>
+            <div class="content">
+                <div class="left-list">
+                    <ul ng-controller="strategyListCtrl">
+                        <li ng-repeat="strategy in strategies">
+                            <a href="#">{{strategy.name}}</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="content" >
+                    <div class="btn-row">
+                        <a class="btn btn-default" ng-click="">删除策略</a>
+                        <a class="btn btn-default" href="#">删除策略</a>
+                    </div>
+                    <div class="content-body">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>创建时间</th> <th>收益率</th>	<th>最大回撤</th>	<th>夏普比率</th>	<th>回测进度</th>
+                            </tr>
+                            </thead>
+                            <tr>
+                                <td>创建时间</td> <td>收益率</td>	<td>最大回撤</td>	<td>夏普比率</td>	<td>回测进度</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

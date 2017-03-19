@@ -10,9 +10,9 @@ import com.github.tototoshi.csv.CSVReader
 import quanter.TimeSpan
 import quanter.actors.data.{DataManagerActor, RequestBarData, RequestTickData}
 import quanter.actors.securities.{SecuritiesManagerActor, SubscriptionSymbol}
-import quanter.actors.zeromq.ZeroMQServerActor
+import quanter.actors.zeromq.{ZeroMQSubPubServerActor, ZeroMQSubPubServerActor$}
 import quanter.data.BaseData
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 
 import scala.collection.mutable.HashMap
 import scala.concurrent.duration._
@@ -26,7 +26,7 @@ class SmallMarketValueCSMActor(count: Int, span: TimeSpan) extends Actor with Ac
   var securities = new HashMap[String,(Long, Long)]() // symbol, capital, market value
   var smv = new HashMap[String, (Long, Long)]()
   val securityManagerRef = context.actorSelection("/user/%s".format(SecuritiesManagerActor.path))
-  val pubRef = context.actorSelection("/user/" + ZeroMQServerActor.path)
+  val pubRef = context.actorSelection("/user/" + ZeroMQSubPubServerActor.path)
   val dataManager = context.actorSelection("/user/" + DataManagerActor.path)
 
   override def receive: Receive = {

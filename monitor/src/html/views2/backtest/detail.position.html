@@ -1,0 +1,15 @@
+<div ng-controller="BacktestPositionCtrl as posCtrl">
+    <div class="table-header">
+        <div class="table-title">持仓记录</div>
+        <span><span class="separator">.</span> <a class="show-when-grouped expand-all-link"
+                                                  ng-click="posCtrl.expandAllGroups()">展开所有分组</a> <span
+                class="separator">.</span> <a class="show-when-grouped collapse-all-link"
+                                              ng-click="posCtrl.collapseAllGroups()">收起所有分组</a></span>
+        <div class="filter-nav pull-right"><span class="grouping-controls"><button class="btn"
+                                                                                   ng-class="{'active': posCtrl.dataGrouped}"
+                                                                                   ng-click="posCtrl.toggleGrouping()"
+                                                                                   type="button">按日分组
+        </button></span></div>
+    </div>
+    <div id="pos-grid" class="grid-container"></div>
+</div>

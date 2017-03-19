@@ -1,0 +1,15 @@
+<div ng-controller="BacktestOrderCtrl as orderCtrl" id="order-container">
+    <div class="table-header">
+        <div class="table-title">委托记录</div>
+        <span><span class="separator">.</span> <a class="show-when-grouped expand-all-link"
+                                                  ng-click="orderCtrl.expandAllGroups()">展开所有分组</a> <span
+                class="separator">.</span> <a class="show-when-grouped collapse-all-link"
+                                              ng-click="orderCtrl.collapseAllGroups()">收起所有分组</a></span>
+        <div class="filter-nav pull-right"><span class="grouping-controls"><button class="btn"
+                                                                                   ng-class="{\'active\': orderCtrl.dataGrouped}"
+                                                                                   ng-click="orderCtrl.toggleGrouping()"
+                                                                                   type="button">按日分组
+        </button></span></div>
+    </div>
+    <div id="order-grid" class="grid-container"></div>
+</div>

@@ -1,0 +1,36 @@
+<div id="content">
+    <div class="overflow-hidden">
+        <div class="login-cover">
+            <div class="login-cover-image"><img src="{{profile.orginfo.login_backbround_img}}" data-id="login-cover-image" alt=""></div>
+            <div class="login-cover-bg"></div>
+        </div>
+        <div ng-controller="loginCtrl">
+            <div class="login login-v2 animated flipInX">
+                <div class="login-header"><img src="{{profile.orginfo.login_logo}}" width="373"
+                                               height="52"><font>v2.0</font></div>
+                <div class="login-content">
+                    <form class="margin-bottom-0">
+                        <div class="form-group m-b-20">
+                            <input type="text" class="form-control input-lg" placeholder="请输入邮箱或手机号" ng-model="username">
+                        </div>
+                        <div class="form-group m-b-20">
+                            <input type="password" class="form-control input-lg" placeholder="请输入登录密码" ng-model="password">
+                        </div>
+                        <div class="checkbox m-b-20">
+                            <ul class="parsley-errors-list filled">
+                                <li class="parsley-type">{{ error_msg }}</li>
+                            </ul>
+                        </div>
+                        <div class="login-buttons">
+                            <button class="btn btn-success btn-block btn-lg" ng-click="login()">登录</button>
+                        </div>
+                        <div class="m-t-20 a-plain a-active" ng-if="profile.orginfo.registe_entry==1">忘记密码？<a
+                                ng-click="reset_password()">找回密码</a><span style="float:right;">没有账号？<a ng-click="sign_up()">立即注册</a></span>
+                        </div>
+                        <div class="m-t-20 a-plain a-active" ng-if="profile.orginfo.registe_entry==0"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

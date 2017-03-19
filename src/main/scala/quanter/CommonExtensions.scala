@@ -19,6 +19,14 @@ object CommonExtensions {
       ret
     }
 
+    def addMinutes(x: Int) = {
+      val cal = Calendar.getInstance()
+      cal.setTime(time)
+      cal.add(Calendar.MINUTE, x)
+      val ret = cal.getTime()
+      ret
+    }
+
     def addSeconds(x: Int) = {
       val cal = Calendar.getInstance()
       cal.setTime(time)
@@ -48,7 +56,7 @@ object CommonExtensions {
     }
 
     def roundDown(interval: TimeSpan): Date = {
-      if (interval == TimeSpan.Zero) time
+      if (interval == TimeSpan.zero) time
       else time.addTicks(-(time.getTime() % interval.milliSeconds));
     }
   }

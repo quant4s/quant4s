@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+    <h4>修改基本信息</h4></div>
+<div class="modal-body">
+    <div class="alert alert-success anime-i-fadeIn" ng-if="submit_success===true"><i
+            class="fa fa-check fa-2x pull-left"></i>
+        <p>保存成功</p></div>
+    <div class="alert alert-error anime-i-bounceIn" ng-if="submit_success===false"><i
+            class="fa fa-times fa-2x pull-left"></i>
+        <p>保存失败</p></div>
+    <form name="form" novalidate="novalidate" class="form-horizontal">
+        <div class="form-group"><label class="control-label col-md-2" for="name">策略名称</label>
+            <div class="col-md-10"><input autofocus="" class="form-control" type="text" id="name"
+                                          ng-model="strategy.base.name" placeholder="您的策略名称" ng-required="true"></div>
+        </div>
+        <div class="form-group"><label class="control-label col-md-2" for="lang">编程语言</label>
+            <div class="col-md-10"><input class="form-control" type="text" id="lang" ng-model="strategy.base.dev_lang"
+                                          placeholder="您的策略开发语言"></div>
+        </div>
+        <div class="form-group"><label class="control-label col-md-2" for="str-category">策略类型</label>
+            <div class="col-md-10"><select class="form-control" id="str-category" data-ng-model="strategy.base.category"
+                                           ng-options="b.id as b.name for b in categories">
+                <option value="" disabled="" selected="" ng-hide="strategy.base.category">请选择您的策略类型</option>
+            </select></div>
+        </div>
+        <div class="form-group"><label class="control-label col-md-2" for="str-style">策略风格</label>
+            <div class="col-md-10"><select class="form-control" id="str-style" data-ng-model="strategy.base.style"
+                                           ng-options="b.id as b.name for b in styles">
+                <option value="" disabled="" selected="" ng-hide="strategy.base.category">请选择您的策略风格</option>
+            </select></div>
+        </div>
+        <div class="form-group"><label class="control-label col-md-2" for="desc">策略描述</label>
+            <div class="col-md-10"><textarea class="form-control" type="text" id="desc"
+                                             ng-model="strategy.base.description"
+                                             placeholder="请简要描述您的策略">\r\n            </textarea></div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer"><a class="btn btn-success" ng-click="sure()">保存</a></div>

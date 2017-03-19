@@ -1,0 +1,28 @@
+<div ng-controller="strategyTransactionsCtrl">
+    <table st-table="displayedTransactions" st-safe-src="trans" class="table table-condensed table-hover">
+        <thead>
+        <tr>
+            <th class="hand text-center" st-sort="getters.timestamp" st-skip-natural="true" st-sort-default="reverse">
+                时间
+            </th>
+            <th class="hand text-center" st-sort="sec_id" st-skip-natural="true">代码</th>
+            <th class="hand text-center" st-sort="sec_name" st-skip-natural="true">名称</th>
+            <th class="hand text-center" st-sort="side" st-skip-natural="true">方向</th>
+            <th class="hand text-right" st-sort="price" st-skip-natural="true">价格</th>
+            <th class="hand text-right" st-sort="volume" st-skip-natural="true">数量</th>
+            <th class="hand text-right" st-sort="amount" st-skip-natural="true">成本金额</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in displayedTransactions | limitTo:limit">
+            <td class="text-center">{{row.transact_time*1000 | date: \'yyyy-M-dd H:mm:ss\'}}</td>
+            <td class="text-center">{{row.sec_id}}</td>
+            <td class="text-center">{{row.sec_name}}</td>
+            <td class="text-center">{{ [row.side, row.position_effect] | direction }}</td>
+            <td class="text-right">{{row.price | number:2 }}</td>
+            <td class="text-right">{{row.volume | number:0 }}</td>
+            <td class="text-right">{{row.amount | number:2 }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,43 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+    <h4>{{ title_map[title] }}</h4></div>
+<div class="modal-body my-row">
+    <div>
+        <div ng-switch="title" class="strategy-wizard">
+           <div ng-switch-when="cash_io" class="strategy-setting" ng-disabled="!strategy.ready">
+                <div ng-show="cash_io_error" class="alert alert-danger"><i class="fa fa-ban fa-lg"></i> 转出金额大于可用资金，请重新输入
+                </div>
+                <form novalidate="novalidate" class="form-horizontal">
+                    <div class="form-group"><label class="control-label col-md-2">可用资金</label>
+                        <div class="col-md-10"><span class="form-control readonly">{{ strategy.cash.available | number:2 }}</span>
+                        </div>
+                    </div>
+                    <div class="form-group"><label class="control-label col-md-2">累计出入金</label>
+                        <div class="col-md-10"><span class="form-control readonly">{{ strategy.cash.cum_inout | number:2 }}</span>
+                        </div>
+                    </div>
+                    <div class="form-group"><label class="control-label col-md-2">赢亏</label>
+                        <div class="col-md-10"><span
+                                class="form-control readonly {{ strategy.indicators.pnl.color_class }}">{{ modal.indicators.pnl.value | number:2 }}</span>
+                        </div>
+                    </div>
+                    <div class="form-group"><label class="control-label col-md-2">资金操作</label>
+                        <div class="col-md-10"><select class="form-control" type="digit" ng-model="modal.cash_io_flag"
+                                                       ng-options="b.id as b.name for b in cash_inout_dir"></select>
+                        </div>
+                    </div>
+                    <div class="form-group"><label class="control-label col-md-2">金额</label>
+                        <div class="col-md-10"><input class="form-control input-xlarge" type="digit"
+                                                      ng-model="modal.cash_inout" value="modal.cash_inout | number:2"
+                                                      placeholder="请输入正确的金额数字"></div>
+                    </div>
+                    <div class="col-md-12"><span ng-if="saving"><i
+                            class="fa fa-spinner fa-spin fa-lg"></i>正在保存...</span> <span ng-if="cash_save_succeed"><i
+                            class="fa fa-check fa-lg text-primary">保存成功！</i></span></div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal-footer"><a class="btn btn-success" ng-click="modal.sure()">保存</a></div>

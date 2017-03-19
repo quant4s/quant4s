@@ -7,7 +7,7 @@ import org.json4s.DefaultFormats
 import org.json4s.jackson.JsonMethods._
 import quanter.actors.{NewStrategy, NewTrader}
 import quanter.actors.data.DataManagerActor
-import quanter.actors.persistence.PersistenceActor
+import quanter.actors.persistence.{AccountPersistorActor, OrderPersistorActor, PersistenceActor, StrategyPersistorActor}
 import quanter.actors.provider.DataProviderManagerActor
 import quanter.actors.provider.sina.SinaL1Actor
 import quanter.actors.scheduling.QuartzActor
@@ -15,8 +15,8 @@ import quanter.actors.securities.SecuritiesManagerActor
 import quanter.actors.securitySelection.SIManagerActor
 import quanter.actors.strategy.StrategiesManagerActor
 import quanter.actors.trade.{InitTradeRoute, TradeRouteActor}
-import quanter.actors.zeromq.ZeroMQServerActor
-import quanter.rest.{HttpServer, Strategy, TradeAccount}
+import quanter.actors.zeromq.{ZeroMQReqRspServerActor, ZeroMQSubPubServerActor}
+import quanter.rest.{FlashServer, HttpServer, Strategy, TradeAccount}
 import spray.can.Http
 
 /**
@@ -25,27 +25,36 @@ import spray.can.Http
 object MainApp extends App {
   implicit val system = ActorSystem("server-system")
 
-  // MARKET actor
+  // Http rest server
   val httpServer = system.actorOf(HttpServer.props, HttpServer.path)
+
+  // 启动持久化层
   val persistenceRef = system.actorOf(PersistenceActor.props, PersistenceActor.path)
+  val tradePersistenceRef = system.actorOf(AccountPersistorActor.props, AccountPersistorActor.path)
+  val orderPersistenceRef = system.actorOf(OrderPersistorActor.props, OrderPersistorActor.path)
+  val strategyPersistenceRef = system.actorOf(StrategyPersistorActor.props, StrategyPersistorActor.path)
+
+  // 启动交易路由
   val tradeRouteRef = system.actorOf(TradeRouteActor.props, TradeRouteActor.path)
   system.actorOf(SIManagerActor.props, SIManagerActor.path)
 
+  // 启动市场数据管理器
   val manager = system.actorOf(SecuritiesManagerActor.props, SecuritiesManagerActor.path)
-  val quartz = system.actorOf(QuartzActor.props, QuartzActor.path)
-
-  val strategyManagerRef = system.actorOf(StrategiesManagerActor.props, StrategiesManagerActor.path)
-
-  // val sinaL1Ref = system.actorOf(SinaL1Actor.props, SinaL1Actor.path)
   val dataProviderManagerRef = system.actorOf(DataProviderManagerActor.prop, DataProviderManagerActor.path)
   val dataManagerRef = system.actorOf(DataManagerActor.props, DataManagerActor.path)
-//  val wsRef = system.actorOf(WebSocketActor.props, WebSocketActor.path)
 
-  //
-  val pub = system.actorOf(ZeroMQServerActor.props, ZeroMQServerActor.path)
+  // 启动定时作业管理器
+  val quartz = system.actorOf(QuartzActor.props, QuartzActor.path)
 
-//  _createStrategy("""{"id": 3,"name": "测试数据","runMode":1, "lang": "C#", "status": 1, "portfolio": {"cash":120000, "date":"2004-09-04T18:06:22Z"}}""")
-//  _createStrategy("""{"id": 4,"name": "带资金组合","runMode":1, "lang": "C#", "status": 1，"portfolio": {"cash":100000, "date":"2004-09-04T18:06:22Z"}}""")
+  // 启动策略管理器
+  val strategyManagerRef = system.actorOf(StrategiesManagerActor.props, StrategiesManagerActor.path)
+
+  // 启动ZMQ 服务器
+  val pub = system.actorOf(ZeroMQSubPubServerActor.props, ZeroMQSubPubServerActor.path)
+  val rsp = system.actorOf(ZeroMQReqRspServerActor.props, ZeroMQReqRspServerActor.path)
+
+//  _createStrategy("""{"id": 3,"name": "测试数据","runMode":1, "lang": "C#", "status": 1}""")
+//  _createStrategy("""{"id": 4,"name": "带资金组合","runMode":1, "lang": "PYTHON", "status": 1}""")
 
   _initTrader()
 //  _createTrader("""{"name": "SHSE","brokerType":"SIM", "brokerName":"仿真接口", "brokerCode":"2011","brokerAccount":"66666660077","brokerPassword": "password", "brokerUri":"tcp://33.44.55.32:8099","status": 0}""")
@@ -53,6 +62,10 @@ object MainApp extends App {
 
   // 启动REST 服务
   IO(Http) ! Http.Bind(httpServer, "127.0.0.1", port = 8888)
+
+  // 启动 843 端口服务
+  val flashServer = system.actorOf(FlashServer.props, FlashServer.path)
+//  IO(Http) ! Http.Bind(httpServer, "127.0.0.1", port = 843)
 
 
   // TODO: 检测 服务是否启动完毕

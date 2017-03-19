@@ -13,7 +13,7 @@ import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.DefaultHttpClient
 import quanter.actors.AskListenedSymbol
 import quanter.actors.provider._
-import quanter.data.market.SnapData
+import org.quant4s.data.market.SnapData
 import quanter.CommonExtensions._
 import quanter.actors.scheduling.ExecuteJob
 

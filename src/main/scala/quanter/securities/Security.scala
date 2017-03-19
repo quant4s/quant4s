@@ -8,7 +8,7 @@ import quanter.SecurityType.SecurityType
 /**
   * 证券类，
   */
-class Security(private val _symbol : String) {
+class Security(_symbol : String) {
   /**
     * 证券类型
     */

@@ -12,9 +12,9 @@ object TimeSpan {
   def fromHours(hour: Long) = new TimeSpan(hour * 60 * 60 * 1000)
   def fromDays(day: Long) = new TimeSpan(day * 24 * 60 *60000)
 
-  def MinValue = new TimeSpan(Int.MinValue)
-  def MaxValue = new TimeSpan(Int.MaxValue)
-  def Zero = new TimeSpan(0)
+  def minValue = new TimeSpan(Int.MinValue)
+  def maxValue = new TimeSpan(Int.MaxValue)
+  def zero = new TimeSpan(0)
 }
 
 class TimeSpan(ptotalMilliSeconds: Long) {
@@ -28,20 +28,24 @@ class TimeSpan(ptotalMilliSeconds: Long) {
   def seconds = math.round(_totalMilliSeconds/1000)
   def minutes = math.round(_totalMilliSeconds/60000)
   def hours = math.round(_totalMilliSeconds/3600000)
+  def totalDays : Int = (this.milliSeconds /86400000).toInt
 
-  def >= (time: TimeSpan): Boolean = {
-    this.milliSeconds >= time.milliSeconds
-  }
+  def >= (time: TimeSpan): Boolean = this.milliSeconds >= time.milliSeconds
+  def > (time: TimeSpan): Boolean = this.milliSeconds > time.milliSeconds
 
-  def +=(time:TimeSpan): TimeSpan = {
-    TimeSpan.fromTicks(this.milliSeconds + time.milliSeconds)
-  }
+  def <=(time: TimeSpan): Boolean = this.milliSeconds <= time.milliSeconds
+  def <(time: TimeSpan): Boolean = this.milliSeconds < time.milliSeconds
+
+  def +=(time:TimeSpan): TimeSpan = TimeSpan.fromTicks(this.milliSeconds + time.milliSeconds)
+
+  def +(time:TimeSpan): TimeSpan = TimeSpan.fromTicks(this.milliSeconds + time.milliSeconds)
+  def -(time:TimeSpan): TimeSpan = TimeSpan.fromTicks(this.milliSeconds - time.milliSeconds)
+  def /(time:Int): TimeSpan = TimeSpan.fromTicks(this.milliSeconds / time)
 
   def ==(time: TimeSpan): Boolean = {
     this.milliSeconds == time.milliSeconds
   }
 
-  def totalDays : Int = {
-    (this.milliSeconds / 3600000 * 24).toInt
-  }
+  override def equals(obj: scala.Any): Boolean = this == obj.asInstanceOf[TimeSpan]
+
 }

@@ -58,8 +58,6 @@ class RedisDataProviderActor (address: InetSocketAddress,channels: Seq[String], 
   }
 
   protected def addSymbol(symbol: String): Unit = {
-//    val sec = new Security(symbol)
-//    smRef ! sec
     if (!symbolSelections.contains(symbol)) {
       log.debug(s"准备接受${symbol}的行情数据")
       val ref = context.actorSelection(s"/user/${SecuritiesManagerActor.path}/${symbol}")

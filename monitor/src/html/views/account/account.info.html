@@ -1,0 +1,79 @@
+<div id="content" class="content animated fadeIn" ng-controller="accountInfoCtrl">
+    <ol class="breadcrumb pull-right">
+        <li><a ui-sref="app.account.list">实盘账户</a></li>
+        <li class="active">{{account.name}}</li>
+    </ol>
+    <h1 class="page-header"></h1>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel-1 b-color">
+                <div class="panel-heading">
+                    <div class="panel-heading-btn" ng-click="refreshCash()"><a
+                            class="btn btn-xs btn-success pull-right"><i class="fa fa-refresh"></i> 刷新</a></div>
+                    <h4 class="panel-title span-a ng-binding">账户资金</h4></div>
+                <div class="panel-footer text-center">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-3">动态权益：</div>
+                            <div class="col-md-9">{{ dispCash.nav |number: 2 }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-3">可用资金：</div>
+                            <div class="col-md-9">{{ dispCash.available | number: 2 }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row m-t-20">
+        <div class="col-md-12">
+            <div class="panel-1 b-color">
+                <div class="panel-heading">
+                    <div class="panel-heading-btn" ng-click="refreshPos()"><a class="btn btn-xs btn-success pull-right"><i
+                            class="fa fa-refresh"></i> 刷新</a></div>
+                    <h4 class="panel-title span-a ng-binding">持仓明细</h4></div>
+                <div class="panel-footer text-center">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table st-table="displayedCollection" st-safe-src="positions"
+                                   class="table table-condensed table-hover">
+                                <thead>
+                                <tr>
+                                    <th st-skip-natural="true" st-sort="exchange" class="text-center">交易所</th>
+                                    <th st-skip-natural="true" st-sort="sec_id" class="text-center"
+                                        st-sort-default="true">代码
+                                    </th>
+                                    <th st-skip-natural="true" st-sort="sec_name" class="text-center">名称</th>
+                                    <th st-skip-natural="true" st-sort="side" class="text-center">多空</th>
+                                    <th st-skip-natural="true" class="text-right" st-sort="volume">数量</th>
+                                    <th st-skip-natural="true" class="text-right" st-sort="available">可用</th>
+                                    <th st-skip-natural="true" class="text-right">成本</th>
+                                    <th st-skip-natural="true" class="text-right">成本金额</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="row in displayedCollection | limitTo:200" ng-class-odd="\'tr-odd\'"
+                                    ng-class-even="\'tr-even\'">
+                                    <td class="text-center">{{ row.exchange |exchange}}</td>
+                                    <td class="text-center">{{ row.sec_id }}</td>
+                                    <td class="text-center">{{ row.sec_name |available}}</td>
+                                    <td class="text-center">{{ row.side | side }}</td>
+                                    <td class="text-right"><a tooltip-placement="left"
+                                                              tooltip="总仓:{{row.volume }} / 今仓:{{row.volume_today?row.volume_today:0}}">{{
+                                        [row.volume, row.volume_today] | position_volume }}</a></td>
+                                    <td class="text-right">{{ row.available | number:0 }}</td>
+                                    <td class="text-right">{{ row.vwap | number:2 }}</td>
+                                    <td class="text-right">{{ row.amount |number:2 }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div ng-show="pos_errors" class="col-md-10"><i class="fa fa-warning text-warning"></i> <span>{{ pos_errors }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

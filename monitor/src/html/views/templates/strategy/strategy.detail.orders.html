@@ -1,0 +1,33 @@
+<div class="table-responsive" ng-controller="StrategyOrdersCtrl">
+    <table st-table="displayedCollection" st-safe-src="orders" class="table table-condensed table-hover">
+        <thead>
+        <tr>
+            <th class="hand text-center" st-skip-natural="true" st-sort="getters.sending_time"
+                st-sort-default="reverse">时间
+            </th>
+            <th class="hand text-center" st-skip-natural="true" st-sort="sec_id">代码</th>
+            <th class="hand text-center" st-skip-natural="true" st-sort="side">方向</th>
+            <th class="hand text-right" st-skip-natural="true" st-sort="price">价格</th>
+            <th class="hand text-right" st-skip-natural="true" st-sort="volume">数量</th>
+            <th class="hand text-center" st-skip-natural="true" st-sort="status">状态</th>
+            <th class="hand text-right" st-skip-natural="true" st-sort="filled_volume">已成交</th>
+            <th class="hand text-right" st-skip-natural="true" st-sort="filled_vwap">成交均价</th>
+            <th class="hand text-center" st-skip-natural="true" st-sort="reason">拒绝原因</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in displayedCollection | limitTo:limit">
+            <td class="text-center">{{ row.sending_time*1000 | date: \'yyyy-M-dd H:mm:ss\'}}</td>
+            <td class="text-center">{{ row.sec_id }}</td>
+            <td class="text-center">{{ [row.side, row.position_effect] | direction }}</td>
+            <td class="text-right">{{ [row.price, row.order_type ]| price }}</td>
+            <td class="text-right">{{ row.volume | number:0 }}</td>
+            <td class="text-center">{{ row.status | status }}</td>
+            <td class="text-right">{{ row.filled_volume | number:0 }}</td>
+            <td class="text-right">{{ row.filled_vwap | number:2 }}</td>
+            <td class="rej-reason"><a class="disable" tooltip-placement="left" tooltip="{{row.ord_rej_reason_detail}}">{{
+                row.ord_rej_reason_detail | str_len: 8}}</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,48 @@
+<div id="sidebar" class="sidebar" ng-controller="SidebarCtrl">
+    <div custom-slimscroll="" data-height="100%">
+        <ul class="nav">
+            <li class="nav-profile">
+                <div class="info">{{profile.username}}
+                    <small ng-if="profile.orginfo.validity_period_tag == 1">有效期至：{{profile.out_of_date}}</small>
+                </div>
+            </li>
+        </ul>
+        <ul class="nav">
+            <li class="nav-header">策略研究</li>
+            <li ui-sref="app.create.list" ng-class="{ active: $state.includes('app.create') }"><a
+                    tooltip-placement="right" tooltip="模板"><i class="fa fa-laptop"></i> <span>策略向导</span></a></li>
+            <li ui-sref="app.backtest.list" ng-class="{ active: $state.includes('app.backtest') }"><a
+                    tooltip-placement="right" tooltip="回测"><i class="fa fa-align-left"></i> <span>回测报告</span></a></li>
+            <li class="nav-header">模拟交易</li>
+            <li ui-sref="app.simtrade.list"
+                ng-class="{ active: $state.includes('app.simtrade') ||strategy_type=='simtrade' }"><a
+                    tooltip-placement="right" tooltip="模拟交易"><i class="fa fa-th"></i> <span>模拟交易</span></a></li>
+            <li ng-if="permissions.realTradePMSN!=='0'" class="nav-header">实盘交易</li>
+            <li ng-if="permissions.realTradePMSN==='1'" ui-sref="app.realtrade.list"
+                ng-class="{ active: $state.includes('app.realtrade')||strategy_type=='realtrade' }"><a
+                    tooltip-placement="right" tooltip="实盘交易"><i class="fa fa-area-chart"></i> <span>实盘交易</span></a></li>
+            <li ng-if="permissions.realTradePMSN==='2'" ng-click="permission_deny()"><a tooltip-placement="right"
+                                                                                          tooltip="实盘交易"><i
+                    class="fa fa-area-chart"></i> <span>实盘交易</span></a></li>
+            <li ng-if="permissions.accountPMSN==='1'" ui-sref="app.account.list"
+                ng-class="{ active: $state.includes('app.account') }"><a tooltip-placement="right" tooltip="实盘账户"><i
+                    class="fa fa-key"></i> <span>实盘账户</span></a></li>
+            <li ng-if="permissions.accountPMSN==='2'" ng-click="permission_deny()"><a tooltip-placement="right"
+                                                                                        tooltip="实盘账户"><i
+                    class="fa fa-key"></i> <span>实盘账户</span></a></li>
+            <li ng-if="permissions.analysisPMSN!=='0'" class="nav-header">信号分析</li>
+            <li ng-if="permissions.analysisPMSN==='2'" ng-click="permission_deny()"><a tooltip-placement="right"
+                                                                                         tooltip="信号分析"><i
+                    class="fa fa-line-chart"></i> <span>信号分析</span></a></li>
+            <li ng-if="permissions.analysisPMSN==='1'" ui-sref="app.analysis.list"
+                ng-class="{ active: $state.includes('app.analysis') }"><a tooltip-placement="right" tooltip="信号分析"><i
+                    class="fa fa-line-chart"></i> <span>信号分析</span></a></li>
+            <li class="nav-header" ng-if="profile.orginfo.doc_entry == 1">帮助</li>
+            <li ui-sref="app.help" ng-if="profile.orginfo.doc_entry == 1"
+                ng-class="{ active: $state.is('app.help') }"><a tooltip-placement="right" tooltip="文档中心"><i
+                    class="fa fa-book"></i> <span>文档中心</span></a></li>
+            <li><a class="sidebar-minify-btn" ng-click="sidebar_minify()"><i class="fa fa-angle-double-left"></i></a>
+            </li>
+        </ul>
+    </div>
+</div>

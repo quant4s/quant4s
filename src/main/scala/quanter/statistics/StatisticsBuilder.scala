@@ -17,7 +17,7 @@ object StatisticsBuilder {
                              pointsPerformance: List[ChartPoint],
                              pointsBenchmark: List[ChartPoint],
                              startingCapital: Double): StrategyPerformance = {
-    val periodTrades = trades.filter( t => t.exitDate >= fromDate && t.exitDate <= toDate.addDays(1)).toList
+    val periodTrades = trades.filter( t => t.exitTime >= fromDate && t.exitTime <= toDate.addDays(1)).toList
     val periodProfitLoss = profitLoss.filterKeys( p => p >= fromDate && p <= toDate.addDays(1))
     val periodEquity = equity.filterKeys( p => p >= fromDate && p <= toDate.addDays(1))
 

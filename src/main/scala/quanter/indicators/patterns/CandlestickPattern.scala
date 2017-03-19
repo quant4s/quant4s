@@ -3,7 +3,7 @@
   */
 package quanter.indicators.patterns
 
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 import quanter.indicators.patterns.CandleSettingType.CandleSettingType
 import quanter.indicators.window.WindowIndicator
 

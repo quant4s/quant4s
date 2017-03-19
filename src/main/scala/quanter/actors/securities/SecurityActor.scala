@@ -1,7 +1,7 @@
 package quanter.actors.securities
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import quanter.data.market.SnapData
+import org.quant4s.data.market.SnapData
 import quanter.securities.Security
 
 import scala.collection.mutable.ArrayBuffer

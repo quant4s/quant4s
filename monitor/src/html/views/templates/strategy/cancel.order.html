@@ -1,0 +1,28 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">确认撤单</h4></div>
+    <div class="modal-body">
+        <dl class="dl-horizontal">
+            <dt>策略:</dt>
+            <dd>{{ strategy.name }}</dd>
+            <dt>名称:</dt>
+            <dd>{{ order.sec_name }}</dd>
+            <dt>代码:</dt>
+            <dd>{{ order.sec_id }}</dd>
+            <dt>方向:</dt>
+            <dd>{{ [order.side, order.position_effect] | direction }}</dd>
+            <dt>委托价</dt>
+            <dd>{{ order.price }}</dd>
+            <dt>下单量</dt>
+            <dd>{{ order.volume }}</dd>
+            <dt>已成交</dt>
+            <dd>{{ order.filled_volume }}</dd>
+        </dl>
+        <div ng-show="errors" class="col-md-10 error-fail"><i class="glyphicon glyphicon-warning-sign text-danger"></i>
+            <span>{{ errors }}</span></div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-success" ng-click="ok()">撤单</button>
+    </div>
+</div>

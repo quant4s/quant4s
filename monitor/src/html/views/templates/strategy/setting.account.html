@@ -1,0 +1,45 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+    <h4>关联账户</h4></div>
+<div class="modal-body">
+    <div class="alert alert-success anime-i-fadeIn" ng-if="submit_success===true"><i
+            class="fa fa-check fa-2x pull-left"></i>
+        <p>保存成功</p></div>
+    <div class="alert alert-error anime-i-bounceIn" ng-if="submit_success===false"><i
+            class="fa fa-times fa-2x pull-left"></i>
+        <p>保存失败</p></div>
+    <div class="alert alert-warning anime-i-flashIn" ng-if="submit_success===\'mixed\'"><i
+            class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+        <p>不能同时关联模拟账户与实盘账户</p></div>
+    <div class="alert alert-warning anime-i-flashIn" ng-if="submit_success===\'required\'"><i
+            class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+        <p>至少关联一个账户</p></div>
+    <div class="alert alert-warning anime-i-flashIn" ng-if="submit_success===\'simmixed\'"><i
+            class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+        <p>只能关联一个模拟账户</p></div>
+    <div class="alert alert-warning anime-i-flashIn" ng-if="submit_success===\'simlimited\'"><i
+            class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+        <p>非实盘策略数量已达到限制</p></div>
+    <div class="alert alert-warning anime-i-flashIn" ng-if="submit_success===\'reallimited\'"><i
+            class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+        <p>实盘策略数量已达到限制</p></div>
+    <div class="row">
+        <div class="col-md-2 text-right">模拟账户：</div>
+        <div class="col-md-10">
+            <div class="col-md-5"
+                 ng-repeat="account in accounts|filter: sim_acc_filter|orderObjectBy:\'account_name\':false">
+                <checkbox ng-model="account.is_selected" class="btn-normal"></checkbox>
+                <label>{{account.account_name}}</label></div>
+        </div>
+    </div>
+    <div class="row m-t-5" ng-if="permissions.accountPMSN===\'1\'">
+        <div class="col-md-2 text-right">实盘账户：</div>
+        <div class="col-md-10">
+            <div class="col-md-5"
+                 ng-repeat="account in accounts |filter: { account_type: 3}|orderObjectBy:\'account_name\':false">
+                <checkbox ng-model="account.is_selected" class="btn-normal"></checkbox>
+                <label>{{account.account_name}}</label></div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer"><a class="btn btn-success" ng-click="sure()">保存</a></div>

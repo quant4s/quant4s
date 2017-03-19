@@ -1,0 +1,30 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">退出交易</h4></div>
+    <div class="modal-body my-row">
+        <div class="col-md-12"><h4>确认要退出这个交易账户？</h4></div>
+        <form class="form-horizontal account-form">
+            <div class="form-group readonly"><label class="control-label col-md-2">账户名称</label>
+                <div class="col-md-10">
+                    <div class="form-control readonly col-md-10">{{ account.name }}</div>
+                </div>
+            </div>
+            <div class="form-group readonly"><label class="control-label col-md-2">经纪商</label>
+                <div class="col-md-10">
+                    <div class="form-control readonly">{{ account.brokerName }}</div>
+                </div>
+            </div>
+            <div class="form-group readonly"><label class="control-label col-md-2">交易账号</label>
+                <div class="col-md-10">
+                    <div class="form-control readonly">{{ account.brokerAccount }}</div>
+                </div>
+            </div>
+            <div ng-show="errors" class="col-md-10 error-fail"><i class="fa fa-warning text-warning"></i> <span>{{ errors }}</span>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-warning" ng-click="ok()">退出交易</button>
+    </div>
+</div>

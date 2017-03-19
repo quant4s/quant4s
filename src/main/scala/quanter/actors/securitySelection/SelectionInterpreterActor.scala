@@ -5,7 +5,7 @@ package quanter.actors.securitySelection
 
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.routing.{RoundRobinPool, RoundRobinRouter}
-import quanter.actors.zeromq.{PublishData, ZeroMQServerActor}
+import quanter.actors.zeromq.{PublishData, ZeroMQSubPubServerActor, ZeroMQSubPubServerActor$}
 import quanter.rest.{FinanceIndi, SecurityPicker, TechIndi}
 import quanter.securitySelection.{Instrument, Selector}
 
@@ -18,7 +18,7 @@ class SelectionInterpreterActor(cmds: SecurityPicker, topic: String, selector: S
   var resultCount = 0
   var result: Selector = selector
   val financeIndiRef = context.actorSelection("/user")
-  val pubRef = context.actorSelection("/user/" + ZeroMQServerActor.path)
+  val pubRef = context.actorSelection("/user/" + ZeroMQSubPubServerActor.path)
   val finIndiRouter = context.actorOf(RoundRobinPool(5).props(Props.create(classOf[FinanceIndiActor],selector)))
   val secIndiRouter = context.actorOf(RoundRobinPool(5).props(Props.create(classOf[SectorIndiActor],selector)))
   // val techIndiRouter = context.actorOf(RoundRobinPool(5).props(Props.create(classOf[SectorIndiActor],selector)))

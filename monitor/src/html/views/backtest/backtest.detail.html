@@ -1,0 +1,77 @@
+<div class="panel panel-expand" id="backtest-panel" ng-controller="BacktestDetailCtrl as btCtrl">
+    <div class="panel-heading b-color">
+        <div class="panel-heading-btn"><a class="btn btn-xs btn-icon btn-circle btn-info" ui-sref="app.backtest.list"><i
+                class="fa fa-reply"></i></a></div>
+        <h4 class="panel-title text-white"><a ui-sref="app.backtest.list"><i class="fa fa-chevron-left m-r-10"></i>回测列表</a>
+        </h4></div>
+    <div class="panel-body">
+        <div class="backtest-detail-header">
+            <div class="pull-left">
+                <div class="backtest-info p-t-15 p-b-15 p-l-15">
+                    <div class="backtest-args"><span class="m-r-0">设置:</span> <span class="time m-l-20">从<span
+                            class="semi-bold"
+                            style="font-size:13px">{{btCtrl.$scope.backtest.req.startTime|available}}</span> 到 <span
+                            class="semi-bold"
+                            style="font-size:13px">{{btCtrl.$scope.backtest.req.endTime|available}}</span></span> <span
+                            class="initial-cash">初始资金: <span class="semi-bold" style="font-size:13px">￥{{btCtrl.$scope.backtest.req.initialCash|number:0|available}}</span></span>
+                        <span class="trans-ratio">成交比率: <span class="semi-bold" style="font-size:13px">{{btCtrl.$scope.backtest.req.transactionRatio|percentage|available}}</span></span>
+                        <span class="com-ratio">手续费率:<span class="semi-bold" style="font-size:13px">{{btCtrl.$scope.backtest.req.commissionRatio|number:4|available}}</span></span>
+                        <span class="slip-ratio">滑点比率:<span class="semi-bold" style="font-size:13px">{{btCtrl.$scope.backtest.req.slippageRatio | number:3|available}}</span></span>
+                        <span class="price-type">是否复权: <span class="semi-bold" style="font-size:13px">{{btCtrl.$scope.backtest.req.priceType|price_type|available}}</span></span>
+                    </div>
+                    <div class="backtest-progress"><span>状态:</span> <span class="progress-status m-l-20"
+                                                                          ng-if="btCtrl.progress<1">回测中...</span> <span
+                            class="progress-status m-l-20" ng-if="btCtrl.progress==1"><i
+                            class="fa fa-check"></i>回测完成</span>
+                        <div class="progress progress-striped active" ng-show="btCtrl.progress<1">
+                            <div class="progress-bar" style="width: {{btCtrl.progress*100}}%"></div>
+                        </div>
+                        <span class="m-l-5" ng-show="btCtrl.progress<1">{{btCtrl.progress*100| number: 2 }}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pull-right btn-group inline-block"><a class="btn"></a> <a class="btn dropdown-toggle"
+                                                                                  data-toggle="dropdown" href="#"
+                                                                                  id="backtest-menu-toggle">导出数据 <i
+                    class="fa fa-caret-down"></i></a>
+                <ul class="dropdown-menu pull-right">
+                    <li><a ng-click="btCtrl.exportJson()">回测结果.JSON</a></li>
+                    <li><a ng-click="btCtrl.exportOrders()">交易明细.CSV</a></li>
+                    <li><a ng-click="btCtrl.exportPos()">持仓记录.CSV</a></li>
+                    <li><a ng-click="btCtrl.exportLog()">交易日志.TXT</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="vertical-box">
+            <div class="vertical-box-column nav">
+                <ul class="nav backtest-nav">
+                    <li ng-class="{\'active\': btCtrl.currentTab==\'perf\'}" ng-click="btCtrl.changeTab(\'perf\')"><a>收益概览</a>
+                    </li>
+                    <li ng-class="{\'active\': btCtrl.currentTab==\'order\'}" ng-click="btCtrl.changeTab(\'order\')"><a>交易明细</a>
+                    </li>
+                    <li ng-class="{\'active\': btCtrl.currentTab==\'position\'}"
+                        ng-click="btCtrl.changeTab(\'position\')"><a>每日持仓&收益</a></li>
+                    <li ng-class="{\'active\': btCtrl.currentTab==\'log\'}" ng-click="btCtrl.changeTab(\'log\')">
+                        <a>输出日志</a></li>
+                </ul>
+            </div>
+            <div class="vertical-box-column bg-white">
+                <div class="wrapper">
+                    <div class="backtest-perf-pane" ng-show="btCtrl.currentTab==\'perf\'">
+                        <div ng-include="\'app/backtest/detail.indicator.html\'"></div>
+                        <div ng-include="\'app/backtest/detail.perfchart.html\'"></div>
+                    </div>
+                    <div class="backtest-detail-pane" ng-show="btCtrl.currentTab==\'order\'">
+                        <div ng-include="\'app/backtest/detail.order.html\'"></div>
+                    </div>
+                    <div class="backtest-detail-pane" ng-show="btCtrl.currentTab==\'position\'">
+                        <div ng-include="\'app/backtest/detail.position.html\'"></div>
+                    </div>
+                    <div class="backtest-detail-pane" ng-show="btCtrl.currentTab==\'log\'">
+                        <div ng-include="\'app/backtest/detail.log.html\'"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

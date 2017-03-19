@@ -2,7 +2,7 @@ package quanter.consolidators
 
 import java.util.Date
 
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 import quanter.{Asserts, TimeSpan}
 import quanter.data.{BaseData, TBaseData}
 
@@ -44,12 +44,12 @@ abstract class PeriodCountConsolidatorBase[T <: TBaseData, TC <: BaseData](pmaxC
 
       if(_lastEmit.isEmpty) _lastEmit = Some(data.time)
       if(_period.isDefined) {
-        if(_workingBar != null && (data.time - _workingBar.time) >= _period.getOrElse(TimeSpan.MinValue)) {
+        if(_workingBar != null && (data.time - _workingBar.time) >= _period.getOrElse(TimeSpan.minValue)) {
           fireDataConsolidated = true
         }
 
         // special case: always aggregate before event trigger when TimeSpan is zero
-        if (_period.get == TimeSpan.Zero)
+        if (_period.get == TimeSpan.zero)
         {
           fireDataConsolidated = true
           aggregateBeforeFire = true

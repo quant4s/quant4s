@@ -6,7 +6,7 @@ import quanter.actors.securities.SubscriptionSymbol
 import quanter.actors.zeromq.PublishData
 import quanter.consolidators.{TDataConsolidator, TradeBarConsolidator}
 import quanter.data.BaseData
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 import quanter.indicators._
 import quanter.indicators.composite.DoubleMovingAverageIndex
 import quanter.indicators.window.{ExponentialMovingAverage, SimpleMovingAverage}

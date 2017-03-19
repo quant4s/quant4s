@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh_CN" ng-app="quant4s">
+<head>
+    <meta charset="UTF-8">
+    <script src="./js/angular-1.5.7.js" language="JavaScript" ></script>
+    <script src="./js/angular-ui-router-0.2.18.min.js" language="JavaScript" ></script>
+    <script src="./js/ui-bootstrap-tpls-1.3.3.min.js" language="JavaScript"></script>
+    <script src="./js/underscore.js" language="JavaScript" ></script>
+    <script src="./js/controllers.js" language="JavaScript" ></script>
+    <script src="./js/strategy.js" language="JavaScript" ></script>
+    <script src="./js/account.js" language="JavaScript" ></script>
+    <script src="./js/analysis.js" language="JavaScript" ></script>
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/app.css">
+    <title>招财猫</title>
+</head>
+<body>
+<div id="page-container" class="fade page-sidebar-fixed page-header-fixed in">
+    <div id="header-view" ui-view="header">
+
+    </div>
+
+    <div id="sidebar-view" ui-view="sidebar">
+
+    </div>
+
+    <div id="content-view" ui-view="content">
+
+    </div>
+</div>
+</body>
+</html>

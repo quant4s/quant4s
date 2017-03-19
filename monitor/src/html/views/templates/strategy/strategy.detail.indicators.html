@@ -1,0 +1,10 @@
+<div ng-controller="StrategyIndicatorsCtrl">
+    <table class="table table-striped table-style">
+        <tbody>
+        <tr ng-repeat="ind in indicators">
+            <th>{{ ind.name | indicator }}:</th>
+            <td class="{{ ind.color_class }} text-right">{{ ind.value |number:ind.precision }}{{ ind.unit }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

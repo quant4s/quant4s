@@ -6,7 +6,7 @@ package quanter.actors.provider.csv
 import akka.actor.Actor.Receive
 import akka.actor.{Actor, ActorLogging, Props}
 import com.github.tototoshi.csv.CSVWriter
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 import java.io.File
 
 import quanter.securities.Security

@@ -1,5 +1,7 @@
 package quanter.actors.trade
 
+import quanter.rest.{CancelOrder, Order}
+
 /**
   *
   */
@@ -8,9 +10,15 @@ trait Trader {
 
   def queryPosition(symbol: String)
 
-  def cancel(order: Order)
+  def queryOrders()
+
+  def queryUnfinishOrders()
+
+  def cancel(order: CancelOrder)
 
   def order(order: Order)
+
+
 //
 //  public abstract void enquiry(Order paramOrder, OrderListener paramOrderListener);
 //

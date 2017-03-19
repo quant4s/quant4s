@@ -16,8 +16,6 @@ import scala.collection.mutable
   *
   */
 trait StrategyService extends HttpService {
-//  val strategiesManager = new StrategiesManager()
-//  implicit def _log: LoggingAdapter
   val manager = actorRefFactory.actorSelection("/user/" + StrategiesManagerActor.path)
   var strategyCache = new mutable.HashMap[Int, Strategy]()
 
@@ -223,7 +221,7 @@ trait StrategyService extends HttpService {
           }
         }
       }~
-      path("strategy" / "start" / IntNumber) {
+      path("strategy" / IntNumber / "start") {
         id => {
           complete {
             val strategyRef = _findStrategyActor(id)
@@ -232,7 +230,7 @@ trait StrategyService extends HttpService {
           }
         }
       }~
-      path("strategy" / "stop" / IntNumber) {     // 停止一个策略
+      path("strategy" / IntNumber / "stop") {     // 停止一个策略
         id => {
           complete {
             val strategyRef = _findStrategyActor(id)
@@ -241,7 +239,7 @@ trait StrategyService extends HttpService {
           }
         }
       }~
-      path("strategy"/"enablerisk"/IntNumber) { // 允许风控
+      path("strategy" / IntNumber / "enablerisk") { // 允许风控
         id => {
           complete {
             val strategyRef = _findStrategyActor(id)
@@ -250,7 +248,7 @@ trait StrategyService extends HttpService {
           }
         }
       }~
-      path("strategy"/"disablerisk"/IntNumber) { // 净值风控
+      path("strategy" / IntNumber / "disablerisk") { // 净值风控
         id => {
           complete {
             val strategyRef = _findStrategyActor(id)
@@ -261,7 +259,7 @@ trait StrategyService extends HttpService {
       }
     } ~
     delete {
-      path("strategy" /IntNumber) {   // 删除一个策略
+      path("strategy" / IntNumber) {   // 删除一个策略
         id =>
         complete {
           strategyCache.remove(id)

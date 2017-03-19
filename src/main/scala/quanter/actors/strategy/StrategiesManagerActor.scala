@@ -7,7 +7,7 @@ import akka.actor.{Actor, ActorRef, Props}
 import akka.pattern.ask
 import akka.util.Timeout
 import quanter.actors._
-import quanter.actors.persistence.PersistenceActor
+import quanter.actors.persistence.{PersistenceActor, StrategyPersistorActor}
 import quanter.rest.{CancelOrder, HttpServer, Strategy, TradeAccount}
 import quanter.strategies.StrategyCache
 
@@ -23,7 +23,7 @@ case class UpdatePortfolio(strategy: Strategy)
   * 3、
   */
 class StrategiesManagerActor extends Actor{
-  val persisRef = context.actorSelection("/user/" + PersistenceActor.path)
+  val persisRef = context.actorSelection("/user/" + StrategyPersistorActor.path)
   val restRef = context.actorSelection("/user/" + HttpServer.path)
 
   var strategyRefs = new mutable.HashMap[Int, ActorRef]()

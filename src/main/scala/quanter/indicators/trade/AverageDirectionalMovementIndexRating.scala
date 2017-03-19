@@ -1,6 +1,6 @@
 package quanter.indicators.trade
 
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 import quanter.indicators.TradeBarIndicator
 import quanter.indicators.window.RollingWindow
 

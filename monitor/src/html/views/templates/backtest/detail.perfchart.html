@@ -1,0 +1,16 @@
+<div id="perfchart" ng-controller="BacktestPerfChartCtrl as perf">
+    <div class="chart-label date"><span id="date-chart-label">2016-02-09</span></div>
+    <div class="chart-label daily-returns"><span id="daily-returns-label">每日盈亏</span> <span class="chart-value"
+                                                                                            id="daily-returns-value"></span>
+    </div>
+    <div class="chart-label transactions"><span id="transactions-label">每日成交</span> <span class="chart-value black"
+                                                                                          id="transactions-value"></span>
+    </div>
+    <div class="chart-label profit-performance">累计收益 <span class="payload"><span class="legend-item"><span
+            class="square blue"></span> <span class="blue">策略</span> <span class="chart-value"
+                                                                           id="performance-value"></span></span> <span
+            class="legend-item"><span class="square red margin_15l"></span> <span class="red full_backtest_benchmark"
+                                                                                  id="bench-symbol">基准</span> <span
+            class="chart-value" id="benchmark-value"></span></span></span></div>
+    <highchart config="perf.chartConfig" id="chart-container"></highchart>
+</div>

@@ -4,7 +4,7 @@
 package quanter.consolidators
 
 import quanter.{MarketDataType, TimeSpan}
-import quanter.data.market.{Tick, TradeBar}
+import org.quant4s.data.market.{Tick, TradeBar}
 
 /**
   *

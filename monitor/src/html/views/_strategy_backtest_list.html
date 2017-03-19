@@ -1,0 +1,16 @@
+<div id="content" class="content animated fadeIn" >
+    <ol class="breadcrumb pull-right">
+        <li class="active">{{title}}</li></ol>
+    <h1 class="page-header">{{title}}</h1>
+    <div class="col-md-3 w-md-3 p-5" ng-repeat="strategy in strategies">
+        <div class="panel-1 b-color">
+            <div class="panel-heading">
+                <h4 class="panel-title span-a">{{ strategy.name }}
+          <span class="pull-right label" >
+            <a ui-sref=".detail({id: strategy.id})" href="#/backtest/{{strategy.id}}">详情</a>
+          </span>
+                </h4>
+            </div>
+         </div>
+    </div>
+</div>'

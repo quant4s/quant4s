@@ -2,7 +2,7 @@
   *
   */
 package quanter.indicators.patterns
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 import quanter.indicators.window.ReadOnlyWindow
 
 /**

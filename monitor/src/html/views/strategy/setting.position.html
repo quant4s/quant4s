@@ -1,0 +1,111 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()">×</button>
+    <h4 class="modal-title">持仓调整</h4></div>
+<div class="modal-body">
+    <div class="alert alert-success anime-i-fadeIn" ng-if="modal.submit_status==='success'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-check fa-2x pull-left"></i>
+        <p>保存成功</p></div>
+    <div class="alert alert-danger anime-i-bounceIn" ng-if="modal.submit_status==='error'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-times fa-2x pull-left"></i>
+        <p>保存失败</p></div>
+    <div class="alert alert-warning anime-i-flashIn" ng-if="modal.submit_status==='stock_open_short'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+        <p>不能卖空</p></div>
+    <div class="alert alert-warning anime-i-flashIn" ng-if="modal.submit_status==='index_added'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+        <p>不能买卖指数</p></div>
+    <div class="alert alert-warning anime-i-flashIn" ng-if="modal.submit_status==='to_be_completed'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+        <p>{{modal.add_error_msg}}</p></div>
+    <div class="alert alert-warning anime-i-flashIn" ng-if="modal.submit_status==='duplicated'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+        <p>已经持有该品种</p></div>
+    <div class="alert alert-warning anime-i-flashIn" ng-if="modal.submit_status==='volume_input_error'">
+        <button type="button" class="close" ng-click="modal.hide_alert()"><span aria-hidden="true">&times;</span>
+        </button>
+        <i class="fa fa-exclamation-triangle fa-2x pull-left"></i> <strong>仓位输入错误!</strong>今仓位大于总仓位
+    </div>
+    <div class="m-r-10 m-l-10 m-t-5 m-b-5">
+        <form class="form-inline">
+            <legend>新增仓位(保存后生效)</legend>
+            <div class="form-group m-r-10"><input class="form-control" ng-model="modal.new_item.symbol" type="text"
+                                                  placeholder="代码/拼音缩写"
+                                                  typeahead="symbol as symbol.exchange+'.'+symbol.sec_id+' '+symbol.sec_name for symbol in modal.getSymbolsTypeahead($viewValue)"
+                                                  typeahead-on-select="modal.selectSymbol($item)"></div>
+            <div class="form-group m-r-10"><select class="form-control" ng-model="modal.new_item.side"
+                                                   ng-options="side.id as side.label for side in modal.sides">
+                <option value="">方向</option>
+            </select></div>
+            <div class="form-group m-r-10"><input class="form-control text-right" ng-model="modal.new_item.volume"
+                                                  type="number" placeholder="总仓位"></div>
+            <div class="form-group m-r-10"><input class="form-control text-right" ng-model="modal.new_item.volume_today"
+                                                  type="number" placeholder="今仓位"></div>
+            <div class="form-group m-r-10"><input class="form-control text-right" ng-model="modal.new_item.vwap"
+                                                  type="number" placeholder="均价"></div>
+            <div class="form-group m-r-10">
+                <button type="button" class="btn btn-success" ng-click="modal.add_item(modal.new_item)">增加</button>
+            </div>
+        </form>
+    </div>
+    <div class="m-r-10 m-l-10 m-t-5 m-b-5">
+        <from class="form-group">
+            <legend>调整仓位</legend>
+            <table st-table="st_position" class="table table-condensed table-hover" style="vertical-align:text-top;">
+                <thead>
+                <tr>
+                    <th class="text-center" st-sort="exchange" st-skip-natural="true">交易所</th>
+                    <th class="text-center" st-sort="sec_id" st-skip-natural="true">代码</th>
+                    <th class="text-center" st-sort="sec_name" st-skip-natural="true">名称</th>
+                    <th class="text-center" st-sort="side">方向</th>
+                    <th st-sort="volume" st-skip-natural="true">总仓位</th>
+                    <th st-sort="volume_today" st-skip-natural="true">今仓位</th>
+                    <th st-sort="vwap" st-skip-natural="true">均价</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="pos in modal.pos_display">
+                    <td class="text-center">{{ pos.exchange | exchange }}</td>
+                    <td class="text-center">{{ pos.sec_id }}</td>
+                    <td class="text-center">{{ pos.sec_name }}</td>
+                    <td class="text-center">{{ [pos.side, pos.position_effect] | direction }}</td>
+                    <td>
+                        <div class="form-group novalidate"><input name="volume" class="num text-right"
+                                                                  ng-model="pos.volume_input" type="number" min="0"
+                                                                  step="1" value="{{ pos.volume | number: 0 }}"></div>
+                    </td>
+                    <td>
+                        <div class="form-group novalidate"><input name="volume_today" class="num text-right"
+                                                                  ng-model="pos.volume_today_input" type="number"
+                                                                  min="0" step="1"
+                                                                  value="{{ pos.volume_today | number: 0 }}"></div>
+                    </td>
+                    <td>
+                        <div class="form-group novalidate"><input name="vwap" class="num text-right"
+                                                                  ng-model="pos.vwap_input" type="number" min="0"
+                                                                  step="1" value="{{ pos.vwap | number: 2 }}"></div>
+                    </td>
+                    <td>
+                        <div class="float-left m-l-10 m-t-5 anime-s-flash" ng-show="pos.volume_error"><i
+                                class="fa fa-warning fa-lg text-warning" tooltip-placement="top" tooltip="仓位输入错误"></i>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </from>
+    </div>
+</div>
+<div class="modal-footer"><a ng-click="modal.submit()" class="btn btn-success">保存</a></div>

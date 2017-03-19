@@ -3,10 +3,10 @@ package quanter.actors.data
 import akka.actor.{Actor, ActorLogging, ActorRef, ActorSelection, Props}
 import quanter.TimeSpan
 import quanter.actors.securities.{SecuritiesManagerActor, SubscriptionSymbol}
-import quanter.actors.zeromq.{PublishData, ZeroMQServerActor}
+import quanter.actors.zeromq.{PublishData, ZeroMQSubPubServerActor$}
 import quanter.consolidators.{DataConsolidator, TDataConsolidator, TradeBarConsolidator}
 import quanter.data.BaseData
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 import quanter.indicators.IndicatorDataPoint
 
 import scala.collection.mutable.ArrayBuffer

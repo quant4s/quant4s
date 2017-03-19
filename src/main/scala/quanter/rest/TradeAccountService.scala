@@ -8,7 +8,6 @@ import org.json4s.jackson.JsonMethods._
 import org.json4s.{DefaultFormats, Extraction, Formats}
 import quanter.actors._
 import quanter.actors.trade._
-import quanter.config.Settings
 import spray.routing.HttpService
 import spray.util.LoggingContext
 

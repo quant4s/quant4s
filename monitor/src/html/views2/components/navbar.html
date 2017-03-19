@@ -1,0 +1,35 @@
+<div id="header" class="header navbar navbar-default navbar-fixed-top" ng-controller="NavbarCtrl">
+    <div class="container-fluid">
+        <div class="navbar-header"><a class="navbar-brand"><img ng-src="{{profile.orginfo.logo_url}}"></a>
+            <button type="button" class="navbar-toggle" ng-click="on_sidebar_toggled()"><span class="icon-bar"></span>
+                <span class="icon-bar"></span> <span class="icon-bar"></span></button>
+        </div>
+        <ul class="nav navbar-nav navbar-right m-r-20">
+            <li class="dropdown" ng-class="{'open': dropdown}" dropdown="" on-toggle="drow_down()"><a
+                    dropdown-toggle="" href="javascript:;" class="dropdown-toggle f-s-14"><i class="fa fa-bell-o"></i>
+                <span ng-if="unread_msg.length>0" class="label">{{ unread_msg.length }}</span></a>
+                <ul class="dropdown-menu media-list pull-right animated fadeInDown">
+                    <li class="dropdown-header" style="display:flex;justify-content:space-between">未读消息({{
+                        unread_msg.length }})<span class="text-right" ng-if="unread_msg.length>0"><a
+                                ng-click="clearAllMsg()">清空</a></span></li>
+                    <li class="media" ng-repeat="msg in unread_msg"><a ng-click="read(msg)">
+                        <div class="media-left" ng-bind-html="msg.icon"></div>
+                        <div class="media-body"><h6 class="media-heading" ng-bind="msg.heading"></h6>
+                            <div class="text-muted f-s-11" ng-bind="msg.content"></div>
+                        </div>
+                    </a></li>
+                </ul>
+            </li>
+            <li class="dropdown navbar-user" ng-class="{'open': dropdown}" dropdown="" on-toggle="drow_down()"><a
+                    dropdown-toggle="" class="dropdown-toggle"><img ng-src="{{profile.avatar_file}}" alt=""> <span
+                    class="hidden-xs">{{ profile.username }}</span> <i class="fa fa-caret-down"></i></a>
+                <ul class="dropdown-menu animated fadeInLeft">
+                    <li ng-if="profile.orginfo.user_profile_entry == 1" ng-click="user_profile()"><a>用户中心</a></li>
+                    <li ng-if="profile.orginfo.about_software_entry == 1" ng-click="about()"><a>关于平台</a></li>
+                    <li ng-if="profile.orginfo.user_profile_entry == 1" class="divider"></li>
+                    <li ng-click="logout()"><a>退出系统</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

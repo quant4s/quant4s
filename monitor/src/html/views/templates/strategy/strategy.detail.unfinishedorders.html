@@ -1,0 +1,22 @@
+<div ng-controller="StrategyUnfinishedOrdersCtrl">
+    <table st-table="displayedCollection" st-safe-src="unfinishedOrders" class="table table-style2">
+        <thead>
+        <tr>
+            <th class="hand" st-sort="getters.sending_time" st-skip-natural="true" st-sort-default="reverse">时间</th>
+            <th class="hand" st-sort="sec_id" st-skip-natural="true">委托</th>
+            <th class="hand text-right" st-sort="price" st-skip-natural="true">价格</th>
+            <th class="hand text-right" st-sort="volume" st-skip-natural="true">数量</th>
+            <th class="text-center">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in displayedCollection | limitTo:limit">
+            <td>{{ row.sending_time*1000 | date: \'H:mm:ss\'}}</td>
+            <td>{{ [row.side, row.position_effect, row.sec_id]|unfinish_order }}</td>
+            <td class="text-right">{{[row.price, row.order_type ]| price }}</td>
+            <td class="text-right">{{ row.volume | number:0 }}</td>
+            <td class="text-center"><a ng-click="cancelOrder(row)">撤单</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

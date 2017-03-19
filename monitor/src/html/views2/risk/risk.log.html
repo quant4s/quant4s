@@ -1,0 +1,24 @@
+<div ng-controller="RiskLogCtrl">
+    <table st-table="displayedCollection" st-safe-src="logs" class="table table-hover">
+        <thead>
+        <tr>
+            <th class="hand text-center" st-sort="getter.utc" st-sort-default="reverse">时间</th>
+            <th st-skip-natural="true" st-sort="state" class="hand text-center">状态</th>
+            <th st-skip-natural="true" st-sort="action" class="hand text-center">动作</th>
+            <th st-skip-natural="true" st-sort="msg" class="hand text-center">消息</th>
+            <th st-skip-natural="true" st-sort="rule" class="hand text-center">规则</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in displayedCollection | limitTo:200" ng-class-even="even" ng-class-odd="odd">
+            <td class="text-center">{{row.utc | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+            <td class="text-center">{{row.state|risk_state}}</td>
+            <td class="text-center">{{row.action|rick_action}}</td>
+            <td class="text-center"><a class="disable" tooltip-placement="left" tooltip="{{row.msg }}">{{ row.msg |
+                str_len: 20}}</a></td>
+            <td class="text-center"><a class="disable" tooltip-placement="left" tooltip="{{row.rule}}">{{ row.rule |
+                str_len: 20}}</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

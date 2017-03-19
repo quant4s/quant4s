@@ -54,7 +54,18 @@ trait DataService extends HttpService {
               |}
           """.stripMargin
         }
+      } ~
+      path("crossdomain.xml") {
+        complete {
+          log.debug("请求跨域文件")
+          """
+            |<cross-domain-policy>
+            |  <allow-access-from domain="*" />
+            |</cross-domain-policy>
+          """.stripMargin
+        }
       }
+
     }
   }
 

@@ -1,0 +1,25 @@
+
+@mixin box-heading {
+    background-color: #00ACAC;
+    color: #FFF;
+    padding: 10px 15px;
+    border: medium none;
+    .label {
+        line-height: 15px;
+        display: inline;
+        padding: 0.2em 0.6em 0.3em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        color: #FFF;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25em;
+    }
+}
+
+@mixin box {
+    border-radius: 3px;
+    background-color: #00ACAC;
+}

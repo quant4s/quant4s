@@ -1,0 +1,50 @@
+<div id="content" class="content animated fadeIn" ng-controller="AccListCtrl">
+    <ol class="breadcrumb pull-right">
+        <li class="active">实盘账户</li>
+    </ol>
+    <h1 class="page-header">实盘账户</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="panel-heading b-color">
+                    <div class="panel-heading-btn" ng-click="addItem()"><a class="btn btn-xs btn-success pull-right"><i
+                            class="fa fa-plus"></i> 新增账户</a></div>
+                    <h4 class="panel-title" style="color:#FFF">账户管理</h4></div>
+                <div class="panel-body">
+                    <table st-table="displayedCollection" st-safe-src="accounts" class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th st-skip-natural="true" st-sort="account_name" st-sort-default="true" class="hand">账户名称
+                            </th>
+                            <th st-skip-natural="true" st-sort="broker_name" class="hand text-center">柜台类型</th>
+                            <th st-skip-natural="true" st-sort="broker_id" class="hand text-center">机构代码</th>
+                            <th st-skip-natural="true" st-sort="broker_uri" class="hand">柜台地址</th>
+                            <th st-skip-natural="true" st-sort="broker_username" class="hand">交易账号</th>
+                            <th st-skip-natural="true" st-sort="status.state" class="hand text-center">连接状态</th>
+                            <th st-skip-natural="true" class="text-center">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="row in displayedCollection |filter: { account_type: 3}|orderObjectBy:\'account_name\':false">
+                            <td><a ui-sref="app.account.info({account_id: row.account_id})" tooltip-placement="right"
+                                   tooltip="点击查看详情">{{row.account_name}}</a></td>
+                            <td class="text-center">{{row.broker_name}}</td>
+                            <td class="text-center">{{row.broker_id}}</td>
+                            <td>{{row.broker_uri}}</td>
+                            <td>{{row.broker_username}}</td>
+                            <td class="text-center">{{row.status | account_status }}</td>
+                            <td class="text-center">
+                                <button ng-click="click_account(row)" class="btn"
+                                        ng-class="{\'btn-success\': !isConnected(row), \'btn-warning\': isConnected(row)}"
+                                        ng-bind="isConnected(row)?\'断开\':\'连接\'"></button>
+                                <button type="button" ng-click="editItem(row)" class="btn btn-success">修改</button>
+                                <button type="button" ng-click="remove_confirm(row)" class="btn btn-danger">删除</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

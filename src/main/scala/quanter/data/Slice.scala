@@ -2,7 +2,7 @@ package quanter.data
 
 import java.util.Date
 
-import quanter.data.market._
+import org.quant4s.data.market._
 
 /**
   *

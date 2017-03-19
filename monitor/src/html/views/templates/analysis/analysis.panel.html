@@ -1,0 +1,122 @@
+<div class="panel" ng-controller="AnalysisDetailCtrl as panel">
+    <div class="panel-heading b-color">
+        <div class="panel-heading-btn"><a class="btn btn-xs btn-icon btn-circle btn-success" tooltip-placement="left"
+                                          tooltip="展开 / 收起" ng-click="panel.panelExpand($event)"><i
+                class="fa fa-expand"></i></a></div>
+        <h4 class="panel-title text-white"><a
+                ui-sref="app.strategy.detail({strategy_id: panel.strategy.strategy_id})"><span tooltip-placement="right"
+                                                                                               tooltip="返回策略详情"><i
+                class="fa fa-arrow-left"></i> {{panel.strategy.name}}</span></a></h4></div>
+    <div class="panel-body">
+        <div class="alert alert-warning" ng-if="panel.submit_status===\'no_ref_series\'">
+            <button type="button" class="close" ng-click="panel.hide_alert()"><span>&times;</span></button>
+            <i class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+            <p>未选择显示的曲线</p></div>
+        <div class="alert alert-warning" ng-if="panel.submit_status===\'too_much_series\'">
+            <button type="button" class="close" ng-click="panel.hide_alert()"><span>&times;</span></button>
+            <i class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+            <p>选择曲线数目超出限制({{panel.sub_line_limit}})</p></div>
+        <div class="alert alert-warning" ng-if="panel.submit_status===\'too_much_candlestick\'">
+            <button type="button" class="close" ng-click="panel.hide_alert()"><span>&times;</span></button>
+            <i class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+            <p>选择K线数目超出限制(1)</p></div>
+        <ul class="nav nav-pills">
+            <li ng-class="{\'active\': panel.current_tab==\'realtime\'}" ng-click="panel.change_tab(\'realtime\')"><a>实时数据</a>
+            </li>
+            <li ng-class="{\'active\': panel.current_tab==\'history\'}" ng-click="panel.change_tab(\'history\')">
+                <a>历史数据</a></li>
+        </ul>
+        <div class="tab-content" ng-switch="panel.current_tab">
+            <div class="tab-pane active" ng-switch-when="realtime">
+                <div class="row">
+                    <div class="col-md-9">
+                        <highchart config="panel.chart_config"></highchart>
+                        <div class="text-center code-mask" ng-hide="panel.args_realtime.show_chart"><span>暂无数据</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <form>
+                            <fieldset>
+                                <legend>选择显示数据</legend>
+                                <div class="m-b-15"><label>曲线类型</label><select class="form-control"
+                                                                               ng-model="panel.args_realtime.line_type"
+                                                                               ng-options="op.type as op.label for op in panel.line_type_options"
+                                                                               ng-change="panel.selectTypeChange(panel.args_realtime.sub_line)"></select>
+                                </div>
+                                <div class="m-b-15"><label>显示曲线</label>
+                                    <div isteven-multi-select="" input-model="panel.args_realtime.sub_line"
+                                         output-model="panel.sub_line_output" button-label="sec_name"
+                                         item-label="sec_name" tick-property="selected" helper-elements=""
+                                         translation="panel.tr_line" max-labels="1"
+                                         selection-mode="{{panel.args_realtime.line_type==\'line\'?\'multiple\':\'single\'}}"
+                                         class="default-multi-select"></div>
+                                </div>
+                                <div class="m-b-15"><label>显示信号</label>
+                                    <div isteven-multi-select="" input-model="panel.args_realtime.show_signal"
+                                         output-model="panel.show_signal_output" button-label="label" item-label="label"
+                                         tick-property="selected" helper-elements="" translation="panel.tr_line"
+                                         max-labels="1" selection-mode="single" class="default-multi-select"></div>
+                                </div>
+                                <div class="m-b-15"><label>叠加曲线</label>
+                                    <tags-input ng-model="panel.args_realtime.additionals" display-property="sec_name"
+                                                placeholder="代码/拼音缩写">
+                                        <auto-complete source="panel.get_typeahead($query)" debounce-delay="0"
+                                                       min-length="1"></auto-complete>
+                                    </tags-input>
+                                </div>
+                                <button ng-click="panel.submit(\'realtime\')" type="button"
+                                        class="btn btn-sm btn-success btn-block">提交
+                                </button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane active" ng-switch-when="history">
+                <div class="row">
+                    <div class="col-md-9">
+                        <highchart config="panel.chart_config"></highchart>
+                        <div class="text-center code-mask" ng-hide="panel.args_history.show_chart"><span>暂无数据</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <form>
+                            <fieldset>
+                                <legend>选择显示数据</legend>
+                                <div class="m-b-15"><label>曲线类型</label><select class="form-control"
+                                                                               ng-model="panel.args_history.line_type"
+                                                                               ng-options="op.type as op.label for op in panel.line_type_options"
+                                                                               ng-change="panel.selectTypeChange(panel.args_history.sub_line)"></select>
+                                </div>
+                                <div class="m-b-15"><label>显示曲线</label>
+                                    <div isteven-multi-select="" input-model="panel.args_history.sub_line"
+                                         output-model="panel.sub_line_output" button-label="sec_name"
+                                         item-label="sec_name" tick-property="selected" helper-elements=""
+                                         translation="panel.tr_line"
+                                         selection-mode="{{panel.args_history.line_type==\'line\'?\'multiple\':\'single\'}}"
+                                         max-labels="1" class="default-multi-select"></div>
+                                </div>
+                                <div class="m-b-15"><label>显示信号</label>
+                                    <div isteven-multi-select="" input-model="panel.args_history.show_signal"
+                                         output-model="panel.show_signal_output" button-label="label" item-label="label"
+                                         tick-property="selected" helper-elements="" translation="panel.tr_line"
+                                         max-labels="1" selection-mode="single" class="default-multi-select"></div>
+                                </div>
+                                <div class="m-b-15"><label>叠加曲线</label>
+                                    <tags-input ng-model="panel.args_history.additionals" display-property="label"
+                                                placeholder="代码/拼音缩写">
+                                        <auto-complete source="panel.get_typeahead($query)" debounce-delay="0"
+                                                       min-length="1"></auto-complete>
+                                    </tags-input>
+                                </div>
+                                <button ng-click="panel.submit(\'history\')" type="button"
+                                        class="btn btn-sm btn-success btn-block">提交
+                                </button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

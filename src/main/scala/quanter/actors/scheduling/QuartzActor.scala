@@ -8,7 +8,6 @@ import java.util.{HashMap, Properties}
 import akka.actor.{Actor, ActorContext, ActorLogging, ActorRef, ActorSelection, Props}
 import org.quartz._
 import org.quartz.impl.StdSchedulerFactory
-import quanter.config.Settings
 
 /**
   * 读取配置文件，将加入到Job队列, Jobf分为两种 Actor, 消息为ExecuteJob， 普通Job

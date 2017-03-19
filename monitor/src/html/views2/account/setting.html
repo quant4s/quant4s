@@ -1,0 +1,46 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">{{ ::title }}</h4></div>
+<div class="modal-body">
+    <form name="acc-form" novalidate="novalidate" class="form-horizontal account-form">
+        <div class="form-group"><label class="control-label col-md-2">账户名称:</label>
+            <div class="col-md-10"><input class="form-control" ng-model="acc.name" placeholder="请给您的交易账户取个名"
+                                          required=""></div>
+        </div>
+        <div class="form-group form-inline"><label class="control-label col-md-2">柜台类型:</label>
+            <div class="col-md-10"><select class="form-control full-width" ng-model="acc.brokerType"
+                                           ng-options="b._type as b.title for b in brokerChannelTypes"
+                                           ng-change="onChannelSelect()">
+                <option class="full-width" value="" disabled="" selected="" ng-hide="acc.brokeType">
+                    请选择您开户柜台的类型
+                </option>
+            </select></div>
+        </div>
+        <div class="form-group form-inline"><label class="control-label col-md-2">经纪机构:</label>
+            <div class="col-md-10" id="broker-select" ng-switch="" on="flags.editBrokerName"><input
+                    class="form-control full-width" ng-model="acc.brokerName"
+                    placeholder="请输入您开户的经纪机构名称或拼音缩写，如：‘上海中期'、'SHZQ'"
+                    typeahead="broker.name for broker in getTypeaheads($viewValue)" typeahead-min-length="1"
+                    typeahead-on-select="onBrokerSelect($item)" required=""></div>
+        </div>
+        <div class="form-group"><label class="control-label col-md-2">机构代码:</label>
+            <div class="col-md-10"><input class="form-control" name="brokerCode" ng-model="acc.brokerCode"
+                                          placeholder="您开户公司的机构代码" required=""></div>
+        </div>
+        <div class="form-group"><label class="control-label col-md-2">柜台地址:</label>
+            <div class="col-md-10 vertical middle" on="flags.editBrokerUri">
+                <div ><input class="form-control" name="brokerUri" type="text"
+                                                  ng-model="acc.brokerUri" value="acc.brokerUri"
+                                                  placeholder="您开户柜台的交易服务IP和端口，格式: tcp://1.1.1.1:41205"></div>
+            </div>
+        </div>
+        <div class="form-group"><label class="control-label col-md-2">交易账号:</label>
+            <div class="col-md-10"><input class="form-control" name="acc_client_no" ng-model="acc.brokerAccount"
+                                          placeholder="您的交易账号（请注意：交易密码在连接柜台时输入）" required=""></div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <div ng-show="errors" class="alert alert-danger text-left">{{ errors }}</div>
+    <button class="btn btn-success" ng-click="ok()">保存</button>
+</div>

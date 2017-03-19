@@ -11,6 +11,7 @@ import quanter.actors.LoginSuccess
 import quanter.actors.provider.ConnectedSuccess
 import quanter.actors.strategy.StrategiesManagerActor
 import quanter.actors.trade._
+import quanter.rest.{CancelOrder, Order}
 
 /**
   *
@@ -18,8 +19,8 @@ import quanter.actors.trade._
 class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Trader {
 
   val trader = CThostFtdcTraderApi.CreateFtdcTraderApi("./logs/ctp/trader/")
-  var frontId = ""
-  var sessionId = ""
+  var frontId = 0
+  var sessionId = 0
 
   override protected def login(): Unit = {
     val reqUser = new CThostFtdcReqUserLoginField()
@@ -51,7 +52,7 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Tra
 
   override def OnFrontConnected(): Unit = {
     _isConnected = true
-    log.info("CTP Trader 连接成功！")
+    log.info("[OnFrontConnected] 获取CTP Trader 连接成功相应！")
 
     self ! new quanter.actors.ConnectedSuccess()
 //    fireEvent(TradeAccountEvent.Connected_Success)
@@ -59,13 +60,13 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Tra
 
   override def OnFrontDisconnected(i: Int): Unit = {
     _isConnected = false
-    log.info("CTP Trader 成功断开连接！")
+    log.info("[OnFrontDisconnected]CTP Trader 成功断开连接！")
 
     fireEvent(TradeAccountEvent.Disconnected)
   }
 
   override def OnRspUserLogin(pRspUserLogin: CThostFtdcRspUserLoginField, pRspInfo: CThostFtdcRspInfoField, nRequestID: Int, bIsLast: Boolean): Unit = {
-    log.info("CTP Trader 登录成功！")
+    log.info("[OnRspUserLogin]CTP Trader 登录成功！")
     _isLogin = true
     var result: LoginResult = null
     if (_isError(pRspInfo))
@@ -77,8 +78,8 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Tra
       self ! new LoginSuccess()
       if (pRspUserLogin != null)
       {
-        this.frontId = String.valueOf(pRspUserLogin.FrontID)
-        this.sessionId = String.valueOf(pRspUserLogin.SessionID)
+        this.frontId = pRspUserLogin.FrontID
+        this.sessionId = pRspUserLogin.SessionID
       }
       log.info(s"CTP %s 登录成功".format(accountInfo.name))
       result = new LoginResult(0, "登录成功")
@@ -98,10 +99,9 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Tra
   }
 
   override def OnRspUserLogout(pRspUserLogout: CThostFtdcUserLogoutField, pRspInfo: CThostFtdcRspInfoField, nRequestID: Int, bIsLast: Boolean): Unit = {
-    log.info("OnRspUserLogout : " + pRspUserLogout + ", pRspInfo=" + pRspInfo + ", nRequestID=" + nRequestID + ", bIsLast=" + bIsLast)
+    log.info("[OnRspUserLogout] OnRspUserLogout : " + pRspUserLogout + ", pRspInfo=" + pRspInfo + ", nRequestID=" + nRequestID + ", bIsLast=" + bIsLast)
     _isLogin = false
   }
-
 
   /**
     * 报单录入错误回报。由交易托管系统主动通知客户端，该方法会被调用。
@@ -110,6 +110,7 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Tra
     * @param pRspInfo
     */
   override def OnErrRtnOrderInsert(pInputOrder: CThostFtdcInputOrderField, pRspInfo: CThostFtdcRspInfoField): Unit = {
+    log.error("[OnErrRtnOrderInsert] 发生错误")
     if (_isError(pRspInfo))
     {
       if (pInputOrder != null) {
@@ -130,12 +131,14 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Tra
     * @param bIsLast
     */
   override def OnRspOrderInsert(pInputOrder: CThostFtdcInputOrderField, pRspInfo: CThostFtdcRspInfoField, nRequestID: Int, bIsLast: Boolean): Unit = {
+    log.debug("[OnRspOrderInsert] 提交报单相应")
     if (_isError(pRspInfo)) {
       if (pInputOrder != null) {
+        log.debug("[OnRspOrderInsert] 提交报单失败" + pRspInfo.ErrorMsg)
         // 通知报单失败
         // processOrderError0(pInputOrder.OrderRef, pRspInfo.ErrorID + "", pRspInfo.ErrorMsg);
       } else {
-        log.error("1023: errorID=" + pRspInfo.ErrorID + ", errorMsg=" + pRspInfo.ErrorMsg)
+        log.error("[OnRspOrderInsert]1023: errorID=" + pRspInfo.ErrorID + ", errorMsg=" + pRspInfo.ErrorMsg)
       }
     } else {
       // val result = new OrderStatusResult("", pInputOrder.OrderRef, pInputOrder.Direction, THOST_FTDC_OST_Unknown)
@@ -144,13 +147,24 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Tra
 
   /**
     * 报单回报。当客户端进行报单录入、报单操作及其它原因（如部分成交）导致报单状态发生变化时，
-    * 交易托管系统会主动通知客户端，该方法会被调用
- *
+    * 交易托管系统会主动通知客户端，该方法会被调用\
+    * 一次报单会得到两次相应， 1 CTP 是否提交到交易所  2 是交易所相应
+    * 根据OrderSubmitStatus 来判断
+        0=已经提交
+        1=撤单已经提交
+        2=修改已经提交
+        3=已经接受
+        4=报单已经被拒绝
+        5=撤单已经被拒绝
+        6=改单已经被拒绝
+    *
     * @param pOrder
     */
   override def OnRtnOrder(pOrder: CThostFtdcOrderField): Unit = {
+    log.debug("[OnRtnOrder]保单成交相应")
+
     // 根据本地委托ID，找到策略ID
-    val localId = pOrder.OrderRef
+    val localId = pOrder.OrderRef.trim
     val strategyId =  getStrategyId(localId)
     val strategyRef = context.actorSelection("/user/%s/%s".format(StrategiesManagerActor.path, strategyId))
 
@@ -160,8 +174,9 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Tra
     val mdDate = new Date()
     val status = pOrder.OrderStatus.toString
     val accountId = ""
+    val orderSubmitStatus = pOrder.OrderSubmitStatus.toString
 
-    val result = new OrderStatusResult(id, localId, mdDate, Some(accountId), direction, orderSysID, status)
+    val result = new OrderStatusResult(id, 1,1, localId, mdDate, Some(accountId), direction, orderSysID, status.toInt)
 
     strategyRef ! result
   }
@@ -178,7 +193,7 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Tra
     val strategyRef = context.actorSelection("/user/%s/%s".format(StrategiesManagerActor.path, strategyId))
 
     // 修改策略的内存持仓数据, 由策略负责更新到成交回报数据库
-    val result = new OrderDealResult(nextResultId, localId, new Date(), Some(accountInfo.brokerAccount), pTrade.InstrumentID, pTrade.Direction.toInt,
+    val result = new OrderDealResult(nextResultId,1,1, localId, new Date(), Some(accountInfo.brokerAccount), pTrade.InstrumentID, pTrade.Direction.toInt,
       pTrade.OffsetFlag, pTrade.TradeID, pTrade.Price, pTrade.Volume, pTrade.OrderSysID)
 
     strategyRef ! result
@@ -207,7 +222,6 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Tra
   override def OnRspQryTradingAccount(cThostFtdcTradingAccountField: CThostFtdcTradingAccountField, cThostFtdcRspInfoField: CThostFtdcRspInfoField, i: Int, b: Boolean): Unit = {}
 
   override def OnRspSettlementInfoConfirm(cThostFtdcSettlementInfoConfirmField: CThostFtdcSettlementInfoConfirmField, cThostFtdcRspInfoField: CThostFtdcRspInfoField, i: Int, b: Boolean): Unit = {}
-
 
   /**
     * 请求查询行情响应。当客户端发出请求查询行情指令后，交易托管系统返回响应时，该方法会被调用。
@@ -419,48 +433,55 @@ class CTPBrokerageActor extends BrokerageActor with CThostFtdcTraderSpi with Tra
     log.debug("账户%s, 查询%s持仓".format(accountInfo.name, symbol))
   }
 
-  override def cancel(order: Order): Unit = {
+  override def cancel(order: CancelOrder): Unit = {
     val requestId = nextRequestId
     val cancel = new CThostFtdcInputOrderActionField()
     cancel.BrokerID = accountInfo.brokerCode
     cancel.InvestorID = accountInfo.brokerAccount
-    cancel.InstrumentID = order.contractCode
-
-    cancel.OrderRef = order.localeId
-    cancel.FrontID = Integer.parseInt(order.frontId)
-    cancel.SessionID = Integer.parseInt(order.sessionId)
+//    cancel.InstrumentID = order.contractCode
+//
+//    cancel.OrderRef = order.localeId
+    cancel.FrontID = frontId
+    cancel.SessionID = sessionId
     cancel.ActionFlag = '0'
     trader.ReqOrderAction(cancel, requestId)
-    log.debug("账户%s, 取消%s订单".format(accountInfo.name, order.contractCode))
+//    log.debug("账户%s, 取消%s订单".format(accountInfo.name, order.contractCode))
   }
 
   override def order(order: Order): Unit = {
-    order.frontId = frontId
-    order.sessionId = sessionId
+    log.debug("下单")
+//    order.frontId = frontId
+//    order.sessionId = sessionId
 
     val req = new CThostFtdcInputOrderField()
     req.BrokerID = accountInfo.brokerCode
-    req.InstrumentID = order.contractCode
-    req.VolumeTotalOriginal = order.volume
-    req.Direction = if(order.direction == 0) '0' else '1'
-    req.CombOffsetFlag = order.COFlag.toString
-    req.CombHedgeFlag = "1"
+    req.InvestorID = accountInfo.brokerAccount
+//    req.InstrumentID = order.contractCode
+//    req.VolumeTotalOriginal = order.volume
+//    req.Direction = if(order.direction == 0) '0' else '1'
+//    req.CombOffsetFlag = order.combOffsetFlag.toString
+//    req.CombHedgeFlag = order.combHedgeFlag.toString
     req.ContingentCondition = '1'
     req.VolumeCondition = '1'
-    req.MinVolume = 1
+    req.TimeCondition = '1'
+     req.MinVolume = 1
     req.ForceCloseReason = '0'
     req.IsAutoSuspend = false
     req.UserForceClose = false
-    req.OrderRef = order.localeId
-
+//    req.OrderRef = order.localeId
+    // req.Client =
     //
     req.OrderPriceType = '1'
-    req.LimitPrice = 1.0
+//    req.LimitPrice = 1.0
     req.TimeCondition = '1'
 
     trader.ReqOrderInsert(req, nextRequestId)
+    // TODO: 保存到数据库
   }
 
+  override def queryOrders(): Unit = ???
+
+  override def queryUnfinishOrders(): Unit = ???
 }
 
 object CTPBrokerageActor {

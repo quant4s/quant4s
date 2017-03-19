@@ -2,7 +2,7 @@ package quanter.consolidators
 
 import quanter.TimeSpan
 import quanter.data.{BaseData, TBaseData}
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 
 /**
   *

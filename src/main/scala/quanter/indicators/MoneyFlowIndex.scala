@@ -2,7 +2,7 @@
   *
   */
 package quanter.indicators
-import quanter.data.market.TradeBar
+import org.quant4s.data.market.TradeBar
 import quanter.indicators.window.Sum
 import  quanter.indicators.IndicatorExtensions._
 

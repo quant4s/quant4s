@@ -14,6 +14,8 @@ import quanter.persistence._
 import quanter.rest._
 import quanter.strategies.StrategyCache
 
+import scala.slick.jdbc.meta.MTable
+
 
 object PersistenceActor {
   def props = {
@@ -26,6 +28,7 @@ object PersistenceActor {
 class PersistenceActor extends Actor with ActorLogging {
   import profile.simple._
 
+  val config = ConfigFactory.load()
   var db = _getDatabase
   implicit val session = db.createSession()
 
@@ -33,20 +36,43 @@ class PersistenceActor extends Actor with ActorLogging {
     val TEST = "test"
     val DEV = "dev"
     val PROD = "prod"
-    val config = ConfigFactory.load()
     val runMode = config.getString("quant4s.runMode")
     Database.forConfig(runMode)
   }
 
-
   val strategyCache = new StrategyCache()
 
-  val ddl = gStrategies.ddl ++ gPortfolios.ddl ++ gPositions.ddl ++ gTransactions.ddl ++ gOrders.ddl ++ gTraders.ddl
-  // TODO: 如果是第一次启动
-  if(true) {
-    log.info("初始化数据库")
-//    ddl.drop
-//    ddl.create
+  val ddl = gStrategies.ddl ++ gPortfolios.ddl ++ gPositions.ddl ++ gTransactions.ddl ++ gOrders.ddl ++ gTraders.ddl ++ gTradeTransactions.ddl
+
+  val installDatabase = if(config.getString("quant4s.installDatabase").isEmpty) "install" else config.getString("quant4s.installDatabase")
+  installDatabase match {
+    case "install" => {
+      log.info("初始化数据库")
+      MTable.getTables.foreach(t => {
+        val name = t.name.name
+        log.info("删除数据表" + name)
+        tableList(name).ddl.drop
+      })
+      ddl.create
+//      tableList.foreach(v =>
+//        v._2.ddl.create
+//      )
+    }
+    case "update" => {
+//      log.info("更新数据库")
+//      tableList.keys.foreach( key =>
+//        MTable.getTables.foreach()
+//      )
+//      MTable.getTables.foreach(t => {
+//        val name = t.name.name
+//        log.info("删除数据表" + name)
+//        tableList(name).ddl.drop
+//      })
+//
+//      ddl.create
+    }
+    case "none" =>
+    case _ =>
   }
 
 
@@ -58,11 +84,11 @@ class PersistenceActor extends Actor with ActorLogging {
   }
 
   override def receive: Receive = {
-    case action: NewStrategy => _saveStrategy(action.strategy)
-    case action: DeleteStrategy => _deleteStrategy(action.id)
-    case action: UpdateStrategy => _updateStrategy(action.strategy.id, action.strategy)
-    case action: GetStrategy => _getStrategy(action.id)
-    case action: ListStrategies => _listStrategies()
+//    case action: NewStrategy => _saveStrategy(action.strategy)
+//    case action: DeleteStrategy => _deleteStrategy(action.id)
+//    case action: UpdateStrategy => _updateStrategy(action.strategy.id, action.strategy)
+//    case action: GetStrategy => _getStrategy(action.id)
+//    case action: ListStrategies => _listStrategies()
 
     // 保存订单
     // 撤销订单
@@ -70,10 +96,10 @@ class PersistenceActor extends Actor with ActorLogging {
     case action: RemoveOrder => _cancelOrder(action.order)
 
     // 交易接口
-    case action: NewTrader => _saveTrader(action.trader)
-    case action: ListTraders => _listTraders()
-    case action: DeleteTrader => _deleteTrader(action.id)
-    case action: UpdateTrader => _updateTrader(action.trader)
+//    case action: NewTrader => _saveTrader(action.trader)
+//    case action: ListTraders => _listTraders()
+//    case action: DeleteTrader => _deleteTrader(action.id)
+//    case action: UpdateTrader => _updateTrader(action.trader)
     case _ =>
   }
 
@@ -82,86 +108,86 @@ class PersistenceActor extends Actor with ActorLogging {
   val traderDao = new TraderDao
   val orderDao = new OrderDao
 
-  private def _saveStrategy(strategy: Strategy): Unit = {
-    val s = EStrategy(strategy.id, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
-    val s1 = strategyDao.insert(s)
-
-    if (strategy.portfolio != None) {
-      val t = strategy.portfolio.get
-      portfolioDao.insert(EPortfolio(None, t.cash, new Timestamp(t.date.getTime), s.id))
-    }
-
-    sender ! s1
-  }
-
-  private def _getStrategy(id: Int): Unit = {
-    val strategy = strategyDao.getById(id)
-    var s: Option[Strategy] = None
-    if(strategy.isDefined) {
-      val s1 = strategy.get
-
-      // 装载portfolio
-      val p = portfolioDao.getByStrategyId(id)
-      var port: Option[Portfolio] = None
-      if(p.isDefined) {
-        val pt = p.get
-        val p1 = new Portfolio(pt.cash, pt.date, None)
-        port = Some(p1)
-      }
-
-      s = Some(new Strategy(id, s1.name, s1.runMode, s1.status, Some(s1.lang), port ))
-    }
-    sender ! s
-  }
-
-  private def _updateStrategy(id: Int, strategy: Strategy): Unit = {
-    val s = EStrategy(id, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
-    val query = strategyDao.update(id, s)
-
-  }
-
-  private def _deleteStrategy(id: Int): Unit = {
-    strategyDao.delete(id)
-  }
-
-  private def _listStrategies(): Unit = {
-    log.debug("加载所有策略列表")
-    val strategyArr = new ArrayBuffer[Strategy]()
-    for(s <- strategyDao.list) {
-      val strategy = Strategy(s.id, s.name, s.runMode, s.status, Some(s.lang), None)
-      strategyArr += strategy
-    }
-
-    sender ! strategyArr.toArray
-  }
+//  private def _saveStrategy(strategy: Strategy): Unit = {
+//    val s = EStrategy(strategy.id, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
+//    val s1 = strategyDao.insert(s)
+//
+//    if (strategy.portfolio != None) {
+//      val t = strategy.portfolio.get
+//      portfolioDao.insert(EPortfolio(None, t.cash, new Timestamp(t.date.getTime), s.id))
+//    }
+//
+//    sender ! s1
+//  }
+//
+//  private def _getStrategy(id: Int): Unit = {
+//    val strategy = strategyDao.getById(id)
+//    var s: Option[Strategy] = None
+//    if(strategy.isDefined) {
+//      val s1 = strategy.get
+//
+//      // 装载portfolio
+//      val p = portfolioDao.getByStrategyId(id)
+//      var port: Option[Portfolio] = None
+//      if(p.isDefined) {
+//        val pt = p.get
+//        val p1 = new Portfolio(pt.cash, pt.date, None)
+//        port = Some(p1)
+//      }
+//
+//      s = Some(new Strategy(id, s1.name, s1.runMode, s1.status, Some(s1.lang), port ))
+//    }
+//    sender ! s
+//  }
+//
+//  private def _updateStrategy(id: Int, strategy: Strategy): Unit = {
+//    val s = EStrategy(id, strategy.name, strategy.runMode, strategy.status, strategy.lang.getOrElse("C#"))
+//    val query = strategyDao.update(id, s)
+//
+//  }
+//
+//  private def _deleteStrategy(id: Int): Unit = {
+//    strategyDao.delete(id)
+//  }
+//
+//  private def _listStrategies(): Unit = {
+//    log.debug("加载所有策略列表")
+//    val strategyArr = new ArrayBuffer[Strategy]()
+//    for(s <- strategyDao.list) {
+//      val strategy = Strategy(s.id, s.name, s.runMode, s.status, Some(s.lang), None)
+//      strategyArr += strategy
+//    }
+//
+//    sender ! strategyArr.toArray
+//  }
 
   // Trader
-  private def _saveTrader(trader: TradeAccount): Unit = {
-    val t = ETrader(None, trader.name, trader.brokerType, trader.brokerName, trader.brokerCode, trader.brokerAccount, trader.brokerPassword, trader.brokerUri, trader.brokerServicePwd, trader.status)
-    val s1 = traderDao.insert(t)
-
-    val t1 = TradeAccount(s1.id, s1.name, s1.brokerType, s1.brokerName, s1.brokerCode, s1.brokerAccount, s1.brokerPassword, s1.brokerUri, s1.brokerServicePwd, s1.status)
-    sender ! t1
-  }
-
-  private def  _listTraders(): Unit = {
-    val traderArr = new ArrayBuffer[TradeAccount]()
-    for(s <- traderDao.list) {
-      val trader = TradeAccount(s.id, s.name, s.brokerType, s.brokerName, s.brokerCode, s.brokerAccount, s.brokerPassword, s.brokerUri, s.brokerServicePwd, s.status)
-      traderArr += trader
-    }
-
-    sender ! traderArr.toArray
-  }
-
-  private def _updateTrader(trader: TradeAccount): Unit = {
-    val s = ETrader(trader.id, trader.name,trader.brokerType, trader.brokerName, trader.brokerCode, trader.brokerAccount, trader.brokerPassword, trader.brokerUri, trader.brokerServicePwd, trader.status)
-    val query = traderDao.update(s.id.get, s)
-  }
-
-  private def _deleteTrader(id: Int): Unit = {
-    traderDao.delete(id)
-  }
+//  private def _saveTrader(trader: TradeAccount): Unit = {
+//    val t = ETrader(None, trader.name, trader.brokerType, trader.brokerName, trader.brokerCode, trader.brokerAccount, trader.brokerPassword, trader.brokerUri, trader.brokerServicePwd, trader.status)
+//    val s1 = traderDao.insert(t)
+//
+//    val t1 = TradeAccount(s1.id, s1.name, s1.brokerType, s1.brokerName, s1.brokerCode, s1.brokerAccount, s1.brokerPassword, s1.brokerUri, s1.brokerServicePwd, s1.status)
+//    sender ! t1
+//  }
+//
+//  private def  _listTraders(): Unit = {
+//    val traderArr = new ArrayBuffer[TradeAccount]()
+//    for(s <- traderDao.list) {
+//      val trader = TradeAccount(s.id, s.name, s.brokerType, s.brokerName, s.brokerCode, s.brokerAccount, s.brokerPassword, s.brokerUri, s.brokerServicePwd, s.status)
+//      traderArr += trader
+//    }
+//
+//    sender ! traderArr.toArray
+//  }
+//
+//  private def _updateTrader(trader: TradeAccount): Unit = {
+//    val s = ETrader(trader.id, trader.name,trader.brokerType, trader.brokerName, trader.brokerCode, trader.brokerAccount, trader.brokerPassword, trader.brokerUri, trader.brokerServicePwd, trader.status)
+//    val query = traderDao.update(s.id.get, s)
+//  }
+//
+//  private def _deleteTrader(id: Int): Unit = {
+//    traderDao.delete(id)
+//  }
 
   // Order
   private def _saveOrder(order: Order): Unit = {
@@ -178,4 +204,5 @@ class PersistenceActor extends Actor with ActorLogging {
     orderDao.insert(o)
     orderDao.delete(order.orderNo)
   }
+
 }

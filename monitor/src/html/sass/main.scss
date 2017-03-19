@@ -1,0 +1,112 @@
+// @import "compass/reset";
+// @import "compass/css3";
+@import "bootstrap";
+@import "mixin";
+@import "modal_dialog";
+
+body {
+    color: #707478;
+    background-color: #D9E0E7;
+    font: 12px/23px "微软雅黑";
+}
+
+#header-view {
+    #header {
+        position: fixed;
+        min-height: 50px;
+        top: 0px;
+        right: 0px;
+        left: 0px;
+
+        background-color: #fff;
+        z-index: 9999;
+    }
+}
+
+#sidebar-view {
+    #sidebar {
+        padding-top: 54px;
+        width: 220px;
+        position: fixed;
+        top: 0px;
+        bottom: 0px;
+
+        color:#A8ACB2;
+        background-color: #2D353C;
+    }
+}
+
+#content-view {
+    #content {
+        position: relative;
+        margin-top: 54px;
+        margin-left:220px;
+        padding-left: 10px;
+
+        .content-header {
+
+        }
+        .content {
+            @include make-row();
+            .left-list {
+                @include make-md-column(2);
+                ul {
+                    li {
+
+                    }
+                }
+            }
+            .main {
+                @include make-md-column(10);
+
+            }
+            iframe {
+                width: 700px;
+                height: 100%;
+            }
+        }
+    }
+}
+
+.strategy-box {
+    padding: 5px !important;
+    @include make-md-column(4);
+    div.box {
+        @include box();
+        .heading {
+            @include box-heading();
+            .title {
+                line-height: 20px;
+                font-size: 12px;
+                margin-top: 0px;
+                margin-bottom: 0px;
+            }
+        }
+
+        .strategy_status {
+            @include make-md-column(4);
+            a {
+                background-color: #FF7373;
+                .p-f {
+                    font-size: 12px;
+                    font-weight: 700;
+                    text-align: left;
+                    position: relative;
+                    margin: 0px 0px 10px;
+                }
+            }
+        }
+
+        .risk_state {
+
+        }
+    }
+
+}
+
+span a {
+    color: #FFF;
+    font-size: 12px;
+}
+
+

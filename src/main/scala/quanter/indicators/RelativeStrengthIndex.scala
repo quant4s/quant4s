@@ -68,4 +68,5 @@ class RelativeStrengthIndex(pname: String, pperiod: Int, pmovingAverageType: Mov
 
   override def toJson: String = "{\"symbol\":%s,\"rsi\":%f, \"time\":%d}"
     .format(symbol, current.value, time.getTime())
+
 }

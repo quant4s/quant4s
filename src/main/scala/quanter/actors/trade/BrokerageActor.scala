@@ -1,17 +1,19 @@
 package quanter.actors.trade
 
 import akka.actor.{ActorLogging, FSM, Props}
-import quanter.actors._
+import quanter.actors.{ConnectedSuccess, _}
 import quanter.actors.trade.BrokerageActor._
 import quanter.actors.trade.TradeAccountEvent.TradeAccountEvent
 import quanter.interfaces.TBrokerage
-import quanter.rest.TradeAccount
+import quanter.rest.{Order, TradeAccount}
+
+import scala.collection.mutable.ArrayBuffer
 
 
 /**
   *
   */
-abstract class BrokerageActor(/*brokerage: TBrokerage*/) extends FSM[BrokerageState, BrokerageData] with ActorLogging{
+abstract class BrokerageActor(/*brokerage: TBrokerage*/) extends FSM[BrokerageState, BrokerageData] with Trader with ActorLogging{
   var accountInfo: TradeAccount = null
   var connectNum = 0
 
@@ -29,12 +31,12 @@ abstract class BrokerageActor(/*brokerage: TBrokerage*/) extends FSM[BrokerageSt
       stay
     }
     case Event(Connect(), _)=> {
-      log.debug("开始连接交易接口")
+      log.debug("[when(Initialized) Event(Connect(), _)) Event]开始连接交易接口")
       connect
       stay
     }
     case Event(ConnectedSuccess(), _) => {
-      log.debug("连接交易接口成功，准备登录")
+      log.debug("开始登录")
       login()
       goto(Connected)
     }
@@ -42,9 +44,9 @@ abstract class BrokerageActor(/*brokerage: TBrokerage*/) extends FSM[BrokerageSt
   when(Connected) {
     case Event(LoginSuccess(), _) =>
       log.debug("登录交易接口成功")
-      goto(Logined)
+      goto(LoggedIn)
   }
-  when(Logined) {
+  when(LoggedIn) {
     case Event(KeepAlive(), _) => {
       _refresh()
       stay()
@@ -55,6 +57,7 @@ abstract class BrokerageActor(/*brokerage: TBrokerage*/) extends FSM[BrokerageSt
       goto(Disconnected)
     }
     case Event(o: Order, _) => {
+      log.debug("接受到委托单")
       _handleOrder(o)
       stay()
     }
@@ -66,8 +69,34 @@ abstract class BrokerageActor(/*brokerage: TBrokerage*/) extends FSM[BrokerageSt
       goto(Connected)
     }
   }
+  whenUnhandled {
+    case Event(o:Order, _) => {
+      log.warning("未登录时，有委托单需要处理，暂存等待连接时处理")
+      pendOrder(o)
+      stay()
+    }
+  }
+  onTransition {
+    case Connected -> LoggedIn => // 当状态转移到登录以后， 自动处理未处理的订单
+      log.debug("登录成功，自动执行")
+      restoreOrders()
+  }
 
-  private def _handleOrder(order: Order): Unit = {
+  private var _pendingOrders = ArrayBuffer[Order]()
+  private def pendOrder(o: Order): Unit = {
+    _pendingOrders += o
+  }
+
+  private def restoreOrders(): Unit = {
+    _pendingOrders.foreach( o => {
+      log.warning("自动处理未处理的订单")
+      self ! o
+    })
+
+  }
+
+  private def _handleOrder(o: Order): Unit = {
+    order(o)
 //    if(order.side == 0) {
 //      //brokerage.buy(order.symbol, order.price, order.quantity)
 //    } else if(order.side == 1) {
@@ -79,9 +108,9 @@ abstract class BrokerageActor(/*brokerage: TBrokerage*/) extends FSM[BrokerageSt
     //brokerage.keep
   }
 
-  protected def connect(): Unit = {}
+  protected def connect(): Unit = self ! new ConnectedSuccess()
 
-  protected def login(): Unit = {}
+  protected def login(): Unit = self ! new LoginSuccess()
 
   protected def logout(): Unit = {}
 
@@ -129,7 +158,7 @@ object BrokerageActor {
   case object Initialized extends BrokerageState
   case object Connected extends BrokerageState
   case object Disconnected extends BrokerageState
-  case object Logined extends BrokerageState
+  case object LoggedIn extends BrokerageState
 
   case class BrokerageData()
 }

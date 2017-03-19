@@ -1,0 +1,88 @@
+<div id="content" class="content animated fadeIn" ng-controller="StrategyDetailCtrl">
+    <ol class="breadcrumb pull-right">
+        <li ng-if="!show_realtrade()"><a ui-sref="app.simtrade.list">模拟交易</a></li>
+        <li ng-if="show_realtrade()"><a ui-sref="app.realtrade.list">实盘交易</a></li>
+        <li class="active">{{ row.name }}</li>
+    </ol>
+    <div class="row p-l-10"><h1 class="page-header pull-left">{{ row.name }}</h1><span class="pull-left p-5">策略ID: {{row.strategy_id}}<a
+            clipboard="" text="row.strategy_id" on-copied="on_copied()">[复制]</a></span></div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="panel-1 b-color">
+                <div class="panel-heading">
+                    <div class="btn-group pull-right" data-toggle="buttons"><label class="btn btn-success btn-xs"
+                                                                                   ng-class="{'active': current_chart=='today'}"
+                                                                                   ng-click="change_chart('today')"><input
+                            type="radio" name="options"> 日内权益</label> <label class="btn btn-success btn-xs"
+                                                                             ng-class="{'active': current_chart=='history'}"
+                                                                             ng-click="change_chart('history')"><input
+                            type="radio" name="options"> 历史权益</label><label class="btn btn-success btn-xs b-0"
+                                                                            ng-click="sort_indicator()"><abbr
+                            title="自定义指标显示顺序" class="plain"><i class="fa fa-exchange fa-rotate-90"></i></abbr></label>
+                    </div>
+                    <h4 class="panel-title">权益曲线</h4></div>
+                <div class="panel-footer panel-height">
+                    <div class="row">
+                        <div class="col-md-8" ng-switch="current_chart">
+                            <div class="anime-i-fadeIn" ng-switch-when="today" flotchart="" style="height:230px"
+                                 options="options" data="row.trends"></div>
+                            <div class="anime-i-fadeIn" ng-switch-when="history">
+                                <div ng-include="" src="'views2/strategy/strategy.detail.perf.html'"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 panel-height3">
+                            <div ng-include="" src="'views2/strategy/strategy.detail.indicators.html'"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="input-group" ng-controller="SymbolCtrl">
+                <div class="input-group-addon bg-green-lighter text-white"><i class="fa fa-search"></i></div>
+                <input type="text" placeholder="代码/名称/拼音缩写" class="form-control b-t-0 b-b-0" id="symbol-input"
+                       typeahead-on-select="modal.selectSymbol($item)">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-success" ng-click="handlePlaceOrderClick()">下单</button>
+                </div>
+            </div>
+            <div class="panel-1 b-color m-t-10">
+                <div class="panel-heading"><h4 class="panel-title">未完成委托</h4></div>
+                <div class="panel-footer panel-height2" ng-include=""
+                     src="'views2/strategy/strategy.detail.unfinishedorders.html'"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row m-t-15">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs b-color a-color" >
+                <li ng-class="{'active': current_tab == 'positions'}"><a ng-click="change_tab('positions')">当前持仓</a>
+                </li>
+                <li ng-class="{'active': current_tab == 'transacts'}"><a ng-click="change_tab('transacts')">最近成交</a>
+                </li>
+                <li ng-class="{'active': current_tab == 'orders'}"><a ng-click="change_tab('orders')">最近委托</a></li>
+                <li ng-class="{'active': current_tab == 'execrpts'}"><a ng-click="change_tab('execrpts')">最近回报</a></li>
+                <li ng-class="{'active': current_tab == 'logs'}"><a ng-click="change_tab('logs')">风控日志</a>
+                </li>
+                <li class="pull-right" ng-if="current_tab == 'positions'"><a ng-click="position_io()">持仓调整</a></li>
+            </ul>
+            <div class="tab-content" ng-switch="current_tab">
+                <div class="tab-pane active anime-i-fadeIn" ng-switch-when="positions">
+                    <div ng-include="" src="'views2/strategy/strategy.detail.positions.html'"></div>
+                </div>
+                <div class="tab-pane active anime-i-fadeIn" ng-switch-when="transacts">
+                    <div ng-include="" src="'views2/strategy/strategy.detail.transacts.html'"></div>
+                </div>
+                <div class="tab-pane active anime-i-fadeIn" ng-switch-when="orders">
+                    <div ng-include="" src="'views2/strategy/strategy.detail.orders.html'"></div>
+                </div>
+                <div class="tab-pane active anime-i-fadeIn" ng-switch-when="execrpts">
+                    <div ng-include="" src="'views2/strategy/strategy.detail.execrpts.html'"></div>
+                </div>
+                <div class="tab-pane active anime-i-fadeIn" ng-switch-when="logs">
+                    <div ng-include="" src="'views2/risk/risk.log.html'"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
