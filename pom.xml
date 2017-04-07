@@ -15,8 +15,8 @@
         <module>mq</module>
         <module>dist</module>
         <module>domain</module>
-        <module>monitor</module>
         <module>indicators</module>
+        <module>deeplearn</module>
     </modules>
 
     <properties>
@@ -94,12 +94,27 @@
                 <artifactId>commons-math3</artifactId>
                 <version>3.6.1</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka_${scala.compat.version}</artifactId>
+                <version>0.10.2.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sclasen</groupId>
+                <artifactId>akka-kafka_${scala.compat.version}</artifactId>
+                <version>0.2.1</version>
+            </dependency>
 
             <!-- akka -->
             <dependency>
                 <groupId>com.typesafe.akka</groupId>
                 <artifactId>akka-actor_${scala.compat.version}</artifactId>
                 <version>${akka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe.akka</groupId>
+                <artifactId>akka-stream-kafka_${scala.compat.version}</artifactId>
+                <version>0.14</version>
             </dependency>
 
             <!-- message queue -->
@@ -222,15 +237,11 @@
                <groupId>com.hundsun</groupId>
                <artifactId>mcsdk-ext</artifactId>
                <version>1.1.4</version>
-               <scope>system</scope>
-               <systemPath>${project.basedir}/lib/mcsdk-ext-1.1.4.jar</systemPath>
            </dependency>
            <dependency>
                <groupId>com.hundsun</groupId>
                <artifactId>t2sdk-ext</artifactId>
                <version>1.1.15</version>
-               <scope>system</scope>
-               <systemPath>${project.basedir}/lib/t2sdk-ext-1.1.15.jar</systemPath>
            </dependency>
            -->
 

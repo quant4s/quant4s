@@ -3,14 +3,7 @@
   */
 package org.quant4s.rest
 
-import akka.actor.{ActorLogging, ActorSystem}
-import org.json4s.DefaultFormats
-import org.json4s.jackson.JsonMethods._
-import quanter.actors.persistence.PersistenceActor
-import quanter.actors.strategy.StrategiesManagerActor
-import quanter.actors.trade.TradeRouteActor
-import quanter.interfaces.TLogging
-import spray.http.{HttpEntity, MediaTypes}
+import akka.actor.ActorSystem
 
 /**
   *

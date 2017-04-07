@@ -3,8 +3,6 @@
   */
 package org.quant4s.rest
 
-import org.json4s.DefaultFormats
-import org.json4s.jackson.JsonMethods._
 import spray.http.{HttpEntity, MediaTypes}
 
 /**

@@ -3,11 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/deeplearn/deeplearn.iml" filepath="$PROJECT_DIR$/deeplearn/deeplearn.iml" />
       <module fileurl="file://$PROJECT_DIR$/dist/dist.iml" filepath="$PROJECT_DIR$/dist/dist.iml" />
       <module fileurl="file://$PROJECT_DIR$/domain/domain.iml" filepath="$PROJECT_DIR$/domain/domain.iml" />
       <module fileurl="file://$PROJECT_DIR$/engine/engine.iml" filepath="$PROJECT_DIR$/engine/engine.iml" />
       <module fileurl="file://$PROJECT_DIR$/indicators/indicators.iml" filepath="$PROJECT_DIR$/indicators/indicators.iml" />
-      <module fileurl="file://$PROJECT_DIR$/monitor/monitor.iml" filepath="$PROJECT_DIR$/monitor/monitor.iml" />
       <module fileurl="file://$PROJECT_DIR$/mq/mq.iml" filepath="$PROJECT_DIR$/mq/mq.iml" />
       <module fileurl="file://$PROJECT_DIR$/quant4s.iml" filepath="$PROJECT_DIR$/quant4s.iml" />
       <module fileurl="file://$PROJECT_DIR$/trader/trader.iml" filepath="$PROJECT_DIR$/trader/trader.iml" />

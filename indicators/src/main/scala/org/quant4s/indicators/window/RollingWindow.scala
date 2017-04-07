@@ -12,7 +12,7 @@ class RollingWindow[T](private val capacity: Int) extends ReadOnlyWindow[T] with
   Asserts.assert(capacity >= 1)
 
   private var _tail = 0
-  private var _mostRecentlyRemoved: T = null.asInstanceOf[T]
+  private var _mostRecentlyRemoved: T = _
   private var _samples: Int = 0
   val _items = new Array[Any](capacity)
   def add(item: T) = {

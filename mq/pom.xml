@@ -35,7 +35,23 @@
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.newmotion</groupId>
+            <artifactId>akka-rabbitmq_${scala.compat.version}</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_${scala.compat.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-stream-kafka_${scala.compat.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sclasen</groupId>
+            <artifactId>akka-kafka_${scala.compat.version}</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

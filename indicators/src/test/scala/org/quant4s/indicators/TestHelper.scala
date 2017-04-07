@@ -6,9 +6,9 @@ import java.util.{Calendar, Date}
 
 import com.github.tototoshi.csv.CSVReader
 import org.scalatest.Matchers
-import quanter.data.BaseData
+import org.quant4s.data.BaseData
 import org.quant4s.data.market.TradeBar
-import quanter.indicators.IndicatorExtensions._
+import org.quant4s.indicators.IndicatorExtensions._
 
 import scala.collection.mutable.ArrayBuffer
 

@@ -3,6 +3,7 @@
   */
 package org.quant4s.actors.trade.xSpeedSec
 
+import akka.actor.Props
 import org.quant4s.actors.trade.BrokerageActor
 import org.quant4s.rest.{CancelOrder, Order}
 
@@ -21,4 +22,10 @@ class XSpeedSecBrokerageActor extends BrokerageActor{
   override def queryPosition(symbol: String): Unit = ???
 
   override def queryUnfinishOrders(): Unit = ???
+}
+
+object XSpeedSecBrokerageActor {
+  def props() = {
+    Props(classOf[XSpeedSecBrokerageActor])
+  }
 }

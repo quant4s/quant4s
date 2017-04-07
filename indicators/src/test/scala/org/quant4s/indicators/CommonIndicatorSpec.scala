@@ -4,7 +4,7 @@ import java.io.File
 
 import com.github.tototoshi.csv.CSVReader
 import org.quant4s.QuanterUnitSpec
-import quanter.data.BaseData
+import org.quant4s.data.BaseData
 import org.quant4s.data.market.TradeBar
 
 import scala.collection.mutable.ArrayBuffer
