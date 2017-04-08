@@ -6,8 +6,8 @@ package org.quant4s.indicators
 import java.util.Date
 
 import org.quant4s.QuanterUnitSpec
-import quanter.indicators.IndicatorExtensions._
-import quanter.CommonExtensions._
+import org.quant4s.indicators.IndicatorExtensions._
+import org.quant4s.CommonExtensions._
 /**
   *
   */

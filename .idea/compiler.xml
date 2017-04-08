@@ -7,27 +7,30 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="common" />
-        <module name="deeplearn" />
         <module name="dist" />
         <module name="domain" />
         <module name="engine" />
         <module name="indicators" />
+        <module name="mds" />
         <module name="mq" />
+        <module name="tds" />
         <module name="trader" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="common" target="1.7" />
-      <module name="deeplearn" target="1.6" />
-      <module name="dist" target="1.6" />
+      <module name="deeplearn" target="1.7" />
+      <module name="dist" target="1.7" />
       <module name="domain" target="1.7" />
-      <module name="engine" target="1.6" />
+      <module name="engine" target="1.7" />
       <module name="indicators" target="1.7" />
       <module name="jlts" target="1.7" />
+      <module name="mds" target="1.7" />
       <module name="monitor" target="1.7" />
-      <module name="mq" target="1.6" />
+      <module name="mq" target="1.7" />
       <module name="persistence" target="1.7" />
       <module name="quant4s" target="1.7" />
+      <module name="tds" target="1.6" />
       <module name="trader" target="1.6" />
     </bytecodeTargetLevel>
   </component>

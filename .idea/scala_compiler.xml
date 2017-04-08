@@ -2,6 +2,18 @@
 <project version="4">
   <component name="ScalaCompilerConfiguration">
     <profile name="Maven 1" modules="jlts,quant4s" />
+    <profile name="Maven 10" modules="mds">
+      <parameters>
+        <parameter value="-dependencyfile" />
+        <parameter value="C:\Users\joe\projects\IdeaProjects\quant4s\mds\target/.scala_dependencies" />
+      </parameters>
+    </profile>
+    <profile name="Maven 11" modules="tds">
+      <parameters>
+        <parameter value="-dependencyfile" />
+        <parameter value="C:\Users\joe\projects\IdeaProjects\quant4s\tds\target/.scala_dependencies" />
+      </parameters>
+    </profile>
     <profile name="Maven 2" modules="common">
       <parameters>
         <parameter value="-dependencyfile" />

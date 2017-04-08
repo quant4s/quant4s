@@ -6,8 +6,8 @@ package org.quant4s.indicators
 import java.util.Date
 
 import org.quant4s.QuanterUnitSpec
-import quanter.indicators.window.{ExponentialMovingAverage, LinearWeightedMovingAverage}
-import quanter.CommonExtensions._
+import org.quant4s.indicators.window.{ExponentialMovingAverage, LinearWeightedMovingAverage}
+import org.quant4s.CommonExtensions._
 /**
   *
   */

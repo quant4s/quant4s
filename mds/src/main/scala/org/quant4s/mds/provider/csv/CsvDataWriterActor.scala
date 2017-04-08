@@ -1,7 +1,7 @@
 /**
   *
   */
-package org.quant4s.actors.provider.csv
+package org.quant4s.mds.provider.csv
 
 import akka.actor.Actor.Receive
 import akka.actor.{Actor, ActorLogging, Props}

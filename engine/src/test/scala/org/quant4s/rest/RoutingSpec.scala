@@ -3,8 +3,12 @@
   */
 package org.quant4s.rest
 
+import org.quant4s.actors.persistence.PersistenceActor
+import org.quant4s.actors.strategy.StrategiesManagerActor
+import org.quant4s.actors.trade.TradeRouteActor
 import org.scalatest.{FreeSpec, Matchers}
 import spray.routing.Directives
+import spray.testkit.ScalatestRouteTest
 
 abstract class RoutingSpec extends FreeSpec with Matchers with Directives with ScalatestRouteTest {
 

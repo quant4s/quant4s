@@ -1,8 +1,8 @@
 package org.quant4s.indicators
 
 import org.quant4s.QuanterUnitSpec
-import quanter.indicators.window.SimpleMovingAverage
-import quanter.indicators.IndicatorExtensions._
+import org.quant4s.indicators.window.SimpleMovingAverage
+import org.quant4s.indicators.IndicatorExtensions._
 
 /**
   * Created by joe on 16-3-9.

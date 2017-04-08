@@ -6,9 +6,9 @@ package org.quant4s.indicators
 import java.util.Date
 
 import org.quant4s.QuanterUnitSpec
-import quanter.indicators.window.ExponentialMovingAverage
-import quanter.CommonExtensions._
-import quanter.indicators.IndicatorExtensions._
+import org.quant4s.indicators.window.ExponentialMovingAverage
+import org.quant4s.CommonExtensions._
+import org.quant4s.indicators.IndicatorExtensions._
 
 /**
   *

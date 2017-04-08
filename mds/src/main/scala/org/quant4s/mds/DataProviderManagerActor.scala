@@ -1,12 +1,13 @@
 /**
   *
   */
-package org.quant4s.actors.provider
+package org.quant4s.mds
 
 import java.util.HashMap
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import org.quant4s.actors.AskListenedSymbol
+import org.quant4s.actors.provider.ConnectDataProvider
 import org.quant4s.config.Settings
 
 import scala.collection.mutable

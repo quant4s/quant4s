@@ -1,7 +1,7 @@
 /**
   *
   */
-package org.quant4s.actors.provider.csv
+package org.quant4s.mds.provider.csv
 
 import java.io.File
 
@@ -10,10 +10,9 @@ import akka.actor.ActorSelection
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import com.github.tototoshi.csv.CSVReader
-import org.quant4s.actors.AskListenedSymbol
-import org.quant4s.actors.provider.{DataProviderActor, Execute, QuerySnapData}
 import org.quant4s.data.market.TradeBar
 import org.quant4s.CommonExtensions._
+import org.quant4s.mds.DataProviderActor
 
 import scala.collection.mutable
 

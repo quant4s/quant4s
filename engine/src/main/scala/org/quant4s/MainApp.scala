@@ -9,14 +9,12 @@ import org.quant4s.rest.{FlashServer, HttpServer, Strategy, TradeAccount}
 import org.quant4s.actors.{NewStrategy, NewTrader}
 import org.quant4s.actors.data.DataManagerActor
 import org.quant4s.actors.persistence.{AccountPersistorActor, OrderPersistorActor, PersistenceActor, StrategyPersistorActor}
-import org.quant4s.actors.provider.DataProviderManagerActor
-import org.quant4s.actors.provider.sina.SinaL1Actor
 import org.quant4s.actors.scheduling.QuartzActor
-import org.quant4s.actors.securities.SecuritiesManagerActor
 import org.quant4s.actors.securitySelection.SIManagerActor
 import org.quant4s.actors.strategy.StrategiesManagerActor
 import org.quant4s.actors.trade.{InitTradeRoute, TradeRouteActor}
 import org.quant4s.actors.zeromq.{ZeroMQReqRspServerActor, ZeroMQSubPubServerActor}
+import org.quant4s.mds.{DataProviderManagerActor, SecuritiesManagerActor}
 import spray.can.Http
 
 /**

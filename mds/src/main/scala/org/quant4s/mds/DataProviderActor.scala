@@ -1,13 +1,13 @@
 /**
   *
   */
-package org.quant4s.actors.provider
+package org.quant4s.mds
 
-import akka.actor.{Actor, ActorLogging, ActorSelection, FSM}
-import org.quant4s.actors.securities.SecuritiesManagerActor
-import org.quant4s.securities.Security
+import akka.actor.{ActorLogging, ActorSelection, FSM}
 import org.quant4s.actors.AskListenedSymbol
-import org.quant4s.actors.provider.DataProviderActor._
+import org.quant4s.actors.provider.{ConnectDataProvider, ConnectedSuccess, DisConnectedSuccess, LoginSuccess}
+import org.quant4s.mds.DataProviderActor._
+import org.quant4s.securities.Security
 // import quanter.actors.scheduling.ExecuteJob
 
 import scala.collection.mutable

@@ -3,9 +3,9 @@ package org.quant4s.indicators
 import java.util.Date
 
 import org.quant4s.QuanterUnitSpec
-import quanter.indicators.window.Maximum
-import quanter.indicators.IndicatorExtensions._
-import quanter.CommonExtensions._
+import org.quant4s.indicators.window.Maximum
+import org.quant4s.indicators.IndicatorExtensions._
+import org.quant4s.CommonExtensions._
 
 /**
   * Created by joe on 16-3-12.

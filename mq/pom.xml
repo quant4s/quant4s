@@ -18,13 +18,6 @@
         </license>
     </licenses>
 
-    <properties>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <encoding>UTF-8</encoding>
-        <scala.version>2.11.5</scala.version>
-        <scala.compat.version>2.11</scala.compat.version>
-    </properties>
 
     <dependencies>
         <dependency>

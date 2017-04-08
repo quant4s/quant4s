@@ -20,12 +20,12 @@ class MarketDataProducer extends Actor{
   private val producer = new Producer[String, String](this.config)
 
   def send(): Unit = {
-    val record = org.apache.kafka.clients.producer.ProducerRecord
-    val message = new KeyedMessage[String, String]("MD.TICK", "csv")
-    producer.send(message)
+//    val recenord = org.apache.kafka.clients.producer.ProducerRecord
+    //    val message = new KeyedMessage[String, String]("MD.TICK", "csv")
+    //    producer.sd(message)
   }
 
   override def receive: Receive = {
-
+case _ =>
   }
 }

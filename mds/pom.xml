@@ -6,7 +6,7 @@
         <version>0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>deep-learn</artifactId>
+    <artifactId>mds</artifactId>
     <name>${project.artifactId}</name>
     <description>My wonderfull scala app</description>
     <inceptionYear>2015</inceptionYear>
@@ -18,19 +18,14 @@
         </license>
     </licenses>
 
-    <properties>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <encoding>UTF-8</encoding>
-        <scala.version>2.11.5</scala.version>
-        <scala.compat.version>2.11</scala.compat.version>
-    </properties>
-
     <dependencies>
+        <dependency>
+            <groupId>org.quant4s</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
         </dependency>
 
         <!-- Test -->
@@ -71,7 +66,6 @@
                         </goals>
                         <configuration>
                             <args>
-                                <arg>-make:transitive</arg>
                                 <arg>-dependencyfile</arg>
                                 <arg>${project.build.directory}/.scala_dependencies</arg>
                             </args>

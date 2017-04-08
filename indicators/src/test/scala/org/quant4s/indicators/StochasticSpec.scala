@@ -6,7 +6,7 @@ package org.quant4s.indicators
 import java.util.Date
 
 import org.quant4s.QuanterUnitSpec
-import quanter.CommonExtensions._
+import org.quant4s.CommonExtensions._
 import org.quant4s.data.market.TradeBar
 
 /**

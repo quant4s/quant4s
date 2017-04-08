@@ -1,15 +1,14 @@
 /**
   *
   */
-package org.quant4s.actors.provider.redis
+package org.quant4s.mds.provider.redis
 
 import java.net.InetSocketAddress
 
 import akka.actor.ActorSelection
-import org.quant4s.actors.securities.SecuritiesManagerActor
 import org.quant4s.securities.Security
 import org.quant4s.actors.AskListenedSymbol
-import org.quant4s.actors.provider.DataProviderActor
+import org.quant4s.mds.{DataProviderActor, SecuritiesManagerActor}
 import redis.actors.RedisSubscriberActor
 import redis.api.pubsub.{Message, PMessage}
 

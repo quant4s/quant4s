@@ -1,4 +1,4 @@
-package org.quant4s.actors.provider.sina
+package org.quant4s.mds.provider.sina
 
 import java.io.{BufferedReader, InputStreamReader}
 import java.util.Date
@@ -16,6 +16,7 @@ import org.quant4s.actors.provider._
 import org.quant4s.data.market.SnapData
 import org.quant4s.CommonExtensions._
 import org.quant4s.actors.scheduling.ExecuteJob
+import org.quant4s.mds.DataProviderActor
 
 /**
   *

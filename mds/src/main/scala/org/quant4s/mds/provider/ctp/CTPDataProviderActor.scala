@@ -11,6 +11,7 @@ import org.quant4s.actors.provider._
 import org.quant4s.actors.trade.LoginResult
 import org.quant4s.actors.trade.TradeAccountEvent.{Disconnected => _}
 import org.quant4s.data.market.TradeBar
+import org.quant4s.mds.DataProviderActor
 
 /**
   *

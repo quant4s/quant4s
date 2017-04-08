@@ -46,6 +46,7 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/deeplearn/pom.xml" />
         <option value="$PROJECT_DIR$/dist/pom.xml" />
         <option value="$PROJECT_DIR$/persistence/pom.xml" />
       </set>

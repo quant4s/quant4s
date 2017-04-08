@@ -10,13 +10,13 @@
     <version>0.1</version>
     <modules>
         <module>common</module>
-        <module>trader</module>
+        <module>tds</module>
         <module>engine</module>
         <module>mq</module>
         <module>dist</module>
         <module>domain</module>
         <module>indicators</module>
-        <module>deeplearn</module>
+        <module>mds</module>
     </modules>
 
     <properties>
@@ -68,12 +68,17 @@
             </dependency>
             <dependency>
                 <groupId>org.quant4s</groupId>
+                <artifactId>mds</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.quant4s</groupId>
                 <artifactId>indicators</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.quant4s</groupId>
-                <artifactId>trader</artifactId>
+                <artifactId>tds</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -132,6 +137,11 @@
                 <groupId>com.thenewmotion</groupId>
                 <artifactId>akka-rabbitmq_${scala.compat.version}</artifactId>
                 <version>3.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sclasen</groupId>
+                <artifactId>akka-kafka_${scala.compat.version}</artifactId>
+                <version>0.2.1</version>
             </dependency>
 
 
@@ -199,12 +209,24 @@
 
             <!-- 测试 -->
             <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.specs2</groupId>
+                <artifactId>specs2-core_${scala.compat.version}</artifactId>
+                <version>2.4.16</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>io.spray</groupId>
                 <artifactId>spray-testkit_${scala.compat.version}</artifactId>
                 <version>${spray.version}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
+             <dependency>
                 <groupId>org.scalatest</groupId>
                 <artifactId>scalatest_${scala.compat.version}</artifactId>
                 <version>${scalatest.version}</version>

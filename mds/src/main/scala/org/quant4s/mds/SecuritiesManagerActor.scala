@@ -1,7 +1,7 @@
-package org.quant4s.actors.securities
+package org.quant4s.mds
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import org.quant4s.actors.provider.csv.CsvDataWriterActor
+import org.quant4s.mds.provider.csv.CsvDataWriterActor
 import org.quant4s.securities.{Security, SecurityManager}
 
 import scala.collection.mutable

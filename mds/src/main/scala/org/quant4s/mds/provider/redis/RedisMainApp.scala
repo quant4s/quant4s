@@ -1,7 +1,7 @@
 /**
   *
   */
-package org.quant4s.actors.provider.redis
+package org.quant4s.mds.provider.redis
 
 import java.net.InetSocketAddress
 
