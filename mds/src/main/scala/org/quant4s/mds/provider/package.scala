@@ -1,4 +1,4 @@
-package org.quant4s.actors
+package org.quant4s.mds
 
 /**
   *

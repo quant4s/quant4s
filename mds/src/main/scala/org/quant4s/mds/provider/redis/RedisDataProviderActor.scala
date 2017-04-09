@@ -8,7 +8,7 @@ import java.net.InetSocketAddress
 import akka.actor.ActorSelection
 import org.quant4s.securities.Security
 import org.quant4s.actors.AskListenedSymbol
-import org.quant4s.mds.{DataProviderActor, SecuritiesManagerActor}
+import org.quant4s.mds.SecuritiesManagerActor
 import redis.actors.RedisSubscriberActor
 import redis.api.pubsub.{Message, PMessage}
 

@@ -1,14 +1,15 @@
 /**
   *
   */
-package org.quant4s.mds
+package org.quant4s.mds.provider
 
 import akka.actor.{ActorLogging, ActorSelection, FSM}
 import org.quant4s.actors.AskListenedSymbol
-import org.quant4s.actors.provider.{ConnectDataProvider, ConnectedSuccess, DisConnectedSuccess, LoginSuccess}
-import org.quant4s.mds.DataProviderActor._
+import org.quant4s.actors.scheduling.ExecuteJob
+import org.quant4s.mds.provider.{ConnectDataProvider, ConnectedSuccess, DisConnectedSuccess, LoginSuccess}
+import org.quant4s.mds.SecuritiesManagerActor
+import org.quant4s.mds.provider.DataProviderActor._
 import org.quant4s.securities.Security
-// import quanter.actors.scheduling.ExecuteJob
 
 import scala.collection.mutable
 
@@ -47,9 +48,9 @@ trait DataProviderActor extends FSM[DataProviderState, DataProviderData] with Ac
       goto(Logined)
   }
   when(Logined) {
-//    case Event(job: ExecuteJob, _) =>   // TODO: 定时作业
-//      executeJob()
-//      stay
+    case Event(job: ExecuteJob, _) =>   //  定时作业
+      executeJob()
+      stay
     case Event(DisConnectedSuccess(), _) =>
       log.debug("断开连接")
       goto(Disconnected)
@@ -66,6 +67,7 @@ trait DataProviderActor extends FSM[DataProviderState, DataProviderData] with Ac
       stay
 
     case Event(_, _) =>
+      log.debug("未处理事件")
       stay
   }
 

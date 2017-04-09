@@ -1,13 +1,13 @@
 /**
   *
   */
-package org.quant4s.mds
+package org.quant4s.mds.provider
 
 import java.util.HashMap
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import org.quant4s.actors.AskListenedSymbol
-import org.quant4s.actors.provider.ConnectDataProvider
+
 import org.quant4s.config.Settings
 
 import scala.collection.mutable
@@ -18,16 +18,16 @@ import scala.collection.mutable
 class DataProviderManagerActor extends Actor with ActorLogging {
   private val _providerRefs = new mutable.HashMap[String, ActorRef]
 
-  _init()
+  init()
 
   override def receive: Receive = {
-    case AskListenedSymbol(symbol) => _addSymbol(symbol)
+    case AskListenedSymbol(symbol) => addSymbol(symbol)
   }
 
   /**
     * 读取配置文件， 初始化数据提供器
     */
-  private def _init(): Unit = {
+  def init(): Unit = {
     val setting = Settings(context.system)
     for(i <- 0 until setting.providers.size()) {
       val provider = setting.providers.get(i)
@@ -42,7 +42,7 @@ class DataProviderManagerActor extends Actor with ActorLogging {
     }
   }
 
-  private def _addSymbol(symbol: String): Unit = {
+  def addSymbol(symbol: String): Unit = {
     for(provider <- _providerRefs.values) {
       provider ! new AskListenedSymbol(symbol)
     }
@@ -54,7 +54,7 @@ object DataProviderManagerActor {
     Props(classOf[DataProviderManagerActor])
   }
 
-  def path = "dpm"
+  def path = "data-provider-manager"
 
   sealed trait ProviderState
 

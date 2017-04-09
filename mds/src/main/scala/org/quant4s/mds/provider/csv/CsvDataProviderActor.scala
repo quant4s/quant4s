@@ -12,7 +12,7 @@ import scala.concurrent.duration._
 import com.github.tototoshi.csv.CSVReader
 import org.quant4s.data.market.TradeBar
 import org.quant4s.CommonExtensions._
-import org.quant4s.mds.DataProviderActor
+import org.quant4s.mds.provider.DataProviderActor
 
 import scala.collection.mutable
 

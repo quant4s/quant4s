@@ -7,7 +7,7 @@ import com.github.tototoshi.csv.CSVReader
 import scala.collection.immutable.HashMap
 
 /**
-  *
+  * 描述了证券管理器,负责管理所有的证券对象
   */
 class SecurityManager extends Map[String, Security]{
   var securityManager = HashMap[String, Security]()
@@ -31,7 +31,7 @@ class SecurityManager extends Map[String, Security]{
   }
 
   private def _init() = {
-    // read all securities in file "symbol_list.csv"
+    // read all securities in file "symbol.list.csv"
     val file = new File("stock.list.csv")
     val reader = CSVReader.open(file)
     val symbols = reader.allWithHeaders()

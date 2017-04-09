@@ -14,7 +14,8 @@ import org.quant4s.actors.securitySelection.SIManagerActor
 import org.quant4s.actors.strategy.StrategiesManagerActor
 import org.quant4s.actors.trade.{InitTradeRoute, TradeRouteActor}
 import org.quant4s.actors.zeromq.{ZeroMQReqRspServerActor, ZeroMQSubPubServerActor}
-import org.quant4s.mds.{DataProviderManagerActor, SecuritiesManagerActor}
+import org.quant4s.mds.SecuritiesManagerActor
+import org.quant4s.mds.provider.DataProviderManagerActor
 import spray.can.Http
 
 /**

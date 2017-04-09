@@ -7,11 +7,11 @@ import java.util.Date
 
 import akka.actor.Props
 import jctp.struct.{CThostFtdcForQuoteRspField, CThostFtdcRspInfoField, CThostFtdcRspUserLoginField, _}
-import org.quant4s.actors.provider._
+import org.quant4s.mds.provider._
 import org.quant4s.actors.trade.LoginResult
 import org.quant4s.actors.trade.TradeAccountEvent.{Disconnected => _}
 import org.quant4s.data.market.TradeBar
-import org.quant4s.mds.DataProviderActor
+import org.quant4s.mds.provider.DataProviderActor
 
 /**
   *

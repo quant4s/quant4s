@@ -12,11 +12,11 @@ import akka.actor.{ActorLogging, Props}
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.DefaultHttpClient
 import org.quant4s.actors.AskListenedSymbol
-import org.quant4s.actors.provider._
+import org.quant4s.mds.provider._
 import org.quant4s.data.market.SnapData
 import org.quant4s.CommonExtensions._
 import org.quant4s.actors.scheduling.ExecuteJob
-import org.quant4s.mds.DataProviderActor
+import org.quant4s.mds.provider.DataProviderActor
 
 /**
   *

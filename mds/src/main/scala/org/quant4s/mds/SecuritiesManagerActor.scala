@@ -9,13 +9,12 @@ import scala.collection.mutable
 /**
   * securities
   */
-
 object SecuritiesManagerActor {
   def props = {
     Props(classOf[SecuritiesManagerActor])
   }
 
-  val path = "SEC_MANAGER"
+  val path = "securities_manager"
 }
 
 class SecuritiesManagerActor extends Actor with ActorLogging {
@@ -25,45 +24,63 @@ class SecuritiesManagerActor extends Actor with ActorLogging {
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {
     super.preStart()
-    _init
+    init
   }
 
   /**
-    *  chuli dingyue
-    *
+    *  处理的消息有
+    *  1. 订阅证券
+    *  2. 取消订阅证券
+    *  3. 新建一个证券Actor
     * @return
     */
   override def receive: Receive = {
-    case SubscriptionSymbol(symbol) => _subscribe(SubscriptionSymbol(symbol))
-    case UnsubscriptionSymbol(symbol) => _unsubscribe(UnsubscriptionSymbol(symbol))
-    case sec: Security => _createSecurityActor(sec)
+    case SubscriptionSymbol(symbol) => subscribe(SubscriptionSymbol(symbol))
+    case UnsubscriptionSymbol(symbol) => unsubscribe(UnsubscriptionSymbol(symbol))
+    case sec: Security => createSecurityActor(sec)
     case _ =>
   }
 
-  private def _subscribe(symbol: SubscriptionSymbol) = {
+  /**
+    * 订阅证券行情数据
+    * @param symbol
+    */
+  private def subscribe(symbol: SubscriptionSymbol) = {
     log.debug("订阅证券%s数据".format(symbol))
-    secActors(symbol.symbol) forward symbol
+    if(secActors.contains(symbol.symbol)) {
+      secActors(symbol.symbol) forward symbol
+    } else {
+      log.debug("订阅证券%s数据错误，未找到相应的Actor".format(symbol))
+    }
   }
 
-  private def _unsubscribe(symbol: UnsubscriptionSymbol) = {
+  /**
+    * 取消订阅证券行情数据
+    * @param symbol
+    */
+  private def unsubscribe(symbol: UnsubscriptionSymbol) = {
     log.debug("forward unsubscription")
-    secActors(symbol.symbol) forward symbol
+    if(secActors.contains(symbol.symbol)) {
+      secActors(symbol.symbol) forward symbol
+    }else {
+      log.debug("取消订阅证券%s数据错误，未找到相应的Actor".format(symbol))
+    }
   }
 
 
   /**
     * 读取文件，创建所有的证券Actor, 所有的证券CsvWriterActor
     */
-  private def _init = {
+  private def init = {
     for((k, v) <- manager) {
       val ref = context.actorOf(SecurityActor.props(v), k)
       secActors += ( k -> ref)
 
-      val writerRef = context.actorOf(CsvDataWriterActor.props(k), s"cdw${k}")
+      //val writerRef = context.actorOf(CsvDataWriterActor.props(k), s"cdw${k}")
     }
   }
 
-  private def _createSecurityActor(sec: Security): Unit = {
+  private def createSecurityActor(sec: Security): Unit = {
     if(!secActors.contains(sec.symbol)) {
       val ref = context.actorOf(SecurityActor.props(sec), sec.symbol)
       secActors += (sec.symbol -> ref)
