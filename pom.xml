@@ -81,6 +81,11 @@
                 <artifactId>tds</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.quant4s</groupId>
+                <artifactId>mq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.scala-lang</groupId>

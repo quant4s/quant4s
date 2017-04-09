@@ -25,6 +25,10 @@
         </dependency>
         <dependency>
             <groupId>org.quant4s</groupId>
+            <artifactId>mq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.quant4s</groupId>
             <artifactId>indicators</artifactId>
         </dependency>
         <dependency>
