@@ -7,7 +7,7 @@ import org.json4s.DefaultFormats
 import org.json4s.jackson.JsonMethods._
 import org.quant4s.rest.{FlashServer, HttpServer, Strategy, TradeAccount}
 import org.quant4s.actors.{NewStrategy, NewTrader}
-import org.quant4s.actors.data.DataManagerActor
+import org.quant4s.mds.data.DataManagerActor
 import org.quant4s.actors.persistence.{AccountPersistorActor, OrderPersistorActor, PersistenceActor, StrategyPersistorActor}
 import org.quant4s.actors.scheduling.QuartzActor
 import org.quant4s.actors.securitySelection.SIManagerActor

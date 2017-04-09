@@ -4,7 +4,7 @@
 package org.quant4s.rest
 
 import org.quant4s.actors.{AskListenedSymbol, _}
-import org.quant4s.actors.data.{RequestBarData, RequestIndicatorData, RequestTickData}
+import org.quant4s.mds.data.{RequestBarData, RequestIndicatorData, RequestTickData}
 import spray.routing.HttpService
 import spray.util.LoggingContext
 
