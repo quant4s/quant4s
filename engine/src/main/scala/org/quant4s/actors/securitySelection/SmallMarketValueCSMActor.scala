@@ -11,10 +11,10 @@ import org.quant4s.TimeSpan
 import org.quant4s.mds.data.{DataManagerActor, RequestBarData, RequestTickData}
 import org.quant4s.data.BaseData
 import org.quant4s.mds.SubscriptionSymbol
-import org.quant4s.actors.zeromq.ZeroMQSubPubServerActor
 import org.quant4s.data.market.TradeBar
 import org.quant4s.mds.SecuritiesManagerActor
 import org.quant4s.mds.data.DataManagerActor
+import org.quant4s.zeromq.ZeroMQSubPubServerActor
 
 import scala.collection.mutable.HashMap
 import scala.concurrent.duration._

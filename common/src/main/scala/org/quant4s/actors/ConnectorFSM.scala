@@ -7,7 +7,7 @@ import akka.actor.{ActorLogging, FSM}
 import org.quant4s.actors.ConnectorFSM.{LoginSuccess, _}
 
 /**
-  *
+  * 有限状态机连接器，状态图为
   */
 trait ConnectorFSM extends FSM[DataProviderState, DataProviderData] with ActorLogging{
 

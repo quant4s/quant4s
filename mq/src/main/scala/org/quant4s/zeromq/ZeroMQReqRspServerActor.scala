@@ -1,7 +1,7 @@
 /**
   *
   */
-package org.quant4s.actors.zeromq
+package org.quant4s.zeromq
 
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.util.ByteString

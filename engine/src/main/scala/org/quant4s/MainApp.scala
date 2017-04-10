@@ -1,22 +1,23 @@
 package org.quant4s
 
-import scala.io.StdIn
 import akka.actor.ActorSystem
 import akka.io.IO
 import org.json4s.DefaultFormats
 import org.json4s.jackson.JsonMethods._
-import org.quant4s.rest.{FlashServer, HttpServer, Strategy, TradeAccount}
 import org.quant4s.actors.{NewStrategy, NewTrader}
-import org.quant4s.mds.data.DataManagerActor
 import org.quant4s.actors.persistence.{AccountPersistorActor, OrderPersistorActor, PersistenceActor, StrategyPersistorActor}
 import org.quant4s.actors.scheduling.QuartzActor
 import org.quant4s.actors.securitySelection.SIManagerActor
 import org.quant4s.actors.strategy.StrategiesManagerActor
 import org.quant4s.actors.trade.{InitTradeRoute, TradeRouteActor}
-import org.quant4s.actors.zeromq.{ZeroMQReqRspServerActor, ZeroMQSubPubServerActor}
 import org.quant4s.mds.SecuritiesManagerActor
+import org.quant4s.mds.data.DataManagerActor
 import org.quant4s.mds.provider.DataProviderManagerActor
+import org.quant4s.rest.{FlashServer, HttpServer, Strategy, TradeAccount}
+import org.quant4s.zeromq.{ZeroMQReqRspServerActor, ZeroMQSubPubServerActor}
 import spray.can.Http
+
+import scala.io.StdIn
 
 /**
   * 启动入口

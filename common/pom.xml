@@ -42,16 +42,9 @@
         <!-- akka -->
         <dependency>
             <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-zeromq_${scala.compat.version}</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-actor_${scala.compat.version}</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-zeromq_${scala.compat.version}</artifactId>
-        </dependency>
+
 
         <!-- spray -->
         <dependency>

@@ -6,9 +6,9 @@ package org.quant4s.actors.securitySelection
 import akka.actor.{Actor, ActorLogging, Props}
 import akka.routing.{RoundRobinPool, RoundRobinRouter}
 import org.quant4s.actors.zeromq.PublishData
-import org.quant4s.actors.zeromq.{ZeroMQSubPubServerActor}
 import org.quant4s.rest.{FinanceIndi, SecurityPicker, TechIndi}
 import org.quant4s.securitySelection.{Instrument, Selector}
+import org.quant4s.zeromq.ZeroMQSubPubServerActor
 
 /**
   * 当接收到字符串的时候，进行分析 解释
